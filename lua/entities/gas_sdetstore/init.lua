@@ -8,9 +8,9 @@ if not (WireAddon == nil) then
 end
 
 function ENT:Initialize()
-	self.Entity:SetModel( "models/props_c17/canister01a.mdl" )
+	self.Entity:SetModel( "models/syncaidius/gas_tank_small.mdl" )
+	self:SetSkin(2)
     self.BaseClass.Initialize(self)
-	self.Entity:SetColor(0, 123, 38, 255)
 
     local phys = self.Entity:GetPhysicsObject()
 	if (phys:IsValid()) then
@@ -39,8 +39,15 @@ function ENT:Damage()
 	end
 end
 
+function ENT:TakeDamage(amount, attacker, inflictor)
+	self:SetHealth(self:Health()-amount)
+	if self:Health()<=0 then
+		self:Destruct()
+	end
+end
+
 function ENT:Repair()
-	self.Entity:SetColor(0, 123, 38, 255)
+	self.Entity:SetColor(255,255,255, 255)
 	self.health = self.maxhealth
 	self.damaged = 0
 end
