@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	$baseTexture "syncaidius/methane_tank_small"
+	$surfaceprop "metal"
+	$bumpmap "syncaidius/smalltank_norm"
+}
