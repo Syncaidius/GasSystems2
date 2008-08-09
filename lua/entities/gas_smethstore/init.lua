@@ -8,7 +8,7 @@ if not (WireAddon == nil) then
 end
 
 function ENT:Initialize()
-	self.Entity:SetModel( "models/syncaidius/methane_tank_small.mdl" )
+	self.Entity:SetModel( "models/syncaidius/gas_tank_small.mdl" )
     self.BaseClass.Initialize(self)
 
     local phys = self.Entity:GetPhysicsObject()

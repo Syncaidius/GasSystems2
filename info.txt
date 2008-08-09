@@ -2,7 +2,7 @@
 {
 	"name"				"Gas Systems 2"
 	"version"			"0.1"
-	"up_date"			"Today"
+	"up_date"			"10th August 2008"
 	"author_name"			"Syncaidius"
 	"author_email"			"syncaidius@googlemail.com"
 	"author_url"			""

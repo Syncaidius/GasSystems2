@@ -1,6 +1,6 @@
 "VertexLitGeneric"
 {
-	$baseTexture "syncaidius/propane_tank_small"
+	$baseTexture "syncaidius/deuterium_tank_small"
 	$surfaceprop "metal"
 	$bumpmap "syncaidius/smalltank_norm"
 	"$nocull" 1
@@ -9,5 +9,4 @@
 	"$phongfresnelranges" "[ 1 5 20]"
 	"$phongexponent" "20"
 	"$model" 1
-
 }

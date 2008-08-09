@@ -85,15 +85,15 @@ local gas_stor_models = {
 		{ "#Small Nitrous Oxide Tank", "models/props_junk/PropaneCanister001a.mdl", "gas_snitrostore"},
 		{ "#Huge Methane Storage", "models/props/de_nuke/fuel_cask.mdl", "gas_hmethstore" },
 		{ "#Large Methane Storage", "models/props_junk/trashdumpster01a.mdl", "gas_methstore" },
-		{ "#Small Methane Tank", "models/syncaidius/methane_tank_small.mdl", "gas_smethstore" },
-		{ "#Huge Propane Tank", "models/props/de_nuke/fuel_cask.mdl", "gas_hproptank" },
-		{ "#Large Propane Tank", "models/props_c17/canister_propane01a.mdl", "gas_lproptank" },
-		{ "#Small Propane Tank", "models/props_junk/propane_tank001a.mdl", "gas_proptank" },
+		{ "#Small Methane Tank", "models/syncaidius/gas_tank_small.mdl", "gas_smethstore" },
+		{ "#Huge Propane Tank", "models/props/de_nuke/fuel_cask.mdl", "gas_hpropstore" },
+		{ "#Large Propane Tank", "models/props_c17/canister_propane01a.mdl", "gas_lpropstore" },
+		{ "#Small Propane Tank", "models/syncaidius/gas_tank_small.mdl", "gas_spropstore" },
 		{ "#Huge Deuterium Tank", "models/props/de_nuke/fuel_cask.mdl", "gas_hdetstore" },
 		{ "#Large Deuterium Tank", "models/props_borealis/bluebarrel001.mdl", "gas_ldetstore" },
-		{ "#Small Deuterium Tank", "models/props_c17/canister01a.mdl", "gas_sdetstore" },
+		{ "#Small Deuterium Tank", "models/syncaidius/gas_tank_small.mdl", "gas_sdetstore" },
 		{ "#Huge Tritium Tank", "models/props/de_nuke/fuel_cask.mdl", "gas_htritstore" },
 		{ "#Large Tritium Tank", "models/props_borealis/bluebarrel001.mdl", "gas_ltritstore" },
-		{ "#Small Tritium Tank", "models/props_c17/canister01a.mdl", "gas_stritstore" }
+		{ "#Small Tritium Tank", "models/syncaidius/gas_tank_small.mdl", "gas_stritstore" }
 }
 RD2_ToolRegister( TOOL, gas_stor_models, Makegas_storage,"gas_storage",24)
