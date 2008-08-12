@@ -8,18 +8,18 @@ if not (WireAddon == nil) then
 end
 
 function ENT:Initialize()
-	self.Entity:SetModel( "models/props_borealis/bluebarrel001.mdl" )
+	self.Entity:SetModel( "models/syncaidius/gas_tank_large.mdl" )
+	self:SetSkin(2)
     self.BaseClass.Initialize(self)
-	self.Entity:SetColor(0, 123, 38, 255)
 
     local phys = self.Entity:GetPhysicsObject()
 	if (phys:IsValid()) then
 		phys:Wake()
-		phys:SetMass(650)
+		phys:SetMass(300)
 	end
 	
 	self.damaged = 0
-    self.maxhealth = 700
+    self.maxhealth = 600
     self.health = self.maxhealth
 
 	CAF.GetAddon("Resource Distribution").AddResource(self,"Deuterium",10000)
@@ -40,7 +40,7 @@ function ENT:Damage()
 end
 
 function ENT:Repair()
-	self.Entity:SetColor(0, 123, 38, 255)
+	self.Entity:SetColor(255,255,255, 255)
 	self.health = self.maxhealth
 	self.damaged = 0
 end

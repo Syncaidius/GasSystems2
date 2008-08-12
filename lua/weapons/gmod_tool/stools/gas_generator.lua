@@ -77,13 +77,15 @@ local gas_gen_models = {
 		{"Nitrogen Oxidizer", "models/props/de_nuke/equipment2.mdl", "gas_nitrooxidizer"},
 		{"Nitrogen Liquidizer", "models/Gibs/airboat_broken_engine.mdl", "gas_nitroliq"},
 		{"Nitrogen Inverter", "models/props_c17/FurnitureBoiler001a.mdl", "gas_inverter"},
-		{"Large Methane & Propane Reactor", "models/props_citizen_tech/steamengine001a.mdl", "gas_reactor"},
-		{"Large Nitrous Oxide Reactor", "models/props_c17/factorymachine01.mdl", "gas_nitrousreactor"},
+		{"Large Tokomak Reactor", "models/props_citizen_tech/steamengine001a.mdl", "gas_tokoreactor"},
+		{"Large Methane Reactor", "models/props_citizen_tech/steamengine001a.mdl", "gas_methreactor"},
+		{"Large Propane Reactor", "models/props_citizen_tech/steamengine001a.mdl", "gas_propreactor"},
 		{"Micro Methane Reactor", "models//props_combine/headcrabcannister01a.mdl", "gas_micromethreactor"},
 		{"Micro Propane Reactor", "models//props_combine/headcrabcannister01a.mdl", "gas_micropropreactor"},
-		{"Micro Nitrous Oxide Reactor", "models//props_combine/headcrabcannister01a.mdl", "gas_micronitrousreactor"},
+		{"Micro Tokomak Reactor", "models//props_combine/headcrabcannister01a.mdl", "gas_microtokoreactor"},
 		{"Methane Collector", "models/props_c17/light_decklight01_off.mdl", "methane_collector"},
 		{"Propane Collector", "models/props_c17/light_decklight01_off.mdl", "propane_collector"},
-		{"Nitrogen Collector", "models/props_c17/light_decklight01_off.mdl", "nitrogen_collector"}
+		{"Nitrogen Collector", "models/props_c17/light_decklight01_off.mdl", "nitrogen_collector"},
+		{"Hydrogen Splitter", "models/props_c17/light_decklight01_off.mdl", "hydrogen_splitter"},
 }
 RD2_ToolRegister( TOOL, gas_gen_models, Makegas_generator,"gas_generator",20)
