@@ -39,13 +39,6 @@ function ENT:Damage()
 	end
 end
 
-function ENT:TakeDamage(amount, attacker, inflictor)
-	self:SetHealth(self:Health()-amount)
-	if self:Health()<=0 then
-		self:Destruct()
-	end
-end
-
 function ENT:Repair()
 	self.Entity:SetColor(255,255,255, 255)
 	self:SetHealth(self:GetMaxHealth())

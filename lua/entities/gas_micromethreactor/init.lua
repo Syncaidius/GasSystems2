@@ -25,13 +25,13 @@ function ENT:Initialize()
 	self.disuse = 0 --use disabled via wire input
 	self.energy = 0
 	self.nitrous = 0
-    self.methane = 0
+    self.Methane = 0
 	
     -- resource attributes
     self.energyprod = 180 --Energy production
-    self.methanecon = 30 -- methane consumption
+    self.methanecon = 25 -- Methane consumption
     
-	CAF.GetAddon("Resource Distribution").AddResource(self,"methane",0)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"Methane",0)
 	if not (WireAddon == nil) then self.Inputs = Wire_CreateInputs(self.Entity, { "On", "Overdrive", "Disable Use" }) end
 	if not (WireAddon == nil) then self.Outputs = Wire_CreateOutputs(self.Entity, { "On", "Overdrive", "Methane Consumption", "Energy Production"}) end
 	
@@ -162,8 +162,7 @@ function ENT:GenerateEnergy()
 	local RD = CAF.GetAddon("Resource Distribution")
 	if ( self.overdrive == 1 ) then
         self.energy = math.ceil((self.energyprod + math.random(5,15)) * self.overdrivefactor)
-        self.nitrous = math.ceil(self.nitrouscon * self.overdrivefactor)
-        self.methane = math.ceil(self.methanecon * self.overdrivefactor)
+        self.Methane = math.ceil(self.methanecon * self.overdrivefactor)
         
         if self.overdrivefactor > 1 then
             if CAF and CAF.GetAddon("Life Support") then
@@ -181,11 +180,11 @@ function ENT:GenerateEnergy()
         
     else
         self.energy = (self.energyprod + math.random(5,15))
-        self.methane = self.methanecon
+        self.Methane = self.methanecon
     end
     
 	if ( self:CanRun() ) then
-        RD.ConsumeResource(self, "methane", self.methane)
+        RD.ConsumeResource(self, "Methane", self.Methane)
         
         RD.SupplyResource(self.Entity, "energy",self.energy)
 
@@ -203,7 +202,7 @@ function ENT:GenerateEnergy()
 	
 	if not (WireAddon == nil) then
         Wire_TriggerOutput(self.Entity, "Energy Production", self.energy)
-        Wire_TriggerOutput(self.Entity, "Methane Consumption", self.methane)
+        Wire_TriggerOutput(self.Entity, "Methane Consumption", self.Methane)
     end
 		
 	return
@@ -211,8 +210,8 @@ end
 
 function ENT:CanRun()
 	local RD = CAF.GetAddon("Resource Distribution")
-    local methane = RD.GetResourceAmount(self, "methane")
-    if (methane >= self.methane) then
+    local Methane = RD.GetResourceAmount(self, "Methane")
+    if (Methane >= self.Methane) then
         return true
     else
         return false

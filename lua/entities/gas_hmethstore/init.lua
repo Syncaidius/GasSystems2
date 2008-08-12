@@ -8,18 +8,18 @@ if not (WireAddon == nil) then
 end
 
 function ENT:Initialize()
-	self.Entity:SetModel( "models/props/de_nuke/fuel_cask.mdl" )
+	self.Entity:SetModel( "models/syncaidius/gas_tank_huge.mdl" )
+	self:SetSkin(0)
     self.BaseClass.Initialize(self)
-	self.Entity:SetColor(100,50,0,255)
 
     local phys = self.Entity:GetPhysicsObject()
 	if (phys:IsValid()) then
 		phys:Wake()
-		phys:SetMass(1600)
+		phys:SetMass(710)
 	end
 	
 	self.damaged = 0
-    self:SetMaxHealth(1100)
+    self:SetMaxHealth(1000)
 	self:SetHealth(self:GetMaxHealth())
 
 	CAF.GetAddon("Resource Distribution").AddResource(self,"Methane",25000)
@@ -39,15 +39,8 @@ function ENT:Damage()
 	end
 end
 
-function ENT:TakeDamage(amount, attacker, inflictor)
-	self:SetHealth(self:Health()-amount)
-	if self:Health()<=0 then
-		self:Destruct()
-	end
-end
-
 function ENT:Repair()
-	self.Entity:SetColor(100,50,0,255)
+	self.Entity:SetColor(255,255,255,255)
 	self:SetHealth(self:GetMaxHealth())
 	self.damaged = 0
 end

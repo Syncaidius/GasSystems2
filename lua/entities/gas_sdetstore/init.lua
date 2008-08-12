@@ -19,8 +19,8 @@ function ENT:Initialize()
 	end
 	
 	self.damaged = 0
-    self.maxhealth = 350
-    self.health = self.maxhealth
+    self:SetMaxHealth(350)
+    self:SetHealth(self:GetMaxHealth())
 
 	CAF.GetAddon("Resource Distribution").AddResource(self,"Deuterium",4500)
 	
@@ -39,16 +39,9 @@ function ENT:Damage()
 	end
 end
 
-function ENT:TakeDamage(amount, attacker, inflictor)
-	self:SetHealth(self:Health()-amount)
-	if self:Health()<=0 then
-		self:Destruct()
-	end
-end
-
 function ENT:Repair()
 	self.Entity:SetColor(255,255,255, 255)
-	self.health = self.maxhealth
+	self:SetHealth(self:GetMaxHealth())
 	self.damaged = 0
 end
 
