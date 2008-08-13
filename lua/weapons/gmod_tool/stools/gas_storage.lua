@@ -74,9 +74,9 @@ end
 if (GAMEMODE.Name == "SpaceBuild" || SpaceBuild) then MsgAll("You need the new Spacebuild (3) to use gas systems, you are using Spacebuild1!\n") end
 if (GAMEMODE.Name == "SpaceBuild2" || SpaceBuild2) then MsgAll("You need the new Spacebuild(3) to use gas systems, you are using Spacebuild2!\n") end
 local gas_stor_models = {
-		{ "#Huge Natural Gas Tank", "models/props_wasteland/coolingtank02.mdl", "gas_hstore" },
-		{ "#Large Natural Gas Tank", "models//props_wasteland/laundry_washer001a.mdl", "gas_lstore" },
-		{ "#Small Natural Gas Tank", "models/props_c17/oildrum001.mdl", "gas_sstore" },
+		{ "#Huge Natural Gas Tank", "models/syncaidius/gas_tank_huge.mdl", "gas_hstore" },
+		{ "#Large Natural Gas Tank", "models/syncaidius/gas_tank_large.mdl", "gas_lstore" },
+		{ "#Small Natural Gas Tank", "models/syncaidius/gas_tank_small.mdl", "gas_sstore" },
 		{ "#Huge Processed Gas Tank", "models/props_buildings/watertower_001c.mdl", "gas_phstore" },
         { "#Large Processed Gas Tank", "models/props_wasteland/horizontalcoolingtank04.mdl", "gas_plstore" },
 		{ "#Small Processed Gas Tank", "models/props_junk/propane_tank001a.mdl", "gas_psstore" },

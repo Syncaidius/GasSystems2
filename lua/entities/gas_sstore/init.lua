@@ -8,9 +8,9 @@ if not (WireAddon == nil) then
 end
 
 function ENT:Initialize()
-	self.Entity:SetModel( "models/props_c17/oildrum001.mdl" )
+	self.Entity:SetModel( "models/syncaidius/gas_tank_small.mdl" )
+	self:SetSkin(4)
     self.BaseClass.Initialize(self)
-	self.Entity:SetColor(127,127,127, 255)
 
     local phys = self.Entity:GetPhysicsObject()
 	if (phys:IsValid()) then
@@ -19,8 +19,8 @@ function ENT:Initialize()
 	end
 	
 	self.damaged = 0
-    self.maxhealth = 200
-    self.health = self.maxhealth
+    self:SetMaxHealth(200)
+    self:SetHealth(self:GetMaxHealth())
 
 	CAF.GetAddon("Resource Distribution").AddResource(self,"Natural Gas",6500)
 	
@@ -40,8 +40,8 @@ function ENT:Damage()
 end
 
 function ENT:Repair()
-	self.Entity:SetColor(127,127,127, 255)
-	self.health = self.maxhealth
+	self.Entity:SetColor(255,255,255, 255)
+	self:SetHealth(self:GetMaxHealth())
 	self.damaged = 0
 end
 
