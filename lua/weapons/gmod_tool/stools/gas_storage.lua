@@ -79,7 +79,7 @@ local gas_stor_models = {
 		{ "#Small Natural Gas Tank", "models/syncaidius/gas_tank_small.mdl", "gas_sstore" },
 		{ "#Huge Processed Gas Tank", "models/props_buildings/watertower_001c.mdl", "gas_phstore" },
         { "#Large Processed Gas Tank", "models/props_wasteland/horizontalcoolingtank04.mdl", "gas_plstore" },
-		{ "#Small Processed Gas Tank", "models/props_junk/propane_tank001a.mdl", "gas_psstore" },
+		{ "#Small Processed Gas Tank", "models/pegasus/protank_small.mdl", "gas_sproctank" },
 		{ "#Huge Methane Tank", "models/syncaidius/gas_tank_huge.mdl", "gas_hmethstore" },
 		{ "#Large Methane Tank", "models/syncaidius/gas_tank_large.mdl", "gas_lmethstore" },
 		{ "#Small Methane Tank", "models/syncaidius/gas_tank_small.mdl", "gas_smethstore" },
