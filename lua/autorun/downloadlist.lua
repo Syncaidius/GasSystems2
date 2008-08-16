@@ -11,4 +11,5 @@ function AddDir(dir)
 end  
 
 AddDir("models/syncaidius")
+AddDir("models/pegasus")
 AddDir("materials/syncaidius")  
