@@ -80,7 +80,7 @@ local gas_gen_models = {
 		{"Large Tokomak Reactor", "models/props_citizen_tech/steamengine001a.mdl", "gas_tokoreactor"},
 		{"Large Methane Reactor", "models/props_citizen_tech/steamengine001a.mdl", "gas_methreactor"},
 		{"Large Propane Reactor", "models/props_citizen_tech/steamengine001a.mdl", "gas_propreactor"},
-		{"Micro Methane Reactor", "models//props_combine/headcrabcannister01a.mdl", "gas_micromethreactor"},
+		{"Micro Methane Reactor", "models/syncaidius/microreactor.mdl", "gas_micromethreactor"},
 		{"Micro Propane Reactor", "models//props_combine/headcrabcannister01a.mdl", "gas_micropropreactor"},
 		{"Micro Tokomak Reactor", "models//props_combine/headcrabcannister01a.mdl", "gas_microtokoreactor"},
 		{"Methane Collector", "models/props_c17/light_decklight01_off.mdl", "methane_collector"},
