@@ -10,9 +10,9 @@ if not (WireAddon == nil) then
 end
 
 function ENT:Initialize()
-	self.Entity:SetModel( "models//props_combine/headcrabcannister01a.mdl" )
+	self.Entity:SetModel( "models/syncaidius/microreactor.mdl" )
+	self:SetSkin(0)
     self.BaseClass.Initialize(self)
-    self.Entity:SetColor(89, 45, 0, 255)
 
     local phys = self.Entity:GetPhysicsObject()
 	self.damaged = 0
@@ -20,13 +20,13 @@ function ENT:Initialize()
 	self.overdrivefactor = 0
 	self.maxoverdrive = 4 -- maximum overdrive value allowed via wire input. Anything over this value may severely damage or destroy the device.
 	self.Active = 0
-    self:SetMaxHealth(250)
-    self:SetHealth(self:GetMaxHealth())
 	self.disuse = 0 --use disabled via wire input
 	self.energy = 0
 	self.nitrous = 0
     self.Methane = 0
 	
+	self:SetMaxHealth(250)
+    self:SetHealth(self:GetMaxHealth())
     -- resource attributes
     self.energyprod = 180 --Energy production
     self.methanecon = 25 -- Methane consumption
@@ -96,7 +96,6 @@ function ENT:Damage()
 end
 
 function ENT:Repair()
-	self.Entity:SetColor(89, 45, 0, 255)
 	self:SetHealth(self:GetMaxHealth())
 	self.damaged = 0
 end
