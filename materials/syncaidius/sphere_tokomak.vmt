@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	$baseTexture "syncaidius/sphere_tokomak"
+	$surfaceprop "metal"
+	$bumpmap "syncaidius/sphere_tokomak_n"
+	"$nocull" 1
+	"$phong" "1" 
+	"$phongboost" "0.45" 
+	"$phongfresnelranges" "[ 1 5 20]"
+	"$phongexponent" "20"
+	"$model" 1
+}
