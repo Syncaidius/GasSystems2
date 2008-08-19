@@ -4,7 +4,7 @@ AddCSLuaFile( "shared.lua" )
 include('shared.lua')
 
 if not (WireAddon == nil) then
-    ENT.WireDebugName = "H Methane Tank"
+    ENT.WireDebugName = "L Methane Tank"
 end
 
 function ENT:Initialize()

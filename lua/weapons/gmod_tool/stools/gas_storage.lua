@@ -74,23 +74,23 @@ end
 if (GAMEMODE.Name == "SpaceBuild" || SpaceBuild) then MsgAll("You need the new Spacebuild (3) to use gas systems, you are using Spacebuild1!\n") end
 if (GAMEMODE.Name == "SpaceBuild2" || SpaceBuild2) then MsgAll("You need the new Spacebuild(3) to use gas systems, you are using Spacebuild2!\n") end
 local gas_stor_models = {
-		{ "#Huge Natural Gas Tank", "models/syncaidius/gas_tank_huge.mdl", "gas_hstore" },
-		{ "#Large Natural Gas Tank", "models/syncaidius/gas_tank_large.mdl", "gas_lstore" },
+		{ "#Large Natural Gas Tank", "models/syncaidius/gas_tank_huge.mdl", "gas_hstore" },
+		{ "#Medium Natural Gas Tank", "models/syncaidius/gas_tank_large.mdl", "gas_lstore" },
 		{ "#Small Natural Gas Tank", "models/syncaidius/gas_tank_small.mdl", "gas_sstore" },
-		{ "#Huge Processed Gas Tank", "models/props_buildings/watertower_001c.mdl", "gas_phstore" },
-        { "#Large Processed Gas Tank", "models/props_wasteland/horizontalcoolingtank04.mdl", "gas_plstore" },
+		{ "#Large Processed Gas Tank", "models/props_buildings/watertower_001c.mdl", "gas_phstore" },
+        { "#Medium Processed Gas Tank", "models/props_wasteland/horizontalcoolingtank04.mdl", "gas_plstore" },
 		{ "#Small Processed Gas Tank", "models/pegasus/protank_small.mdl", "gas_sproctank" },
-		{ "#Huge Methane Tank", "models/syncaidius/gas_tank_huge.mdl", "gas_hmethstore" },
-		{ "#Large Methane Tank", "models/syncaidius/gas_tank_large.mdl", "gas_lmethstore" },
+		{ "#Large Methane Tank", "models/syncaidius/gas_tank_huge.mdl", "gas_hmethstore" },
+		{ "#Medium Methane Tank", "models/syncaidius/gas_tank_large.mdl", "gas_lmethstore" },
 		{ "#Small Methane Tank", "models/syncaidius/gas_tank_small.mdl", "gas_smethstore" },
-		{ "#Huge Propane Tank", "models/syncaidius/gas_tank_huge.mdl", "gas_hpropstore" },
-		{ "#Large Propane Tank", "models/syncaidius/gas_tank_large.mdl", "gas_lpropstore" },
+		{ "#Large Propane Tank", "models/syncaidius/gas_tank_huge.mdl", "gas_hpropstore" },
+		{ "#Medium Propane Tank", "models/syncaidius/gas_tank_large.mdl", "gas_lpropstore" },
 		{ "#Small Propane Tank", "models/syncaidius/gas_tank_small.mdl", "gas_spropstore" },
-		{ "#Huge Deuterium Tank", "models/syncaidius/gas_tank_huge.mdl", "gas_hdetstore" },
-		{ "#Large Deuterium Tank", "models/syncaidius/gas_tank_large.mdl", "gas_ldetstore" },
+		{ "#Large Deuterium Tank", "models/syncaidius/gas_tank_huge.mdl", "gas_hdetstore" },
+		{ "#Medium Deuterium Tank", "models/syncaidius/gas_tank_large.mdl", "gas_ldetstore" },
 		{ "#Small Deuterium Tank", "models/syncaidius/gas_tank_small.mdl", "gas_sdetstore" },
-		{ "#Huge Tritium Tank", "models/syncaidius/gas_tank_huge.mdl", "gas_htritstore" },
-		{ "#Large Tritium Tank", "models/syncaidius/gas_tank_large.mdl", "gas_ltritstore" },
+		{ "#Large Tritium Tank", "models/syncaidius/gas_tank_huge.mdl", "gas_htritstore" },
+		{ "#Medium Tritium Tank", "models/syncaidius/gas_tank_large.mdl", "gas_ltritstore" },
 		{ "#Small Tritium Tank", "models/syncaidius/gas_tank_small.mdl", "gas_stritstore" }
 }
 RD2_ToolRegister( TOOL, gas_stor_models, Makegas_storage,"gas_storage",24)
