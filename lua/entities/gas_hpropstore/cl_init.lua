@@ -4,4 +4,4 @@ ENT.AdminSpawnable		= false
 
 include('shared.lua')
 
-language.Add( "gas_hpropstore", "Huge Propane Tank" )
+language.Add( "gas_hpropstore", "Large Propane Tank" )

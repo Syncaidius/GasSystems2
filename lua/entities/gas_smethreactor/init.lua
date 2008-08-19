@@ -6,13 +6,13 @@ util.PrecacheSound( "ambient/machines/thumper_startup1.wav" )
 include('shared.lua')
 
 if not (WireAddon == nil) then
-    ENT.WireDebugName = "Micro Propane Reactor"
+    ENT.WireDebugName = "S Methane Reactor"
 end
 
 function ENT:Initialize()
-	self.Entity:SetModel( "models//props_combine/headcrabcannister01a.mdl" )
+	self.Entity:SetModel( "models/syncaidius/microreactor.mdl" )
+	self:SetSkin(0)
     self.BaseClass.Initialize(self)
-    self.Entity:SetColor(127,0, 0, 255)
 
     local phys = self.Entity:GetPhysicsObject()
 	self.damaged = 0
@@ -20,20 +20,20 @@ function ENT:Initialize()
 	self.overdrivefactor = 0
 	self.maxoverdrive = 4 -- maximum overdrive value allowed via wire input. Anything over this value may severely damage or destroy the device.
 	self.Active = 0
-    self:SetMaxHealth(250)
-    self:SetHealth(self:GetMaxHealth())
 	self.disuse = 0 --use disabled via wire input
 	self.energy = 0
 	self.nitrous = 0
-    self.Propane = 0
+    self.Methane = 0
 	
+	self:SetMaxHealth(250)
+    self:SetHealth(self:GetMaxHealth())
     -- resource attributes
     self.energyprod = 180 --Energy production
-    self.Propanecon = 30 -- Propane consumption
+    self.methanecon = 25 -- Methane consumption
     
-	CAF.GetAddon("Resource Distribution").AddResource(self,"Propane",0)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"Methane",0)
 	if not (WireAddon == nil) then self.Inputs = Wire_CreateInputs(self.Entity, { "On", "Overdrive", "Disable Use" }) end
-	if not (WireAddon == nil) then self.Outputs = Wire_CreateOutputs(self.Entity, { "On", "Overdrive", "Propane Consumption", "Energy Production"}) end
+	if not (WireAddon == nil) then self.Outputs = Wire_CreateOutputs(self.Entity, { "On", "Overdrive", "Methane Consumption", "Energy Production"}) end
 	
 	if (phys:IsValid()) then
 		phys:Wake()
@@ -96,7 +96,6 @@ function ENT:Damage()
 end
 
 function ENT:Repair()
-	self.Entity:SetColor(127,0, 0, 255)
 	self:SetHealth(self:GetMaxHealth())
 	self.damaged = 0
 end
@@ -162,8 +161,7 @@ function ENT:GenerateEnergy()
 	local RD = CAF.GetAddon("Resource Distribution")
 	if ( self.overdrive == 1 ) then
         self.energy = math.ceil((self.energyprod + math.random(5,15)) * self.overdrivefactor)
-        self.nitrous = math.ceil(self.nitrouscon * self.overdrivefactor)
-        self.Propane = math.ceil(self.Propanecon * self.overdrivefactor)
+        self.Methane = math.ceil(self.methanecon * self.overdrivefactor)
         
         if self.overdrivefactor > 1 then
             if CAF and CAF.GetAddon("Life Support") then
@@ -181,11 +179,11 @@ function ENT:GenerateEnergy()
         
     else
         self.energy = (self.energyprod + math.random(5,15))
-        self.Propane = self.Propanecon
+        self.Methane = self.methanecon
     end
     
 	if ( self:CanRun() ) then
-        RD.ConsumeResource(self, "Propane", self.Propane)
+        RD.ConsumeResource(self, "Methane", self.Methane)
         
         RD.SupplyResource(self.Entity, "energy",self.energy)
 
@@ -203,7 +201,7 @@ function ENT:GenerateEnergy()
 	
 	if not (WireAddon == nil) then
         Wire_TriggerOutput(self.Entity, "Energy Production", self.energy)
-        Wire_TriggerOutput(self.Entity, "Propane Consumption", self.Propane)
+        Wire_TriggerOutput(self.Entity, "Methane Consumption", self.Methane)
     end
 		
 	return
@@ -211,8 +209,8 @@ end
 
 function ENT:CanRun()
 	local RD = CAF.GetAddon("Resource Distribution")
-    local Propane = RD.GetResourceAmount(self, "Propane")
-    if (Propane >= self.Propane) then
+    local Methane = RD.GetResourceAmount(self, "Methane")
+    if (Methane >= self.Methane) then
         return true
     else
         return false

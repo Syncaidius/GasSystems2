@@ -3,7 +3,7 @@ ENT.Base 		= "base_rd_entity"
 
 list.Set( "LSEntOverlayText" , "gas_hmethstore", {num = -1} )
 
-ENT.PrintName	    = "Huge Methane Tank"
+ENT.PrintName	    = "Large Methane Tank"
 ENT.Author		    = "Syncaidius"
 ENT.Instructions    = ""
 ENT.Contact		    = "syncaidius@googlemail.com"

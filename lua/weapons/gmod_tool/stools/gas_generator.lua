@@ -78,11 +78,12 @@ local gas_gen_models = {
 		{"Large Methane Reactor", "models/props_citizen_tech/steamengine001a.mdl", "gas_methreactor"},
 		{"Large Propane Reactor", "models/props_citizen_tech/steamengine001a.mdl", "gas_propreactor"},
 		{"Small Methane Reactor", "models/syncaidius/microreactor.mdl", "gas_smethreactor"},
-		{"Small Propane Reactor", "models//props_combine/headcrabcannister01a.mdl", "gas_micropropreactor"},
+		{"Small Propane Reactor", "models//props_combine/headcrabcannister01a.mdl", "gas_spropreactor"},
 		{"Small Tokomak Reactor", "models/syncaidius/stokomak.mdl", "gas_stokomak"},
 		{"Methane Collector", "models/props_c17/light_decklight01_off.mdl", "methane_collector"},
 		{"Propane Collector", "models/props_c17/light_decklight01_off.mdl", "propane_collector"},
 		{"Nitrogen Collector", "models/props_c17/light_decklight01_off.mdl", "nitrogen_collector"},
-		{"Hydrogen Splitter", "models/props_c17/light_decklight01_off.mdl", "hydrogen_splitter"},
+		{"Hydrogen Splitter", "models/props_c17/light_decklight01_off.mdl", "gas_h2osplitter"},
+		{"Oxygen Materializer", "models/props_c17/light_decklight01_off.mdl", "gas_o2materializer"},
 }
 RD2_ToolRegister( TOOL, gas_gen_models, Makegas_generator,"gas_generator",20)

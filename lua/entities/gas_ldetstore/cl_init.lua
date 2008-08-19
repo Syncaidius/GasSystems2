@@ -4,4 +4,4 @@ ENT.AdminSpawnable		= false
 
 include('shared.lua')
 
-language.Add( "gas_ldetstore", "Large Deuterium Tank" )
+language.Add( "gas_ldetstore", "Medium Deuterium Tank" )
