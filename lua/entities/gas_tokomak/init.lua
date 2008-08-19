@@ -6,11 +6,11 @@ util.PrecacheSound( "ambient/machines/thumper_startup1.wav" )
 include('shared.lua')
 
 if not (WireAddon == nil) then
-    ENT.WireDebugName = "Micro Methane Reactor"
+    ENT.WireDebugName = "Tokomak Reactor"
 end
 
 function ENT:Initialize()
-	self.Entity:SetModel( "models/syncaidius/microreactor.mdl" )
+	self.Entity:SetModel( "models/syncaidius/tokomak.mdl" )
 	self:SetSkin(0)
     self.BaseClass.Initialize(self)
 
@@ -21,23 +21,26 @@ function ENT:Initialize()
 	self.maxoverdrive = 4 -- maximum overdrive value allowed via wire input. Anything over this value may severely damage or destroy the device.
 	self.Active = 0
 	self.disuse = 0 --use disabled via wire input
-	self.energy = 0
-	self.nitrous = 0
-    self.Methane = 0
 	
-	self:SetMaxHealth(250)
+	self.energy = 0
+    self.Deuterium = 0
+	self.Tritium = 0
+	
+	self:SetMaxHealth(550)
     self:SetHealth(self:GetMaxHealth())
     -- resource attributes
-    self.energyprod = 180 --Energy production
-    self.methanecon = 25 -- Methane consumption
+    self.energyprod = 2500 --Energy production
+    self.deutcon = 55 -- Deuterium consumption
+	self.tritcon = 50 -- tritium consumt
     
-	CAF.GetAddon("Resource Distribution").AddResource(self,"Methane",0)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"Deuterium",0)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"Tritium",0)
 	if not (WireAddon == nil) then self.Inputs = Wire_CreateInputs(self.Entity, { "On", "Overdrive", "Disable Use" }) end
-	if not (WireAddon == nil) then self.Outputs = Wire_CreateOutputs(self.Entity, { "On", "Overdrive", "Methane Consumption", "Energy Production"}) end
+	if not (WireAddon == nil) then self.Outputs = Wire_CreateOutputs(self.Entity, { "On", "Overdrive","Energy Production"}) end
 	
 	if (phys:IsValid()) then
 		phys:Wake()
-		phys:SetMass(300)
+		phys:SetMass(500)
 	end
 end
 
@@ -161,13 +164,14 @@ function ENT:GenerateEnergy()
 	local RD = CAF.GetAddon("Resource Distribution")
 	if ( self.overdrive == 1 ) then
         self.energy = math.ceil((self.energyprod + math.random(5,15)) * self.overdrivefactor)
-        self.Methane = math.ceil(self.methanecon * self.overdrivefactor)
-        
+        self.Deuterium = math.ceil(self.deutcon * self.overdrivefactor)
+        self.Tritium = math.ceil(self.tritcon * self.overdrivefactor)
+		
         if self.overdrivefactor > 1 then
             if CAF and CAF.GetAddon("Life Support") then
-				CAF.GetAddon("Life Support").DamageLS(self, math.random(10,10)*self.overdrivefactor)
+				CAF.GetAddon("Life Support").DamageLS(self, math.random(10,20)*self.overdrivefactor)
 			else
-				self:SetHealth( self:Health() - math.random(10,10)*self.overdrivefactor)
+				self:SetHealth( self:Health() - math.random(10,20)*self.overdrivefactor)
 				if self:Health() <= 0 then
 					self:Remove()
 				end
@@ -179,17 +183,20 @@ function ENT:GenerateEnergy()
         
     else
         self.energy = (self.energyprod + math.random(5,15))
-        self.Methane = self.methanecon
+        self.Deuterium = self.deutcon
+		self.Tritium = self.tritcon
     end
     
 	if ( self:CanRun() ) then
-        RD.ConsumeResource(self, "Methane", self.Methane)
-        
+        RD.ConsumeResource(self, "Deuterium", self.Deuterium)
+        RD.ConsumeResource(self, "Tritium", self.Tritium)
+		
         RD.SupplyResource(self.Entity, "energy",self.energy)
 
         if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 1) end
 	else
-		self.energy = 10
+		local div = math.random(15,20)
+		self.energy = math.ceil(self.energyprod/div)
 		RD.SupplyResource(self.Entity, "energy",self.energy)
 		self.Entity:EmitSound( "common/warning.wav" )
 		CAF.GetAddon("Life Support").DamageLS(self, math.random(10,20))
@@ -201,7 +208,6 @@ function ENT:GenerateEnergy()
 	
 	if not (WireAddon == nil) then
         Wire_TriggerOutput(self.Entity, "Energy Production", self.energy)
-        Wire_TriggerOutput(self.Entity, "Methane Consumption", self.Methane)
     end
 		
 	return
@@ -209,8 +215,9 @@ end
 
 function ENT:CanRun()
 	local RD = CAF.GetAddon("Resource Distribution")
-    local Methane = RD.GetResourceAmount(self, "Methane")
-    if (Methane >= self.Methane) then
+    local Deuterium = RD.GetResourceAmount(self, "Deuterium")
+	local Tritium = RD.GetResourceAmount(self, "Tritium")
+    if Deuterium >= self.Deuterium and Tritium >= self.Tritium then
         return true
     else
         return false

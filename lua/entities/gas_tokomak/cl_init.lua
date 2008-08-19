@@ -4,4 +4,4 @@ ENT.AdminSpawnable		= false
 
 include('shared.lua')
 
-language.Add( "gas_micromethreactor", "Micro Methane Reactor" )
+language.Add( "gas_tokomak", "Tokomak Reactor" )
