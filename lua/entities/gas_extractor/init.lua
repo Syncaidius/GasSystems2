@@ -2,7 +2,6 @@ AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "shared.lua" )
 util.PrecacheSound( "Airboat_engine_idle" )
 util.PrecacheSound( "Airboat_engine_stop" )
-util.PrecacheSound( "apc_engine_start" )
 
 include('shared.lua')
 
@@ -11,9 +10,9 @@ if not (WireAddon == nil) then
 end
 
 function ENT:Initialize()
-	self.Entity:SetModel( "models/props/cs_assault/firehydrant.mdl" )
+	self.Entity:SetModel("models/syncaidius/gas_extractor.mdl")
+	self:SetSkin(0)
     self.BaseClass.Initialize(self)
-	self.Entity:SetColor(127,127,127, 255)
 
     local phys = self.Entity:GetPhysicsObject()
 	self.damaged = 0
@@ -21,8 +20,9 @@ function ENT:Initialize()
 	self.overdrivefactor = 0
 	self.maxoverdrive = 4 -- maximum overdrive value allowed via wire input. Anything over this value may severely damage or destroy the device.
 	self.Active = 0
-    self.maxhealth = 250
-    self.health = self.maxhealth
+	
+    self:SetMaxHealth(250)
+    self:SetHealth(self:GetMaxHealth())
 	self.disuse = 0 --use disabled via wire input
 	
 	self.energy = 0
@@ -88,7 +88,6 @@ function ENT:OnRemove()
     self.BaseClass.OnRemove(self)
     self.Entity:StopSound( "Airboat_engine_idle" )
     self.Entity:StopSound( "common/warning.wav" )
-    self.Entity:StopSound( "apc_engine_start" )
     self.Entity:StopSound( "Airboat_engine_stop" )
 end
 
@@ -102,14 +101,14 @@ function ENT:Damage()
 end
 
 function ENT:Repair()
-	self.Entity:SetColor(127,127,127, 255)
-	self.health = self.maxhealth
+	self:SetHealth(self:GetMaxHealth())
 	self.damaged = 0
 end
 
 function ENT:TurnOn()
     self.Active = 1
     self:SetOOO(1)
+	self:SetSkin(1)
     if not (WireAddon == nil) then 
         Wire_TriggerOutput(self.Entity, "On", 1)
     end
@@ -118,7 +117,9 @@ end
 
 function ENT:TurnOff()
     self.Active = 0
+	self.overdrive = 0
     self:SetOOO(0)
+	self:SetSkin(0)
     if not (WireAddon == nil) then
         Wire_TriggerOutput(self.Entity, "On", 0)
     end
@@ -129,19 +130,18 @@ end
 function ENT:OverdriveOn()
     self.overdrive = 1
     self:SetOOO(2)
-    
+    self:SetSkin(2)
     self.Entity:StopSound( "Airboat_engine_idle" )
     self.Entity:EmitSound( "Airboat_engine_idle" )
-    self.Entity:EmitSound( "apc_engine_start" )
 end
 
 function ENT:OverdriveOff()
     self.overdrive = 0
+	self.overdrivefactor = 0
     self:SetOOO(1)
-    
+    self:SetSkin(1)
     self.Entity:StopSound( "Airboat_engine_idle" )
     self.Entity:EmitSound( "Airboat_engine_idle" )
-    self.Entity:StopSound( "apc_engine_start" )
 end
 
 function ENT:Destruct()
@@ -219,12 +219,14 @@ function ENT:Think()
 	return true
 end
 
-
 function ENT:AcceptInput(name,activator,caller)
-	if name == "Use" and caller:IsPlayer() and caller:KeyDownLast(IN_USE) == false and self.disuse == 0 then
+	if name == "Use" and caller:IsPlayer() and caller:KeyDownLast(IN_USE) == false then
 		if ( self.Active == 0 ) then
 			self:TurnOn()
-		else
+		elseif (self.Active == 1 && self.overdrive==0) then
+		    self:OverdriveOn()
+			self.overdrivefactor = 2
+		elseif (self.overdrive > 0) then
             self:TurnOff()
 		end
 	end

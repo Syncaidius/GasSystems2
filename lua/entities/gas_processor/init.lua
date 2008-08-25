@@ -126,6 +126,7 @@ end
 
 function ENT:TurnOff()
     self.Active = 0
+	self.overdrive = 0
     self:SetOOO(0)
     if not (WireAddon == nil) then
         Wire_TriggerOutput(self.Entity, "On", 0)
@@ -240,12 +241,14 @@ function ENT:Think()
 	return true
 end
 
-
 function ENT:AcceptInput(name,activator,caller)
-	if name == "Use" and caller:IsPlayer() and caller:KeyDownLast(IN_USE) == false and self.disuse == 0 then
+	if name == "Use" and caller:IsPlayer() and caller:KeyDownLast(IN_USE) == false then
 		if ( self.Active == 0 ) then
 			self:TurnOn()
-		else
+		elseif (self.Active == 1 && self.overdrive==0) then
+		    self:OverdriveOn()
+			self.overdrivefactor = 2
+		elseif (self.overdrive > 0) then
             self:TurnOff()
 		end
 	end
