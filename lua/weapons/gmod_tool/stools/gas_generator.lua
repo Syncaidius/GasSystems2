@@ -72,7 +72,7 @@ end
 if (GAMEMODE.Name == "SpaceBuild" || SpaceBuild) then MsgAll("You need the new Spacebuild (3) to use gas systems, you are using Spacebuild1!\n") end
 if (GAMEMODE.Name == "SpaceBuild2" || SpaceBuild2) then MsgAll("You need the new Spacebuild(3) to use gas systems, you are using Spacebuild2!\n") end
 local gas_gen_models = {
-		{'Natural Gas Extractor', 'models/props/cs_assault/firehydrant.mdl', 'gas_extractor'},
+		{'Natural Gas Extractor', 'models/syncaidius/gas_extractor.mdl', 'gas_extractor'},
 		{"Natural Gas Processor", "models/props_industrial/oil_storage.mdl", "gas_processor"},
 		{"Large Tokomak Reactor", "models/syncaidius/tokomak.mdl", "gas_tokomak"},
 		{"Large Methane Reactor", "models/props_citizen_tech/steamengine001a.mdl", "gas_methreactor"},
