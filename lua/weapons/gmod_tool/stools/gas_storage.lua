@@ -5,7 +5,7 @@ TOOL.ConfigName   = ""
 if (CLIENT and GetConVarNumber("CAF_UseTab") == 1) then TOOL.Tab = "Custom Addon Framework" end
 
 TOOL.ClientConVar["type"] = "gas_lstore"
-TOOL.ClientConVar["model"] = "models//props_wasteland/laundry_washer001a.mdl"
+TOOL.ClientConVar["model"] = "models/syncaidius/gas_tank_large.mdl"
 
 cleanup.Register('gassystem')
 
@@ -78,7 +78,7 @@ local gas_stor_models = {
 		{ "#Medium Natural Gas Tank", "models/syncaidius/gas_tank_large.mdl", "gas_lstore" },
 		{ "#Small Natural Gas Tank", "models/syncaidius/gas_tank_small.mdl", "gas_sstore" },
 		{ "#Large Processed Gas Tank", "models/props_buildings/watertower_001c.mdl", "gas_phstore" },
-        { "#Medium Processed Gas Tank", "models/props_wasteland/horizontalcoolingtank04.mdl", "gas_plstore" },
+    { "#Medium Processed Gas Tank", "models/props_wasteland/horizontalcoolingtank04.mdl", "gas_plstore" },
 		{ "#Small Processed Gas Tank", "models/pegasus/protank_small.mdl", "gas_sproctank" },
 		{ "#Large Methane Tank", "models/syncaidius/gas_tank_huge.mdl", "gas_hmethstore" },
 		{ "#Medium Methane Tank", "models/syncaidius/gas_tank_large.mdl", "gas_lmethstore" },

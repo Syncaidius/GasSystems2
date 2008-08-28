@@ -5,7 +5,7 @@ TOOL.ConfigName   = ""
 if (CLIENT and GetConVarNumber("CAF_UseTab") == 1) then TOOL.Tab = "Custom Addon Framework" end
 
 TOOL.ClientConVar["type"] = "gas_extractor"
-TOOL.ClientConVar["model"] = "models/props/cs_assault/firehydrant.mdl"
+TOOL.ClientConVar["model"] = "models/syncaidius/gas_extractor.mdl"
 
 cleanup.Register('gassystem')
 
@@ -24,7 +24,7 @@ if not CAF or not CAF.GetAddon("Resource Distribution") then Error("Please Insta
 if not CAF or not CAF.GetAddon("Life Support") then return end
 
 if( SERVER ) then
-	CreateConVar("sbox_maxgas_generator", 20)
+	CreateConVar("sbox_maxgas_generator", 24)
 	
 	function Makegas_generator( ply, ang, pos, gentype, model, frozen )
 		if ( !ply:CheckLimit( "gas_generator" ) ) then return nil end
@@ -58,16 +58,19 @@ if( SERVER ) then
 	end
 	
 	duplicator.RegisterEntityClass("Natural Gas Extractor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Natural Gas (Oil) Extractor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
 	duplicator.RegisterEntityClass("Natural Gas Processor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Nitrogen Oxidizer", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Nitrogen Liquidizer", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Nitrogen Inverter", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Large Gas Reactor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Micro Gas Reactor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Large Tokomak Reactor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Small Tokomak Reactor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Tritium Inverter", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Large Propane Reactor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Micro Propane Reactor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
 	duplicator.RegisterEntityClass("Methane Collector", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
 	duplicator.RegisterEntityClass("Propane Collector", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Nitrogen Collector", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Tritium Collector", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Deuterium Collector", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Hydrogen Splitter", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Large Methane Reactor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Micro Methane Reactor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
 end
 if (GAMEMODE.Name == "SpaceBuild" || SpaceBuild) then MsgAll("You need the new Spacebuild (3) to use gas systems, you are using Spacebuild1!\n") end
 if (GAMEMODE.Name == "SpaceBuild2" || SpaceBuild2) then MsgAll("You need the new Spacebuild(3) to use gas systems, you are using Spacebuild2!\n") end
@@ -82,8 +85,9 @@ local gas_gen_models = {
 		{"Small Tokomak Reactor", "models/syncaidius/stokomak.mdl", "gas_stokomak"},
 		{"Methane Collector", "models/props_c17/light_decklight01_off.mdl", "methane_collector"},
 		{"Propane Collector", "models/props_c17/light_decklight01_off.mdl", "propane_collector"},
-		{"Nitrogen Collector", "models/props_c17/light_decklight01_off.mdl", "nitrogen_collector"},
+		{"Deuterium Collector", "models/props_c17/light_decklight01_off.mdl", "deuterium_collector"},
+		{"Tritium Collector", "models/props_c17/light_decklight01_off.mdl", "tritium_collector"},
 		{"Hydrogen Splitter", "models/props_c17/light_decklight01_off.mdl", "gas_h2osplitter"},
-		{"Oxygen Materializer", "models/props_c17/light_decklight01_off.mdl", "gas_o2materializer"},
+		{"Tritium Inverter", "models/props_c17/light_decklight01_off.mdl", "gas_tritinverter"},
 }
-RD2_ToolRegister( TOOL, gas_gen_models, Makegas_generator,"gas_generator",20)
+RD2_ToolRegister( TOOL, gas_gen_models, Makegas_generator,"gas_generator",24)
