@@ -21,24 +21,26 @@ function ENT:Initialize()
 	self.maxoverdrive = 4 -- maximum overdrive value allowed via wire input. Anything over this value may severely damage or destroy the device.
 	self.Active = 0
 	
-    self:SetMaxHealth(250)
-    self:SetHealth(self:GetMaxHealth())
-	self.disuse = 0 --use disabled via wire input
+  self:SetMaxHealth(250)
+  self:SetHealth(self:GetMaxHealth())
 	
 	self.energy = 0
-	self.ngas = 0
+	self.tritium = 0
+	self.o2 = 0
 	
     -- resource attributes
-    self.ngasprod = 74 --N-Gas production
-    self.econ = 18 -- Energy consumption
+    self.o2prod = 125 --O2 production
+    self.econ = 15 -- Energy consumption
+		self.tritcon = 15 -- Tritium Consumption
     
 	CAF.GetAddon("Resource Distribution").AddResource(self,"energy",0)
-	if not (WireAddon == nil) then self.Inputs = Wire_CreateInputs(self.Entity, { "On", "Overdrive", "Disable Use" }) end
-	if not (WireAddon == nil) then self.Outputs = Wire_CreateOutputs(self.Entity, { "On", "Overdrive", "Energy Consumption", "NGas Production"}) end
+	CAF.GetAddon("Resource Distribution").AddResource(self,"Tritium",0)
+	if not (WireAddon == nil) then self.Inputs = Wire_CreateInputs(self.Entity, { "On", "Overdrive"}) end
+	if not (WireAddon == nil) then self.Outputs = Wire_CreateOutputs(self.Entity, { "On", "Overdrive", "O2 Output"}) end
 	
 	if (phys:IsValid()) then
 		phys:Wake()
-		phys:SetMass(80)
+		phys:SetMass(90)
 	end
 end
 
@@ -51,44 +53,38 @@ function ENT:TriggerInput(iname, value)
 	if (iname == "On") then
 		if (value > 0) then
 			if ( self.Active == 0 ) then
-                self:TurnOn()
-                if (self.overdrive == 1) then
-                    self:OverdriveOn()
-                end
+        self:TurnOn()
+        if (self.overdrive == 1) then
+					self:OverdriveOn()
+				end
 			end
 		else
 			if ( self.Active == 1 ) then
-                self:TurnOff()
+        self:TurnOff()
 				if self.overdrive==1 then
 					self:OverdriveOff()
 				end
 			end
 		end
 	elseif (iname == "Overdrive") then
-        if (self.Active == 1) then
-            if (value > 0) then
-                self:OverdriveOn()
-                self.overdrivefactor = value
-            else
-                self:OverdriveOff()
-            end
-            if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "Overdrive", self.overdrive) end
-        end
-	elseif (iname == "Disable Use") then
-		if (value >= 1) then
-			self.disuse = 1
-		else
-			self.disuse = 0
-		end
+    if (self.Active == 1) then
+      if (value > 0) then
+        self:OverdriveOn()
+        self.overdrivefactor = value
+      else
+				self:OverdriveOff()
+			end
+      if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "Overdrive", self.overdrive) end
+    end
 	end
 end
 
 
 function ENT:OnRemove()
-    self.BaseClass.OnRemove(self)
-    self.Entity:StopSound( "Airboat_engine_idle" )
-    self.Entity:StopSound( "common/warning.wav" )
-    self.Entity:StopSound( "Airboat_engine_stop" )
+  self.BaseClass.OnRemove(self)
+  self.Entity:StopSound( "Airboat_engine_idle" )
+  self.Entity:StopSound( "common/warning.wav" )
+  self.Entity:StopSound( "Airboat_engine_stop" )
 end
 
 function ENT:Damage()
@@ -106,19 +102,19 @@ function ENT:Repair()
 end
 
 function ENT:TurnOn()
-    self.Active = 1
-    self:SetOOO(1)
+  self.Active = 1
+  self:SetOOO(1)
 	self:SetSkin(1)
     if not (WireAddon == nil) then 
-        Wire_TriggerOutput(self.Entity, "On", 1)
+      Wire_TriggerOutput(self.Entity, "On", 1)
     end
     self.Entity:EmitSound( "Airboat_engine_idle" )
 end
 
 function ENT:TurnOff()
-    self.Active = 0
+  self.Active = 0
 	self.overdrive = 0
-    self:SetOOO(0)
+  self:SetOOO(0)
 	self:SetSkin(0)
     if not (WireAddon == nil) then
         Wire_TriggerOutput(self.Entity, "On", 0)
@@ -128,25 +124,25 @@ function ENT:TurnOff()
 end
 
 function ENT:OverdriveOn()
-    self.overdrive = 1
-    self:SetOOO(2)
-    self:SetSkin(2)
-    self.Entity:StopSound( "Airboat_engine_idle" )
-    self.Entity:EmitSound( "Airboat_engine_idle" )
+	self.overdrive = 1
+	self:SetOOO(2)
+	self:SetSkin(2)
+	self.Entity:StopSound( "Airboat_engine_idle" )
+	self.Entity:EmitSound( "Airboat_engine_idle" )
 end
 
 function ENT:OverdriveOff()
-    self.overdrive = 0
+	self.overdrive = 0
 	self.overdrivefactor = 0
-    self:SetOOO(1)
-    self:SetSkin(1)
-    self.Entity:StopSound( "Airboat_engine_idle" )
-    self.Entity:EmitSound( "Airboat_engine_idle" )
+	self:SetOOO(1)
+	self:SetSkin(1)
+	self.Entity:StopSound( "Airboat_engine_idle" )
+	self.Entity:EmitSound( "Airboat_engine_idle" )
 end
 
 function ENT:Destruct()
 	local RD = CAF.GetAddon("Resource Distribution")
-    CAF.GetAddon("Life Support").Destruct( self.Entity )
+	CAF.GetAddon("Life Support").Destruct( self.Entity )
 end
 
 function ENT:Output()
@@ -157,7 +153,8 @@ function ENT:ExtractGas()
 	local RD = CAF.GetAddon("Resource Distribution")
 	if ( self.overdrive == 1 ) then
         self.energy = math.ceil((self.econ + math.random(1,2)) * self.overdrivefactor)
-        self.ngas = math.ceil(self.ngasprod * self.overdrivefactor)
+        self.tritium = math.ceil(self.tritcon + math.random(1,2) * self.overdrivefactor)
+				self.o2 = math.ceil(self.o2prod + math.random(2,4) * self.overdrivefactor)
         
         if self.overdrivefactor > 1 then
             if CAF and CAF.GetAddon("Life Support") then
@@ -174,34 +171,50 @@ function ENT:ExtractGas()
         end
         
     else
-        self.ngas = (self.ngasprod + math.random(5,15))
-        self.energy = self.econ
+        self.tritium = self.tritcon + math.random(1,2)
+        self.energy = self.econ + math.random(1,2)
+				self.o2 = self.o2prod + math.random(2,4)
     end
+		local waterlevel = 0
+		if CAF then
+			waterlevel = self:WaterLevel2()
+		else
+			waterlevel = self:WaterLevel()
+		end
+		if (waterlevel==1) then --x2 production if underwater
+			self.o2 = self.o2*1.5
+		end
     
 	if ( self:CanRun() ) then
-        RD.ConsumeResource(self, "energy", self.energy)
+        RD.ConsumeResource(self,"energy", self.energy)
+				RD.ConsumeResource(self,"Tritium",self.tritium)
         
-        RD.SupplyResource(self.Entity,"Natural Gas",self.ngas)
+				if GAMEMODE.IsSpacebuildDerived then
+					local left = RD.SupplyResource(self, "oxygen", self.environment:Convert(0, -1, self.o2))
+					self.environment:Convert(-1, 0, left)
+				else
+					RD.SupplyResource(self.Entity,"oxygen",self.o2)
+				end
 		if self.environment then
-			self.environment:Convert(1,-1, self.energy)
+			self.environment:Convert(0,-1, self.energy)
 		end
-        if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 1) end
 	else
 		self:TurnOff()
 	end
 	
 	if not (WireAddon == nil) then
-        Wire_TriggerOutput(self.Entity, "NGas Production", self.ngas)
-        Wire_TriggerOutput(self.Entity, "Energy Consumption", self.energy)
-    end
+			Wire_TriggerOutput(self.Entity,"O2 Output", self.o2)
+			Wire_TriggerOutput(self.Entity, "On", self.active)
+  end
 		
 	return
 end
 
 function ENT:CanRun()
 	local RD = CAF.GetAddon("Resource Distribution")
-    local energy = RD.GetResourceAmount(self, "energy")
-    if (energy >= self.energy) then
+    local energy = RD.GetResourceAmount(self,"energy")
+		local tritium = RD.GetResourceAmount(self,"Tritium")
+    if (energy >= self.energy) and (tritium >= self.tritium) then
         return true
     else
         return false
@@ -225,17 +238,17 @@ function ENT:AcceptInput(name,activator,caller)
 			self:TurnOn()
 		elseif (self.Active == 1 && self.overdrive==0) then
 		    self:OverdriveOn()
-			self.overdrivefactor = 2
+				self.overdrivefactor = 2
 		elseif (self.overdrive > 0) then
-            self:TurnOff()
+        self:TurnOff()
 		end
 	end
 end
 
 function ENT:PreEntityCopy()
-    self.BaseClass.PreEntityCopy(self)
+  self.BaseClass.PreEntityCopy(self)
 end
 
 function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
-    self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
+  self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
 end
