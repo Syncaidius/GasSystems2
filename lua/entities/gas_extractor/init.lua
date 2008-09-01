@@ -159,20 +159,19 @@ function ENT:ExtractGas()
         self.energy = math.ceil((self.econ + math.random(1,2)) * self.overdrivefactor)
         self.ngas = math.ceil(self.ngasprod * self.overdrivefactor)
         
-        if self.overdrivefactor > 1 then
-            if CAF and CAF.GetAddon("Life Support") then
-				CAF.GetAddon("Life Support").DamageLS(self, math.random(5,5)*self.overdrivefactor)
-			else
-				self:SetHealth( self:Health( ) - math.random(5,5)*self.overdrivefactor)
-				if self:Health() <= 0 then
-					self:Remove()
+      if self.overdrivefactor > 1 then
+				if CAF and CAF.GetAddon("Life Support") then
+					CAF.GetAddon("Life Support").DamageLS(self, math.random(5,5)*self.overdrivefactor)
+				else
+					self:SetHealth( self:Health( ) - math.random(5,5)*self.overdrivefactor)
+					if self:Health() <= 0 then
+						self:Remove()
+					end
 				end
-			end
-			if self.overdrivefactor > self.maxoverdrive then
-				self:Destruct()
-			end
-        end
-        
+				if self.overdrivefactor > self.maxoverdrive then
+					self:Destruct()
+				end
+      end 
     else
         self.ngas = (self.ngasprod + math.random(5,15))
         self.energy = self.econ
@@ -200,12 +199,12 @@ end
 
 function ENT:CanRun()
 	local RD = CAF.GetAddon("Resource Distribution")
-    local energy = RD.GetResourceAmount(self, "energy")
-    if (energy >= self.energy) then
-        return true
-    else
-        return false
-    end
+	local energy = RD.GetResourceAmount(self, "energy")
+	if (energy >= self.energy) then
+			return true
+	else
+			return false
+	end
 end
 
 function ENT:Think()
