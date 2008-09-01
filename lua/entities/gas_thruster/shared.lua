@@ -3,7 +3,7 @@
 ENT.Type 			= "anim"
 ENT.Base 			= "base_rd_entity"
 
-ENT.PrintName		= "Gas Thruster"
+ENT.PrintName		= "Powered Thruster"
 ENT.Author			= ""
 ENT.Contact			= ""
 ENT.Purpose			= ""

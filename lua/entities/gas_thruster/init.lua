@@ -20,12 +20,19 @@ function ENT:Initialize()
 		phys:Wake()
 	end
 	
-	--Resource settings
-	self.energycon = 0
+	--Entity Settings
+	self.Effect = "fire"
+	self.resource = "energy"
+	self.consumption = 0
 	self.energydiv = 200
 	self.thrustmult = 5
-	
-	RD.AddResource(self.Entity, "energy", 0)
+	self.active = 0
+	self.massed = true
+	self.force = 0
+	self.multiplier = 0
+	self.toggle = 0
+	self.togon = false
+	self.bdown = false
 	
 	local max = self.Entity:OBBMaxs()
 	local min = self.Entity:OBBMins()
@@ -35,10 +42,6 @@ function ENT:Initialize()
 	self.ForceAngle		= self.ThrustOffset:GetNormalized() * -1
 	
 	self:SetForce( 2000 )
-	
-	self.OWEffect = "fire"
-	self.UWEffect = "same"
-	
 	self:SetOffset( self.ThrustOffset )
 	self.Entity:StartMotionController()
 	self.outputon = 0
@@ -46,7 +49,7 @@ function ENT:Initialize()
 	self:Switch( false )
 
 	self.Inputs = Wire_CreateInputs(self.Entity, { "On" })
-	self.Outputs = Wire_CreateOutputs(self.Entity, { "On", "Energy Consumption" })
+	self.Outputs = Wire_CreateOutputs(self.Entity, { "On", "Consumption" })
 end
 
 function ENT:OnRemove()
@@ -59,10 +62,10 @@ end
 
 function ENT:SetForce( force, mul )
 	if (force) then
-		self.force = force
 		self:NetSetForce( force )
 	end
 	mul = mul or 1
+	self.consumption = math.abs(((force/100)*mul+5)/(self.multiplier*4))
 	
 	local phys = self.Entity:GetPhysicsObject()
 	if (!phys:IsValid()) then
@@ -75,7 +78,7 @@ function ENT:SetForce( force, mul )
 	local ThrusterWorldForce = phys:LocalToWorldVector( self.ThrustOffset * -1 )
 
 	-- Calculate the velocity
-	ThrusterWorldForce = ThrusterWorldForce * self.force * mul * self.thrustmult
+	ThrusterWorldForce = ThrusterWorldForce * force * mul * self.multiplier
 	self.ForceLinear, self.ForceAngle = phys:CalculateVelocityOffset( ThrusterWorldForce, ThrusterWorldPos );
 	self.ForceLinear = phys:WorldToLocalVector( self.ForceLinear )
 	
@@ -86,29 +89,54 @@ function ENT:SetForce( force, mul )
 	end
 end
 
-function ENT:Setup(force, force_min, force_max, oweffect, uweffect, owater, uwater, bidir, sound)
+function ENT:Setup(force, multiplier, force_min, force_max, effect, bidir, sound, massless, resource, key, key_bk, pl, toggle)
+	self.force = force
+	self.toggle = toggle
+	self.multiplier = multiplier
 	self:SetForce(force)
+	self.resource = resource
+	CAF.GetAddon("Resource Distribution").AddResource(self,self.resource,0)
 	
-	self.OWEffect = oweffect
-	self.UWEffect = uweffect
+	self.Effect = effect
 	self.ForceMin = force_min
 	self.ForceMax = force_max
 	self.BiDir = bidir
 	self.EnableSound = sound
-	self.OWater = owater
-	self.UWater = uwater
 	
-	self:SetEffect( self.OWEffect ) 
+	self:SetEffect( self.Effect ) 
 	
 	if (not sound) then
 		self.Entity:StopSound(Thruster_Sound)
 	end
+	if (massless) then
+		local phys = self:GetPhysicsObject()
+		if phys:IsValid() then
+			phys:EnableGravity(false)
+			phys:EnableDrag(false)
+			phys:Wake()
+			self.massed = false
+		end
+	else
+		local phys = self:GetPhysicsObject()
+		if phys:IsValid() then
+			phys:EnableGravity(true)
+			phys:EnableDrag(true)
+			phys:Wake()
+			self.massed = true
+		end
+	end
+	
+	numpad.OnDown(pl, key, "gas_thruster_on", self, 1)
+	numpad.OnUp(pl, key, "gas_thruster_off", self, 1)
+
+	numpad.OnDown(pl, key_bk, "gas_thruster_on", self, -1)
+	numpad.OnUp(pl, key_bk, "gas_thruster_off", self, -1)
 end
 
 function ENT:TriggerInput(iname, value)
 	if (iname == "On") then
 		if ( (self.BiDir) and (math.abs(value) > 0.01) and (math.abs(value) > self.ForceMin) ) or ( (value > 0.01) and (value > self.ForceMin) ) then
-			self:Switch(true, math.min(value, self.ForceMax))
+			self:Switch(true, value)
 		else
 			self:Switch(false, 0)
 		end
@@ -117,30 +145,8 @@ end
 
 function ENT:PhysicsSimulate( phys, deltatime )
 	if (!self:IsOn()) then return SIM_NOTHING end
-	
-	if (!self:CanRun()) then
-		self:Switch( false )
-	end
-	
-	if (self.Entity:WaterLevel() > 0) then
-	    if (not self.UWater) then
-	    	self:SetEffect("none")
-			return SIM_NOTHING
-		end
-		
-		if (self.UWEffect == "same") then
-	    	self:SetEffect(self.OWEffect)
-		else
-	    	self:SetEffect(self.UWEffect)
-		end
-	else
-	    if (not self.OWater) then
-	    	self:SetEffect("none")
-			return SIM_NOTHING
-		end
-		
-	    self:SetEffect(self.OWEffect)
-	end
+
+	self:SetEffect(self.Effect)
 	
 	local ForceAngle, ForceLinear = self.ForceAngle, self.ForceLinear
 	
@@ -151,20 +157,25 @@ function ENT:Switch( on, mul )
 	if (!self.Entity:IsValid()) then return false end
 	
 	local changed = (self:IsOn() ~= on)
-	self:SetOn( on )
-	
-	
-	if (on) then 
-	    if (changed) and (self.EnableSound) then
-			self.Entity:StopSound( Thruster_Sound )
-			self.Entity:EmitSound( Thruster_Sound )
+	if (on) then
+		if (self:CanRun()) then
+			self:SetOn( true )
+			self:SetOOO(1)
+		   if (changed) and (self.EnableSound) then
+				self.Entity:StopSound( Thruster_Sound )
+				self.Entity:EmitSound( Thruster_Sound )
+			end
+			
+			self:NetSetMul( mul )
+			
+			self:SetForce( self.force, mul )
+		else
+			self:SetOn( false )
 		end
-		
-		self:NetSetMul( mul )
-		
-		self:SetForce( nil, mul )
 	else
-	    if (self.EnableSound) then
+		self:SetOn(false)
+		self:SetOOO(0)
+	  if (self.EnableSound) then
 			self.Entity:StopSound( Thruster_Sound )
 		end
 	end
@@ -178,21 +189,21 @@ function ENT:Switch( on, mul )
 end
 
 function ENT:CanRun()
-	local energy = RD.GetResourceAmount(self.Entity, "energy")	
-	
-	if (energy >= self.energycon) then
+	local RD = CAF.GetAddon("Resource Distribution")
+	local resource = RD.GetResourceAmount(self, self.resource)	
+	if (resource >= self.consumption) then
 		return true
 	else
 		return false
 	end
 end
 
- function ENT:Think()
+function ENT:Think()
+	local RD = CAF.GetAddon("Resource Distribution")
 	self.BaseClass.Think(self)
-	self.energycon = math.abs(math.ceil(self.force/self.energydiv))
 
 	if (self:IsOn() && self:CanRun()) then
-		RD.ConsumeResource(self.Entity, "energy", self.energycon)
+		RD.ConsumeResource(self, self.resource, self.consumption)
 		self.outputon = 1
 	else
 		self:Switch( false )
@@ -200,20 +211,20 @@ end
 	end
 	
 	if not (WireAddon == nil) then
-		Wire_TriggerOutput(self.Entity, "Energy Consumption", self.energycon)
-		Wire_TriggerOutput(self.Entity, "On", self.outputon )
+		Wire_TriggerOutput(self, "Consumption", self.consumption)
+		Wire_TriggerOutput(self, "On", self.outputon )
 	end
 	
-	self:UpdateTextOutput()
+	self:ShowOutput()
 
 	self.Entity:NextThink(CurTime() + 1)
 	return true
 end
 
-function ENT:UpdateTextOutput()
-	local energy = RD.GetResourceAmount(self, "energy")
-	
-	self.Entity:SetNetworkedInt( 8, energy)
+function ENT:ShowOutput()
+	self.Entity:SetNetworkedInt( 1, self.consumption or 0)
+	self.Entity:SetNetworkedString( 2, self.resource or "energy" )
+	self.Entity:SetNetworkedInt( 3, self.force or 0 )
 end
 
 function ENT:OnRestore()
@@ -239,7 +250,7 @@ function ENT:OnRestore()
 		self:Switch(false)
 	end
 	
-    self.BaseClass.OnRestore(self)
+  self.BaseClass.OnRestore(self)
 end
 
 --Duplicator stuff 
@@ -248,5 +259,17 @@ function ENT:PreEntityCopy()
 end
 
 function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
-    self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
+  self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
 end
+
+numpad.Register("gas_thruster_on", function(pl, ent, mul)
+	if not ent:IsValid() then return false end
+		ent:Switch(true, mul)
+	return true
+end)
+
+numpad.Register("gas_thruster_off", function(pl, ent, mul)
+	if not ent:IsValid() then return false end
+		ent:Switch(false, mul)
+	return true
+end)

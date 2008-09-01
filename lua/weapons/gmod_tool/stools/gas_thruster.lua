@@ -1,31 +1,33 @@
 
 TOOL.Category		= "Gas Systems 2"
-TOOL.Name			= "Powered Thruster"
+TOOL.Name			= "#Powered Thruster"
 TOOL.ConfigName		= ""
 
 if (CLIENT and GetConVarNumber("CAF_UseTab") == 1) then TOOL.Tab = "Custom Addon Framework" end
 
 if ( CLIENT ) then
     language.Add( "Tool_gas_thruster_name", "Gas Thruster Tool" )
-    language.Add( "Tool_gas_thruster_desc", "Spawns a gas consuming thruster." )
-    language.Add( "Tool_gas_thruster_0", "Primary: Create/Update Gas Thruster" )
+    language.Add( "Tool_gas_thruster_desc", "Spawns a resource consuming thruster." )
+    language.Add( "Tool_gas_thruster_0", "Primary: Create/Update Thruster" )
     language.Add( "GasThrusterTool_Model", "Model:" )
-    language.Add( "GasThrusterTool_OWEffects", "Over water effects:" )
-    language.Add( "GasThrusterTool_UWEffects", "Under water effects:" )
+    language.Add( "GasThrusterTool_Effects", "Effects:" )
+		language.Add( "GasThrusterTool_Types", "Thruster Type:")
     language.Add( "GasThrusterTool_force", "Force multiplier:" )
     language.Add( "GasThrusterTool_force_min", "Force minimum:" )
     language.Add( "GasThrusterTool_force_max", "Force maximum:" )
     language.Add( "GasThrusterTool_bidir", "Bi-directional:" )
     language.Add( "GasThrusterTool_collision", "Collision:" )
     language.Add( "GasThrusterTool_sound", "Enable sound:" )
-    language.Add( "GasThrusterTool_owater", "Works out of water:" )
-    language.Add( "GasThrusterTool_uwater", "Works under water:" )
-	language.Add( "sboxlimit_gas_thrusters", "You've hit Gas thrusters limit!" )
-	language.Add( "undone_gasthruster", "Undone Gas Thruster" )
+		language.Add( "GasThrusterTool_massless", "Massless:" )
+		language.Add( "GasThrusterTool_key_fw", "Positive Thrust: " )
+		language.Add( "GasThrusterTool_key_bw", "Negative Thrust: " )
+		language.Add( "GasThrusterTool_toggle", "Toggle" )
+	language.Add( "sboxlimit_gas_thrusters", "You've hit the Powered thrusters limit!" )
+	language.Add( "undone_gasthruster", "Undone Powered Thruster" )
 end
 
 if (SERVER) then
-	CreateConVar('sbox_maxgas_thrusters', 10)
+	CreateConVar('sbox_maxgas_thrusters', 20)
 end
 
 TOOL.ClientConVar[ "force" ] = "1500"
@@ -35,10 +37,13 @@ TOOL.ClientConVar[ "model" ] = "models/props_c17/lampShade001a.mdl"
 TOOL.ClientConVar[ "bidir" ] = "1"
 TOOL.ClientConVar[ "collision" ] = "0"
 TOOL.ClientConVar[ "sound" ] = "0"
-TOOL.ClientConVar[ "oweffect" ] = "fire"
-TOOL.ClientConVar[ "uweffect" ] = "same"
-TOOL.ClientConVar[ "owater" ] = "1"
-TOOL.ClientConVar[ "uwater" ] = "1"
+TOOL.ClientConVar[ "effect" ] = "fire"
+TOOL.ClientConVar[ "massless" ] = "0"
+TOOL.ClientConVar[ "resource" ] = "energy"
+TOOL.ClientConVar[ "multiplier" ] = "0.6"
+TOOL.ClientConVar[ "keygroup" ] = "8"
+TOOL.ClientConVar[ "keygroup_back" ] = "2"
+TOOL.ClientConVar[ "toggle" ] = "0"
 
 cleanup.Register( "gas_thrusters" )
 
@@ -53,35 +58,37 @@ function TOOL:LeftClick( trace )
 	local ply = self:GetOwner()
 	
 	local force			= self:GetClientNumber( "force" )
-	local force_min		= self:GetClientNumber( "force_min" )
-	local force_max		= self:GetClientNumber( "force_max" )
+	local force_min	= self:GetClientNumber( "force_min" )
+	local force_max	= self:GetClientNumber( "force_max" )
 	local model			= self:GetClientInfo( "model" )
 	local bidir			= (self:GetClientNumber( "bidir" ) ~= 0)
-	local nocollide		= (self:GetClientNumber( "collision" ) == 0)
+	local nocollide	= (self:GetClientNumber( "collision" ) ~= 0)
 	local sound			= (self:GetClientNumber( "sound" ) ~= 0)
-	local oweffect		= self:GetClientInfo( "oweffect" )
-	local uweffect		= self:GetClientInfo( "uweffect" )
-	local owater			= (self:GetClientNumber( "owater" ) ~= 0)
-	local uwater			= (self:GetClientNumber( "uwater" ) ~= 0)
+	local effect		= self:GetClientInfo( "effect" )
+	local massless	= (self:GetClientNumber( "massless" ) ~= 0)
+	local resource	= self:GetClientInfo( "resource" )
+	local multiplier = self:GetClientNumber( "multiplier" )
+	local key = self:GetClientNumber( "keygroup" )
+	local key_bk = self:GetClientNumber( "keygroup_back" )
+	local toggle = (self:GetClientNumber( "toggle" ) ~=0)
 	
 	if ( !trace.Entity:IsValid() ) then nocollide = false end
 	
 	// If we shot a gas_thruster change its force
 	if ( trace.Entity:IsValid() && trace.Entity:GetClass() == "gas_thruster" && trace.Entity.pl == ply ) then
-		trace.Entity:SetForce( force )
 		trace.Entity:SetEffect( effect )
-		trace.Entity:Setup(force, force_min, force_max, oweffect, uweffect, owater, uwater, bidir, sound)
+		trace.Entity:Setup(force, multiplier, force_min, force_max, effect, bidir, sound, massless, resource, key, key_bk, trace.Entity.pl, toggle)
 		
 		trace.Entity.force		= force
 		trace.Entity.force_min	= force_min
 		trace.Entity.force_max	= force_max
 		trace.Entity.bidir		= bidir
 		trace.Entity.sound		= sound
-		trace.Entity.oweffect	= oweffect
-		trace.Entity.uweffect	= uweffect
-		trace.Entity.owater		= owater
-		trace.Entity.uwater		= uwater
+		trace.Entity.effect	= effect
 		trace.Entity.nocollide	= nocollide
+		trace.Entity.resource = resource
+		trace.Entity.multiplier = multiplier
+		trace.Entity.toggle = toggle
 		
 		if ( nocollide == true ) then trace.Entity:GetPhysicsObject():EnableCollisions( false ) end
 		
@@ -91,12 +98,12 @@ function TOOL:LeftClick( trace )
 	if ( !self:GetSWEP():CheckLimit( "gas_thrusters" ) ) then return false end
 
 	if (not util.IsValidModel(model)) then return false end
-	if (not util.IsValidProp(model)) then return false end		// Allow ragdolls to be used?
+	if (not util.IsValidProp(model)) then return false end
 
 	local Ang = trace.HitNormal:Angle()
 	Ang.pitch = Ang.pitch + 90
 	
-	gas_thruster = MakeGasThruster( ply, model, Ang, trace.HitPos, force, force_min, force_max, oweffect, uweffect, owater, uwater, bidir, sound, nocollide )
+	gas_thruster = MakeGasThruster( ply, model, Ang, trace.HitPos, force, force_min, force_max, effect, bidir, sound, nocollide, nil, nil, nil, massless, resource, multiplier, key, key_bk, toggle )
 	
 	local min = gas_thruster:OBBMins()
 	gas_thruster:SetPos( trace.HitPos - trace.HitNormal * min.z )
@@ -117,8 +124,7 @@ function TOOL:LeftClick( trace )
 end
 
 if (SERVER) then
-
-	function MakeGasThruster( pl, Model, Ang, Pos, force, force_min, force_max, oweffect, uweffect, owater, uwater, bidir, sound, nocollide, Vel, aVel, frozen )
+	function MakeGasThruster( pl, Model, Ang, Pos, force, force_min, force_max, effect, bidir, sound, nocollide, Vel, aVel, frozen, massless, resource, multiplier, key, key_bk, toggle )
 		if ( !pl:CheckLimit( "gas_thrusters" ) ) then return false end
 		
 		local gas_thruster = ents.Create( "gas_thruster" )
@@ -129,7 +135,7 @@ if (SERVER) then
 		gas_thruster:SetPos( Pos )
 		gas_thruster:Spawn()
 		
-		gas_thruster:Setup(force, force_min, force_max, oweffect, uweffect, owater, uwater, bidir, sound)
+		gas_thruster:Setup(force, multiplier, force_min, force_max, effect, bidir, sound, massless, resource, key, key_bk, pl, toggle)
 		gas_thruster:SetPlayer( pl )
 		
 		if ( nocollide == true ) then gas_thruster:GetPhysicsObject():EnableCollisions( false ) end
@@ -141,11 +147,14 @@ if (SERVER) then
 			bidir       = bidir,
 			sound       = sound,
 			pl			= pl,
-			oweffect	= oweffect,
-			uweffect	= uweffect,
-			owater		= owater,
-			uwater		= uwater,
-			nocollide	= nocollide
+			effect	= effect,
+			nocollide	= nocollide,
+			massless = massless,
+			resource = resource,
+			multiplier = multiplier,
+			key = key,
+			key_bk = key_bk,
+			toggle = toggle
 			}
 		
 		table.Merge(gas_thruster:GetTable(), ttable )
@@ -155,8 +164,7 @@ if (SERVER) then
 		return gas_thruster
 	end
 
-	duplicator.RegisterEntityClass("gas_thruster", MakeGasThruster, "Model", "Ang", "Pos", "force", "force_min", "force_max", "oweffect", "uweffect", "owater", "uwater", "bidir", "sound", "nocollide", "Vel", "aVel", "frozen")
-
+	duplicator.RegisterEntityClass("gas_thruster", MakeGasThruster, "Model", "Ang", "Pos", "force", "force_min", "force_max", "effect", "bidir", "sound", "nocollide", "Vel", "aVel", "frozen", "massless", "resource", "multiplier", "key", "key_bk", "toggle" )
 end
 
 function TOOL:UpdateGhostGasThruster( ent, player )
@@ -242,117 +250,87 @@ function TOOL.BuildCPanel(panel)
 		Models = list.Get( "ThrusterModels" )
 	})
 	
-
+	panel:AddControl("Label", {
+		Text = "#GasThrusterTool_Effects", 
+		Description = "Thruster Effect" 
+	})
+	
 	panel:AddControl("ComboBox", {
-		Label = "#GasThrusterTool_OWEffects",
+		Label = "#GasThrusterTool_Effects",
 		MenuButton = "0",
 
 		Options = {
-			["#No_Effects"] = { gas_thruster_oweffect = "none" },
-			["#Flames"] = { gas_thruster_oweffect = "fire" },
-			["#Plasma"] = { gas_thruster_oweffect = "plasma" },
-			["#Smoke"] = { gas_thruster_oweffect = "smoke" },
-			["#Smoke Random"] = { gas_thruster_oweffect = "smoke_random" },
-			["#Smoke Do it Youself"] = { gas_thruster_oweffect = "smoke_diy" },
-			["#Rings"] = { gas_thruster_oweffect = "rings" },
-			["#Rings Growing"] = { gas_thruster_oweffect = "rings_grow" },
-			["#Rings Shrinking"] = { gas_thruster_oweffect = "rings_shrink" },
-			["#Bubbles"] = { gas_thruster_oweffect = "bubble" },
-			["#Magic"] = { gas_thruster_oweffect = "magic" },
-			["#Magic Random"] = { gas_thruster_oweffect = "magic_color" },
-			["#Magic Do It Yourself"] = { gas_thruster_oweffect = "magic_diy" },
-			["#Colors"] = { gas_thruster_oweffect = "color" },
-			["#Colors Random"] = { gas_thruster_oweffect = "color_random" },
-			["#Colors Do It Yourself"] = { gas_thruster_oweffect = "color_diy" },
-			["#Blood"] = { gas_thruster_oweffect = "blood" },
-			["#Money"] = { gas_thruster_oweffect = "money" },
-			["#Sperms"] = { gas_thruster_oweffect = "sperm" },
-			["#Feathers"] = { gas_thruster_oweffect = "feather" },
-			["#Candy Cane"] = { gas_thruster_oweffect = "candy_cane" },
-			["#Goldstar"] = { gas_thruster_oweffect = "goldstar" },
-			["#Water Small"] = { gas_thruster_oweffect = "water_small" },
-			["#Water Medium"] = { gas_thruster_oweffect = "water_medium" },
-			["#Water Big"] = { gas_thruster_oweffect = "water_big" },
-			["#Water Huge"] = { gas_thruster_oweffect = "water_huge" },
-			["#Striderblood Small"] = { gas_thruster_oweffect = "striderblood_small" },
-			["#Striderblood Medium"] = { gas_thruster_oweffect = "striderblood_medium" },
-			["#Striderblood Big"] = { gas_thruster_oweffect = "striderblood_big" },
-			["#Striderblood Huge"] = { gas_thruster_oweffect = "striderblood_huge" },
-			["#More Sparks"] = { gas_thruster_oweffect = "more_sparks" },
-			["#Spark Fountain"] = { gas_thruster_oweffect = "spark_fountain" },
-			["#Jetflame"] = { gas_thruster_oweffect = "jetflame" },
-			["#Jetflame Advanced"] = { gas_thruster_oweffect = "jetflame_advanced" },
-			["#Jetflame Blue"] = { gas_thruster_oweffect = "jetflame_blue" },
-			["#Jetflame Red"] = { gas_thruster_oweffect = "jetflame_red" },
-			["#Jetflame Purple"] = { gas_thruster_oweffect = "jetflame_purple" },
-			["#Comic Balls"] = { gas_thruster_oweffect = "balls" },
-			["#Comic Balls Random"] = { gas_thruster_oweffect = "balls_random" },
-			["#Comic Balls Fire Colors"] = { gas_thruster_oweffect = "balls_firecolors" },
-			["#Souls"] = { gas_thruster_oweffect = "souls" },
-			["#Debugger 10 Seconds"] = { gas_thruster_oweffect = "debug_10" },
-			["#Debugger 30 Seconds"] = { gas_thruster_oweffect = "debug_30" },
-			["#Debugger 60 Seconds"] = { gas_thruster_oweffect = "debug_60" },
-			["#Fire and Smoke"] = { gas_thruster_oweffect = "fire_smoke" },
-			["#Fire and Smoke Huge"] = { gas_thruster_oweffect = "fire_smoke_big" },
-			["#5 Growing Rings"] = { gas_thruster_oweffect = "rings_grow_rings" },
-			["#Color and Magic"] = { gas_thruster_oweffect = "color_magic" },
+			["#No_Effects"] = { gas_thruster_effect = "none" },
+			["#Flames"] = { gas_thruster_effect = "fire" },
+			["#Plasma"] = { gas_thruster_effect = "plasma" },
+			["#Smoke"] = { gas_thruster_effect = "smoke" },
+			["#Smoke Random"] = { gas_thruster_effect = "smoke_random" },
+			["#Smoke Do it Youself"] = { gas_thruster_effect = "smoke_diy" },
+			["#Rings"] = { gas_thruster_effect = "rings" },
+			["#Rings Growing"] = { gas_thruster_effect = "rings_grow" },
+			["#Rings Shrinking"] = { gas_thruster_effect = "rings_shrink" },
+			["#Bubbles"] = { gas_thruster_effect = "bubble" },
+			["#Magic"] = { gas_thruster_effect = "magic" },
+			["#Magic Random"] = { gas_thruster_effect = "magic_color" },
+			["#Magic Do It Yourself"] = { gas_thruster_effect = "magic_diy" },
+			["#Colors"] = { gas_thruster_effect = "color" },
+			["#Colors Random"] = { gas_thruster_effect = "color_random" },
+			["#Colors Do It Yourself"] = { gas_thruster_effect = "color_diy" },
+			["#Blood"] = { gas_thruster_effect = "blood" },
+			["#Money"] = { gas_thruster_effect = "money" },
+			["#Sperms"] = { gas_thruster_effect = "sperm" },
+			["#Feathers"] = { gas_thruster_effect = "feather" },
+			["#Candy Cane"] = { gas_thruster_effect = "candy_cane" },
+			["#Goldstar"] = { gas_thruster_effect = "goldstar" },
+			["#Water Small"] = { gas_thruster_effect = "water_small" },
+			["#Water Medium"] = { gas_thruster_effect = "water_medium" },
+			["#Water Big"] = { gas_thruster_effect = "water_big" },
+			["#Water Huge"] = { gas_thruster_effect = "water_huge" },
+			["#Striderblood Small"] = { gas_thruster_effect = "striderblood_small" },
+			["#Striderblood Medium"] = { gas_thruster_effect = "striderblood_medium" },
+			["#Striderblood Big"] = { gas_thruster_effect = "striderblood_big" },
+			["#Striderblood Huge"] = { gas_thruster_effect = "striderblood_huge" },
+			["#More Sparks"] = { gas_thruster_effect = "more_sparks" },
+			["#Spark Fountain"] = { gas_thruster_effect = "spark_fountain" },
+			["#Jetflame"] = { gas_thruster_effect = "jetflame" },
+			["#Jetflame Advanced"] = { gas_thruster_effect = "jetflame_advanced" },
+			["#Jetflame Blue"] = { gas_thruster_effect = "jetflame_blue" },
+			["#Jetflame Red"] = { gas_thruster_effect = "jetflame_red" },
+			["#Jetflame Purple"] = { gas_thruster_effect = "jetflame_purple" },
+			["#Comic Balls"] = { gas_thruster_effect = "balls" },
+			["#Comic Balls Random"] = { gas_thruster_effect = "balls_random" },
+			["#Comic Balls Fire Colors"] = { gas_thruster_effect = "balls_firecolors" },
+			["#Souls"] = { gas_thruster_effect = "souls" },
+			["#Debugger 10 Seconds"] = { gas_thruster_effect = "debug_10" },
+			["#Debugger 30 Seconds"] = { gas_thruster_effect = "debug_30" },
+			["#Debugger 60 Seconds"] = { gas_thruster_effect = "debug_60" },
+			["#Fire and Smoke"] = { gas_thruster_effect = "fire_smoke" },
+			["#Fire and Smoke Huge"] = { gas_thruster_effect = "fire_smoke_big" },
+			["#5 Growing Rings"] = { gas_thruster_effect = "rings_grow_rings" },
+			["#Color and Magic"] = { gas_thruster_effect = "color_magic" },
 		}
 	})
-
-	panel:AddControl("ComboBox", {
-		Label = "#GasThrusterTool_UWEffects",
+	
+	panel:AddControl("Label", {
+		Text = "#GasThrusterTool_Types", 
+		Description = "Thruster Type" 
+	})
+	
+		panel:AddControl("ComboBox", {
+		Label = "#GasThrusterTool_Types",
 		MenuButton = "0",
 
 		Options = {
-			["#No_Effects"] = { gas_thruster_uweffect = "none" },
-			["#Same as over water"] = { gas_thruster_uweffect = "same" },
-			["#Flames"] = { gas_thruster_uweffect = "fire" },
-			["#Plasma"] = { gas_thruster_uweffect = "plasma" },
-			["#Smoke"] = { gas_thruster_uweffect = "smoke" },
-			["#Smoke Random"] = { gas_thruster_uweffect = "smoke_random" },
-			["#Smoke Do it Youself"] = { gas_thruster_uweffect = "smoke_diy" },
-			["#Rings"] = { gas_thruster_uweffect = "rings" },
-			["#Rings Growing"] = { gas_thruster_uweffect = "rings_grow" },
-			["#Rings Shrinking"] = { gas_thruster_uweffect = "rings_shrink" },
-			["#Bubbles"] = { gas_thruster_uweffect = "bubble" },
-			["#Magic"] = { gas_thruster_uweffect = "magic" },
-			["#Magic Random"] = { gas_thruster_uweffect = "magic_color" },
-			["#Magic Do It Yourself"] = { gas_thruster_uweffect = "magic_diy" },
-			["#Colors"] = { gas_thruster_uweffect = "color" },
-			["#Colors Random"] = { gas_thruster_uweffect = "color_random" },
-			["#Colors Do It Yourself"] = { gas_thruster_uweffect = "color_diy" },
-			["#Blood"] = { gas_thruster_uweffect = "blood" },
-			["#Money"] = { gas_thruster_uweffect = "money" },
-			["#Sperms"] = { gas_thruster_uweffect = "sperm" },
-			["#Feathers"] = { gas_thruster_uweffect = "feather" },
-			["#Candy Cane"] = { gas_thruster_uweffect = "candy_cane" },
-			["#Goldstar"] = { gas_thruster_uweffect = "goldstar" },
-			["#Water Small"] = { gas_thruster_uweffect = "water_small" },
-			["#Water Medium"] = { gas_thruster_uweffect = "water_medium" },
-			["#Water Big"] = { gas_thruster_uweffect = "water_big" },
-			["#Water Huge"] = { gas_thruster_uweffect = "water_huge" },
-			["#Striderblood Small"] = { gas_thruster_uweffect = "striderblood_small" },
-			["#Striderblood Medium"] = { gas_thruster_uweffect = "striderblood_medium" },
-			["#Striderblood Big"] = { gas_thruster_uweffect = "striderblood_big" },
-			["#Striderblood Huge"] = { gas_thruster_uweffect = "striderblood_huge" },
-			["#More Sparks"] = { gas_thruster_uweffect = "more_sparks" },
-			["#Spark Fountain"] = { gas_thruster_uweffect = "spark_fountain" },
-			["#Jetflame"] = { gas_thruster_uweffect = "jetflame" },
-			["#Jetflame Advanced"] = { gas_thruster_uweffect = "jetflame_advanced" },
-			["#Jetflame Blue"] = { gas_thruster_uweffect = "jetflame_blue" },
-			["#Jetflame Red"] = { gas_thruster_uweffect = "jetflame_red" },
-			["#Jetflame Purple"] = { gas_thruster_uweffect = "jetflame_purple" },
-			["#Comic Balls"] = { gas_thruster_uweffect = "balls" },
-			["#Comic Balls Random"] = { gas_thruster_uweffect = "balls_random" },
-			["#Comic Balls Fire Colors"] = { gas_thruster_uweffect = "balls_firecolors" },
-			["#Souls"] = { gas_thruster_uweffect = "souls" },
-			["#Debugger 10 Seconds"] = { gas_thruster_uweffect = "debug_10" },
-			["#Debugger 30 Seconds"] = { gas_thruster_uweffect = "debug_30" },
-			["#Debugger 60 Seconds"] = { gas_thruster_uweffect = "debug_60" },
-			["#Fire and Smoke"] = { gas_thruster_uweffect = "fire_smoke" },
-			["#Fire and Smoke Huge"] = { gas_thruster_uweffect = "fire_smoke_big" },
-			["#5 Growing Rings"] = { gas_thruster_uweffect = "rings_grow_rings" },
-			["#Color and Magic"] = { gas_thruster_uweffect = "color_magic" },
+			["Energy Thruster"] = { gas_thruster_resource = "energy", gas_thruster_multiplier = 1.0 },
+			["Oxygen Thruster"] = { gas_thruster_resource = "oxygen", gas_thruster_multiplier = 0.7 },
+			["Hydrogen Thruster"] = { gas_thruster_resource = "hydrogen", gas_thruster_multiplier = 1.2},
+			["Steam Thruster"] = { gas_thruster_resource = "steam", gas_thruster_multiplier = 0.5 },
+			["Nitrogen Thruster"] = { gas_thruster_resource = "nitrogen", gas_thruster_multiplier = 0.7 },
+			["Natural Gas Thruster"] = { gas_thruster_resource = "Natural Gas", gas_thruster_multiplier = 0.6 },
+			["Methane Thruster"] = { gas_thruster_resource = "Methane", gas_thruster_multiplier = 1.1 },
+			["Propane Thruster"] = { gas_thruster_resource = "Propane", gas_thruster_multiplier = 1.2 },
+			["Deuterium Thruster"] = { gas_thruster_resource = "Deuterium", gas_thruster_multiplier = 1.5 },
+			["Tritium Thruster"] = { gas_thruster_resource = "Tritium", gas_thruster_multiplier = 1.4 },
 		}
 	})
 
@@ -394,17 +372,24 @@ function TOOL.BuildCPanel(panel)
 		Label = "#GasThrusterTool_sound",
 		Command = "gas_thruster_sound"
 	})
-
+	
 	panel:AddControl("CheckBox", {
-		Label = "#GasThrusterTool_owater",
-		Command = "gas_thruster_owater"
+		Label = "#GasThrusterTool_massless",
+		Command = "gas_thruster_massless"
 	})
-
+	
+	panel:AddControl("Numpad", {
+		Label = "#GasThrusterTool_key_fw",
+		Label2 = "#GasThrusterTool_key_bw",
+		Command = "gas_thruster_keygroup", 
+		Command2 = "gas_thruster_keygroup_back", 
+		ButtonSize = "22"
+	})
+	
 	panel:AddControl("CheckBox", {
-		Label = "#GasThrusterTool_uwater",
-		Command = "gas_thruster_uwater"
+		Label = "#GasThrusterTool_toggle",
+		Command = "gas_thruster_toggle"
 	})
 end
 
-//from model pack 1 --TODO: update model pack system to use list system
 list.Set( "ThrusterModels", "models/jaanus/thruster_flat.mdl", {} )
