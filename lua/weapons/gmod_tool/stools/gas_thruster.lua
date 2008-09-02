@@ -323,9 +323,9 @@ function TOOL.BuildCPanel(panel)
 		Options = {
 			["Energy Thruster"] = { gas_thruster_resource = "energy", gas_thruster_multiplier = 1.0 },
 			["Oxygen Thruster"] = { gas_thruster_resource = "oxygen", gas_thruster_multiplier = 0.7 },
+			["Nitrogen Thruster"] = { gas_thruster_resource = "nitrogen", gas_thruster_multiplier = 0.7 },
 			["Hydrogen Thruster"] = { gas_thruster_resource = "hydrogen", gas_thruster_multiplier = 1.2},
 			["Steam Thruster"] = { gas_thruster_resource = "steam", gas_thruster_multiplier = 0.5 },
-			["Nitrogen Thruster"] = { gas_thruster_resource = "nitrogen", gas_thruster_multiplier = 0.7 },
 			["Natural Gas Thruster"] = { gas_thruster_resource = "Natural Gas", gas_thruster_multiplier = 0.6 },
 			["Methane Thruster"] = { gas_thruster_resource = "Methane", gas_thruster_multiplier = 1.1 },
 			["Propane Thruster"] = { gas_thruster_resource = "Propane", gas_thruster_multiplier = 1.2 },
