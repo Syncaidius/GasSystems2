@@ -22,16 +22,23 @@ function ENT:Initialize()
 	
 	--Entity Settings
 	self.Effect = "fire"
-	self.resource = "energy"
-	self.consumption = 0
 	self.energydiv = 200
 	self.thrustmult = 5
 	self.active = 0
 	self.massed = true
 	self.force = 0
-	self.multiplier = 0
 	self.toggle = 0
 	self.togon = false
+	self.energy = 0
+	self.oxygem = 0
+	self.nitrogen = 0
+	self.hydrogen = 0
+	self.steam = 0
+	self.ngas = 0
+	self.methane = 0
+	self.propane = 0
+	self.deuterium = 0
+	self.tritium = 0
 	
 	local max = self.Entity:OBBMaxs()
 	local min = self.Entity:OBBMins()
@@ -64,11 +71,11 @@ function ENT:SetForce( force, mul )
 		self:NetSetForce( force )
 	end
 	mul = mul or 1
-	self.consumption = math.abs(((force/100)*mul+5)/(self.multiplier*4))
+	//self.consumption = math.abs(((force/100)*mul+5)/(self.multiplier*4))
 	
 	local phys = self.Entity:GetPhysicsObject()
 	if (!phys:IsValid()) then
-		Msg("Warning: [energy_thruster] Physics object isn't valid!\n")
+		Msg("Warning: [gas_advthruster] Physics object isn't valid!\n")
 		return
 	end
 
@@ -88,21 +95,40 @@ function ENT:SetForce( force, mul )
 	end
 end
 
-function ENT:Setup(force, multiplier, force_min, force_max, effect, bidir, sound, massless, resource, key, key_bk, pl, toggle)
-	self.force = force
+function ENT:Setup(effect, bidir, sound, massless, resource, key, key_bk, pl, toggle, energy, oxygen, nitrogen, hydrogen, steam, ngas, methane, propane, deuterium, tritium)
 	self.toggle = toggle
-	self.multiplier = multiplier
-	self:SetForce(force)
 	self.resource = resource
-	CAF.GetAddon("Resource Distribution").AddResource(self,self.resource,0)
+	//CAF.GetAddon("Resource Distribution").AddResource(self,self.resource,0)
 	
 	self.Effect = effect
-	self.ForceMin = force_min
-	self.ForceMax = force_max
 	self.BiDir = bidir
 	self.EnableSound = sound
 	
 	self:SetEffect( self.Effect ) 
+	self.energy = energy
+	self.oxygen = oxygen
+	self.nitrogen = nitrogen
+	self.hydrogen = hydrogen
+	self.steam = steam
+	self.ngas = ngas
+	self.methane = methane
+	self.propane = propane
+	self.deuterium = deuterium
+	self.tritium = tritium
+	
+	local energyfc = self.energy*1.0
+	local o2fc = self.oxygen*0.7
+	local nitfc = self.nitrogen*0.7
+	local hydrofc = self.hydrogen*1.2
+	local steamfc = self.steam*0.5
+	local ngasfc = self.ngas*0.6
+	local methfc = self.methane*1.1
+	local propfc = self.propane*1.2
+	local deutfc = self.deuterium*1.5
+	local tritfc = self.tritium*1.4
+	
+	self.force = energyfc + o2fc + nitfc + hydrofc + steamfc + ngasfc + methfc + propfc + deutfc + tritfc
+	self:SetForce(force)
 	
 	if (not sound) then
 		self.Entity:StopSound(Thruster_Sound)
@@ -125,11 +151,11 @@ function ENT:Setup(force, multiplier, force_min, force_max, effect, bidir, sound
 		end
 	end
 	
-	numpad.OnDown(pl, key, "gas_thruster_on", self, 1)
-	numpad.OnUp(pl, key, "gas_thruster_off", self, 1)
+	numpad.OnDown(pl, key, "gas_advthruster_on", self, 1)
+	numpad.OnUp(pl, key, "gas_advthruster_off", self, 1)
 
-	numpad.OnDown(pl, key_bk, "gas_thruster_on", self, -1)
-	numpad.OnUp(pl, key_bk, "gas_thruster_off", self, -1)
+	numpad.OnDown(pl, key_bk, "gas_advthruster_on", self, -1)
+	numpad.OnUp(pl, key_bk, "gas_advthruster_off", self, -1)
 end
 
 function ENT:TriggerInput(iname, value)
@@ -154,14 +180,8 @@ end
 
 function ENT:Switch( on, mul )
 	if (!self.Entity:IsValid()) then return false end
+	
 	local changed = (self:IsOn() ~= on)
-	local togchange = (self.togon ~= on)
-	if (self.toggle==1) then
-		if (togchange) and (on) then
-			on = false
-		end
-	end
-		
 	if (on) then
 		if (self:CanRun()) then
 			self:SetOn( true )
@@ -267,18 +287,14 @@ function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
   self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
 end
 
-numpad.Register("gas_thruster_on", function(pl, ent, mul)
+numpad.Register("gas_advthruster_on", function(pl, ent, mul)
 	if not ent:IsValid() then return false end
 	ent:Switch(true, mul)
 	return true
 end)
 
-numpad.Register("gas_thruster_off", function(pl, ent, mul)
+numpad.Register("gas_advthruster_off", function(pl, ent, mul)
 	if not ent:IsValid() then return false end
-		if (ent.toggle==1) then
-			self.togon=false
-		else
-			ent:Switch(false, mul)
-		end
+		ent:Switch(false, mul)
 	return true
 end)
