@@ -62,13 +62,51 @@ function ENT:DoNormalDraw( bDontDrawModel )
 			if self:GetOOO() >= 0 and self:GetOOO() <= 2 then
 				runmode = OOO[self:GetOOO()]
 			end
-			local consumption = self:GetNetworkedInt( 1 )
-			local entresource = self:GetNetworkedString( 2 )
-			local force = self:GetNetworkedInt( 3 )
 			local RD = CAF.GetAddon("Resource Distribution")
+			local force = self:GetNetworkedInt( 1 )
+			
+			local energy = self:GetNetworkedInt(10)
+			local o2 = self:GetNetworkedInt(11)
+			local nitrogen = self:GetNetworkedInt(12)
+			local hydrogen = self:GetNetworkedInt(13)
+			local steam = self:GetNetworkedInt(14)
+			local ngas = self:GetNetworkedInt(15)
+			local meth = self:GetNetworkedInt(16)
+			local prop = self:GetNetworkedInt(17)
+			local deut = self:GetNetworkedInt(18)
+			local trit = self:GetNetworkedInt(19)
+			
 			OverlayText = OverlayText .. "Mode: " .. runmode .."\n"
-			OverlayText = OverlayText ..RD.GetProperResourceName(entresource)..": "..RD.GetResourceAmount(self, entresource).."/"..RD.GetNetworkCapacity(self, entresource).."\n"
-			OverlayText = OverlayText .."Consumption Rate: "..string.format("%g",consumption).."\n"
+			if (energy > 0) then
+				OverlayText = OverlayText ..RD.GetProperResourceName("energy")..": "..RD.GetResourceAmount(self, "energy").."/"..RD.GetNetworkCapacity(self, "energy").."\n"
+			end
+			if (o2 > 0) then
+				OverlayText = OverlayText ..RD.GetProperResourceName("oxygen")..": "..RD.GetResourceAmount(self, "oxygen").."/"..RD.GetNetworkCapacity(self, "oxygen").."\n"
+			end
+			if (nitrogen > 0) then
+				OverlayText = OverlayText ..RD.GetProperResourceName("nitrogen")..": "..RD.GetResourceAmount(self, "nitrogen").."/"..RD.GetNetworkCapacity(self, "nitrogen").."\n"
+			end
+			if (hydrogen > 0) then
+				OverlayText = OverlayText ..RD.GetProperResourceName("hydrogen")..": "..RD.GetResourceAmount(self, "hydrogen").."/"..RD.GetNetworkCapacity(self, "hydrogen").."\n"
+			end
+			if (steam > 0) then
+				OverlayText = OverlayText ..RD.GetProperResourceName("steam")..": "..RD.GetResourceAmount(self, "steam").."/"..RD.GetNetworkCapacity(self, "steam").."\n"
+			end
+			if (ngas > 0) then
+				OverlayText = OverlayText ..RD.GetProperResourceName("Natural Gas")..": "..RD.GetResourceAmount(self, "Natural Gas").."/"..RD.GetNetworkCapacity(self, "Natural Gas").."\n"
+			end
+			if (meth > 0) then
+				OverlayText = OverlayText ..RD.GetProperResourceName("Methane")..": "..RD.GetResourceAmount(self, "Methane").."/"..RD.GetNetworkCapacity(self, "Methane").."\n"
+			end
+			if (prop > 0) then
+				OverlayText = OverlayText ..RD.GetProperResourceName("Propane")..": "..RD.GetResourceAmount(self, "Propane").."/"..RD.GetNetworkCapacity(self, "Propane").."\n"
+			end
+			if (deut > 0) then
+				OverlayText = OverlayText ..RD.GetProperResourceName("Deuterium")..": "..RD.GetResourceAmount(self, "Deuterium").."/"..RD.GetNetworkCapacity(self, "Deuterium").."\n"
+			end
+			if (trit > 0) then
+				OverlayText = OverlayText ..RD.GetProperResourceName("Tritium")..": "..RD.GetResourceAmount(self, "Tritium").."/"..RD.GetNetworkCapacity(self, "Tritium").."\n"
+			end
 			OverlayText = OverlayText .."Force: " ..string.format("%g",force)
 			AddWorldTip( self.Entity:EntIndex(), OverlayText, 0.5, self.Entity:GetPos(), self.Entity  )
 		else
