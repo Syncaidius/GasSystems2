@@ -22,8 +22,6 @@ function ENT:Initialize()
 	
 	--Entity Settings
 	self.Effect = "fire"
-	self.energydiv = 200
-	self.thrustmult = 5
 	self.active = 0
 	self.massed = true
 	self.force = 0
@@ -46,13 +44,12 @@ function ENT:Initialize()
 	self.ThrustOffset 	= Vector( 0, 0, max.z )
 	self.ThrustOffsetR 	= Vector( 0, 0, min.z )
 	self.ForceAngle		= self.ThrustOffset:GetNormalized() * -1
-	
-	self:SetForce( 2000 )
+
 	self:SetOffset( self.ThrustOffset )
 	self.Entity:StartMotionController()
 	self.outputon = 0
 	
-	self:Switch( false )
+	self:Switch( false, 0 )
 
 	self.Inputs = Wire_CreateInputs(self.Entity, { "On" })
 	self.Outputs = Wire_CreateOutputs(self.Entity, { "On", "Consumption" })
@@ -71,7 +68,6 @@ function ENT:SetForce( force, mul )
 		self:NetSetForce( force )
 	end
 	mul = mul or 1
-	//self.consumption = math.abs(((force/100)*mul+5)/(self.multiplier*4))
 	
 	local phys = self.Entity:GetPhysicsObject()
 	if (!phys:IsValid()) then
@@ -84,7 +80,7 @@ function ENT:SetForce( force, mul )
 	local ThrusterWorldForce = phys:LocalToWorldVector( self.ThrustOffset * -1 )
 
 	-- Calculate the velocity
-	ThrusterWorldForce = ThrusterWorldForce * force * mul * self.multiplier
+	ThrusterWorldForce = ThrusterWorldForce * force * mul
 	self.ForceLinear, self.ForceAngle = phys:CalculateVelocityOffset( ThrusterWorldForce, ThrusterWorldPos );
 	self.ForceLinear = phys:WorldToLocalVector( self.ForceLinear )
 	
@@ -97,35 +93,43 @@ end
 
 function ENT:Setup(effect, bidir, sound, massless, resource, key, key_bk, pl, toggle, energy, oxygen, nitrogen, hydrogen, steam, ngas, methane, propane, deuterium, tritium)
 	self.toggle = toggle
-	self.resource = resource
-	//CAF.GetAddon("Resource Distribution").AddResource(self,self.resource,0)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"energy",0)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"oxygen",0)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"nitrogen",0)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"hydrogen",0)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"steam",0)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"Natural Gas",0)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"Methane",0)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"Propane",0)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"Deuterium",0)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"Tritium",0)
 	
 	self.Effect = effect
 	self.BiDir = bidir
 	self.EnableSound = sound
 	
 	self:SetEffect( self.Effect ) 
-	self.energy = energy
-	self.oxygen = oxygen
-	self.nitrogen = nitrogen
-	self.hydrogen = hydrogen
-	self.steam = steam
-	self.ngas = ngas
-	self.methane = methane
-	self.propane = propane
-	self.deuterium = deuterium
-	self.tritium = tritium
+	self.energy = math.abs(energy)
+	self.oxygen = math.abs(oxygen)
+	self.nitrogen = math.abs(nitrogen)
+	self.hydrogen = math.abs(hydrogen)
+	self.steam = math.abs(steam)
+	self.ngas = math.abs(ngas)
+	self.methane = math.abs(methane)
+	self.propane = math.abs(propane)
+	self.deuterium = math.abs(deuterium)
+	self.tritium = math.abs(tritium)
 	
-	local energyfc = self.energy*1.0
-	local o2fc = self.oxygen*0.7
-	local nitfc = self.nitrogen*0.7
-	local hydrofc = self.hydrogen*1.2
-	local steamfc = self.steam*0.5
-	local ngasfc = self.ngas*0.6
-	local methfc = self.methane*1.1
-	local propfc = self.propane*1.2
-	local deutfc = self.deuterium*1.5
-	local tritfc = self.tritium*1.4
+	local energyfc = (self.energy*100)*2.3
+	local o2fc = (self.oxygen*100)*2.0
+	local nitfc = (self.nitrogen*100)*1.6
+	local hydrofc = (self.hydrogen*100)*2.7
+	local steamfc = (self.steam*100)*1.125
+	local ngasfc = (self.ngas*100)*1.35
+	local methfc = (self.methane*100)*2.475
+	local propfc = (self.propane*100)*2.5
+	local deutfc = (self.deuterium*100)*3.375
+	local tritfc = (self.tritium*100)*3.15
 	
 	self.force = energyfc + o2fc + nitfc + hydrofc + steamfc + ngasfc + methfc + propfc + deutfc + tritfc
 	self:SetForce(force)
@@ -160,7 +164,7 @@ end
 
 function ENT:TriggerInput(iname, value)
 	if (iname == "On") then
-		if ( (self.BiDir) and (math.abs(value) > 0.01) and (math.abs(value) > self.ForceMin) ) or ( (value > 0.01) and (value > self.ForceMin) ) then
+		if (value != 0) then
 			self:Switch(true, value)
 		else
 			self:Switch(false, 0)
@@ -215,9 +219,23 @@ end
 
 function ENT:CanRun()
 	local RD = CAF.GetAddon("Resource Distribution")
-	local resource = RD.GetResourceAmount(self, self.resource)	
-	if (resource >= self.consumption) then
-		return true
+	local energy = RD.GetResourceAmount(self, "energy")
+	local o2 = RD.GetResourceAmount(self, "oxygen")
+	local nitrogen = RD.GetResourceAmount(self, "nitrogen")
+	local hydrogen = RD.GetResourceAmount(self, "hydrogen")
+	local steam = RD.GetResourceAmount(self, "steam")
+	local ngas = RD.GetResourceAmount(self, "Natural Gas")
+	local methane = RD.GetResourceAmount(self, "Methane")
+	local propane = RD.GetResourceAmount(self, "Propane")
+	local deuterium = RD.GetResourceAmount(self, "Deuterium")
+	local tritium = RD.GetResourceAmount(self, "Tritium")
+	
+	if (energy >= self.energy and o2 >= self.oxygen and nitrogen >= self.nitrogen and hydrogen >= self.hydrogen and steam >= self.steam) then
+		if (ngas >= self.ngas and methane >= self.methane and propane >= self.propane and deuterium >= self.deuterium and tritium >= self.tritium) then
+			return true
+		else
+			return false
+		end
 	else
 		return false
 	end
@@ -247,9 +265,18 @@ function ENT:Think()
 end
 
 function ENT:ShowOutput()
-	self.Entity:SetNetworkedInt( 1, self.consumption or 0)
-	self.Entity:SetNetworkedString( 2, self.resource or "energy" )
-	self.Entity:SetNetworkedInt( 3, self.force or 0 )
+	self.Entity:SetNetworkedInt( 1, self.force or 0 )
+	
+	self.Entity:SetNetworkedInt( 10,self.energy or 0) -- energy consumption
+	self.Entity:SetNetworkedInt( 11,self.oxygen or 0) --o2 consumption
+	self.Entity:SetNetworkedInt( 12,self.nitrogen or 0) --N consumption
+	self.Entity:SetNetworkedInt( 13,self.hydrogen or 0) --H consumption
+	self.Entity:SetNetworkedInt( 14,self.steam or 0) --Steam consumption
+	self.Entity:SetNetworkedInt( 15,self.ngas or 0) --Ngas consumption
+	self.Entity:SetNetworkedInt( 16,self.methane or 0) --methane consumption
+	self.Entity:SetNetworkedInt( 17,self.propane or 0) --propane consumption
+	self.Entity:SetNetworkedInt( 18,self.deuterium or 0) --deuterium consumption
+	self.Entity:SetNetworkedInt( 19,self.tritium or 0) --tritium consumption
 end
 
 function ENT:OnRestore()

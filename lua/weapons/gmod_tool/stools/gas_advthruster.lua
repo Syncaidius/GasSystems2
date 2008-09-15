@@ -9,26 +9,26 @@ if ( CLIENT ) then
     language.Add( "Tool_gas_advthruster_name", "Gas Thruster Tool" )
     language.Add( "Tool_gas_advthruster_desc", "Spawns a resource consuming thruster." )
     language.Add( "Tool_gas_advthruster_0", "Primary: Create/Update Thruster" )
-    language.Add( "GasThrusterTool_Model", "Model:" )
-    language.Add( "GasThrusterTool_Effects", "Effects:" )
-		language.Add( "GasThrusterTool_Types", "Thruster Type:")
-		language.Add( "GasThrusterTool_Energy", "Energy Consumption:")
-		language.Add( "GasThrusterTool_Oxygen", "Oxygen Consumption:")
-		language.Add( "GasThrusterTool_Nitrogen", "Nitrogen Consumption:")
-		language.Add( "GasThrusterTool_Hydrogen", "Hydrogen Consumption:")
-		language.Add( "GasThrusterTool_Steam", "Steam Consumption:")
-		language.Add( "GasThrusterTool_Ngas", "Natural Gas Consumption:")
-		language.Add( "GasThrusterTool_Methane", "Methane Consumption:")
-		language.Add( "GasThrusterTool_Propane", "Propane Consumption:")
-		language.Add( "GasThrusterTool_Deuterium", "Deuterium Consumption:")
-		language.Add( "GasThrusterTool_Tritium", "Tritium Consumption:")
-    language.Add( "GasThrusterTool_bidir", "Bi-directional:" )
-    language.Add( "GasThrusterTool_collision", "Collision:" )
-    language.Add( "GasThrusterTool_sound", "Enable sound:" )
-		language.Add( "GasThrusterTool_massless", "Massless:" )
-		language.Add( "GasThrusterTool_key_fw", "Positive Thrust: " )
-		language.Add( "GasThrusterTool_key_bw", "Negative Thrust: " )
-		language.Add( "GasThrusterTool_toggle", "Toggle" )
+    language.Add( "AdvGasThrusterTool_Model", "Model:" )
+    language.Add( "AdvGasThrusterTool_Effects", "Effects:" )
+		language.Add( "AdvGasThrusterTool_Types", "Thruster Type:")
+		language.Add( "AdvGasThrusterTool_Energy", "Energy Consumption (per/sec):")
+		language.Add( "AdvGasThrusterTool_Oxygen", "Oxygen Consumption (per/sec):")
+		language.Add( "AdvGasThrusterTool_Nitrogen", "Nitrogen Consumption (per/sec):")
+		language.Add( "AdvGasThrusterTool_Hydrogen", "Hydrogen Consumption (per/sec):")
+		language.Add( "AdvGasThrusterTool_Steam", "Steam Consumption (per/sec):")
+		language.Add( "AdvGasThrusterTool_Ngas", "Natural Gas Consumption (per/sec):")
+		language.Add( "AdvGasThrusterTool_Methane", "Methane Consumption (per/sec):")
+		language.Add( "AdvGasThrusterTool_Propane", "Propane Consumption (per/sec):")
+		language.Add( "AdvGasThrusterTool_Deuterium", "Deuterium Consumption (per/sec):")
+		language.Add( "AdvGasThrusterTool_Tritium", "Tritium Consumption (per/sec):")
+    language.Add( "AdvGasThrusterTool_bidir", "Bi-directional:" )
+    language.Add( "AdvGasThrusterTool_collision", "Collision:" )
+    language.Add( "AdvGasThrusterTool_sound", "Enable sound:" )
+		language.Add( "AdvGasThrusterTool_massless", "Massless:" )
+		language.Add( "AdvGasThrusterTool_key_fw", "Positive Thrust: " )
+		language.Add( "AdvGasThrusterTool_key_bw", "Negative Thrust: " )
+		language.Add( "AdvGasThrusterTool_toggle", "Toggle" )
 	language.Add( "sboxlimit_gas_advthrusters", "You've hit the Powered thrusters limit!" )
 	language.Add( "undone_gasthruster", "Undone Powered Thruster" )
 end
@@ -103,7 +103,7 @@ function TOOL:LeftClick( trace )
 	// If we shot a gas_thruster change its force
 	if ( trace.Entity:IsValid() && trace.Entity:GetClass() == "gas_advthruster" && trace.Entity.pl == ply ) then
 		trace.Entity:SetEffect( effect )
-		trace.Entity:Setup(effect, bidir, sound, massless, resource, key, key_bk, pl, toggle, energy, oxygen, nitrogen, hydrogen, steam, ngas, methane, propane, deuterium, tritium)
+		trace.Entity:Setup(effect, bidir, sound, massless, resource, key, key_bk, ply, toggle, energy, oxygen, nitrogen, hydrogen, steam, ngas, methane, propane, deuterium, tritium)
 		
 		trace.Entity.bidir		= bidir
 		trace.Entity.sound		= sound
@@ -136,7 +136,7 @@ function TOOL:LeftClick( trace )
 	local Ang = trace.HitNormal:Angle()
 	Ang.pitch = Ang.pitch + 90
 	
-	gas_thruster = MakeGasThruster( ply, model, Ang, trace.HitPos, effect, bidir, sound, nocollide, nil, nil, nil, massless, resource, key, key_bk, toggle, energy, oxygen, nitrogen, hydrogen, steam, ngas, methane, propane, deuterium, tritium )
+	gas_thruster = MakeAdvGasThruster( ply, model, Ang, trace.HitPos, effect, bidir, sound, nocollide, nil, nil, nil, massless, resource, key, key_bk, toggle, energy, oxygen, nitrogen, hydrogen, steam, ngas, methane, propane, deuterium, tritium )
 	
 	local min = gas_thruster:OBBMins()
 	gas_thruster:SetPos( trace.HitPos - trace.HitNormal * min.z )
@@ -157,7 +157,7 @@ function TOOL:LeftClick( trace )
 end
 
 if (SERVER) then
-	function MakeGasThruster( pl, Model, Ang, Pos, effect, bidir, sound, nocollide, Vel, aVel, frozen, massless, resource, key, key_bk, toggle, energy, oxygen, nitrogen, hydrogen, steam, ngas, methane, propane, deuterium, tritium )
+	function MakeAdvGasThruster( pl, Model, Ang, Pos, effect, bidir, sound, nocollide, Vel, aVel, frozen, massless, resource, key, key_bk, toggle, energy, oxygen, nitrogen, hydrogen, steam, ngas, methane, propane, deuterium, tritium )
 		if ( !pl:CheckLimit( "gas_thrusters" ) ) then return false end
 		
 		local gas_thruster = ents.Create( "gas_advthruster" )
@@ -193,7 +193,7 @@ if (SERVER) then
 		return gas_thruster
 	end
 
-	duplicator.RegisterEntityClass("gas_advthruster", MakeGasThruster, "Model", "Ang", "Pos","effect","bidir","sound","nocollide","Vel","aVel","frozen","massless","resource","key","key_bk","toggle","energy","oxygen","nitrogen","hydrogen","steam","ngas","methane","propane","deuterium","tritium")
+	duplicator.RegisterEntityClass("gas_advthruster", MakeAdvGasThruster, "Model", "Ang", "Pos","effect","bidir","sound","nocollide","Vel","aVel","frozen","massless","resource","key","key_bk","toggle","energy","oxygen","nitrogen","hydrogen","steam","ngas","methane","propane","deuterium","tritium")
 end
 
 function TOOL:UpdateGhostGasThruster( ent, player )
@@ -204,7 +204,7 @@ function TOOL:UpdateGhostGasThruster( ent, player )
 	local trace 	= util.TraceLine( tr )
 	if (!trace.Hit) then return end
 	
-	if (trace.Entity && trace.Entity:GetClass() == "gas_thruster" || trace.Entity:IsPlayer()) then
+	if (trace.Entity && trace.Entity:GetClass() == "gas_advthruster" || trace.Entity:IsPlayer()) then
 	
 		ent:SetNoDraw( true )
 		return
@@ -236,7 +236,7 @@ function TOOL.BuildCPanel(panel)
 	panel:AddControl("ComboBox", {
 		Label = "#Presets",
 		MenuButton = "1",
-		Folder = "gas_thruster",
+		Folder = "gas_advthruster",
 
 		Options = {
 			Default = {
@@ -254,7 +254,7 @@ function TOOL.BuildCPanel(panel)
 	})
 
 	/*panel:AddControl("ComboBox", {
-		Label = "#GasThrusterTool_Model",
+		Label = "#AdvGasThrusterTool_Model",
 		MenuButton = "0",
 
 		Options = {
@@ -273,19 +273,19 @@ function TOOL.BuildCPanel(panel)
 	})*/
 	
 	panel:AddControl( "PropSelect", {
-		Label = "#GasThrusterTool_Model",
+		Label = "#AdvGasThrusterTool_Model",
 		ConVar = "gas_advthruster_model",
 		Category = "Thrusters",
 		Models = list.Get( "ThrusterModels" )
 	})
 	
 	panel:AddControl("Label", {
-		Text = "#GasThrusterTool_Effects", 
+		Text = "#AdvGasThrusterTool_Effects", 
 		Description = "Thruster Effect" 
 	})
 	
 	panel:AddControl("ComboBox", {
-		Label = "#GasThrusterTool_Effects",
+		Label = "#AdvGasThrusterTool_Effects",
 		MenuButton = "0",
 
 		Options = {
@@ -341,7 +341,7 @@ function TOOL.BuildCPanel(panel)
 	})
 
 	panel:AddControl("Slider", {
-		Label = "#GasThrusterTool_Energy",
+		Label = "#AdvGasThrusterTool_Energy",
 		Type = "Float",
 		Min = "0",
 		Max = "2000",
@@ -349,7 +349,7 @@ function TOOL.BuildCPanel(panel)
 	})
 
 	panel:AddControl("Slider", {
-		Label = "#GasThrusterTool_Oxygen",
+		Label = "#AdvGasThrusterTool_Oxygen",
 		Type = "Float",
 		Min = "0",
 		Max = "2000",
@@ -357,7 +357,7 @@ function TOOL.BuildCPanel(panel)
 	})
 
 	panel:AddControl("Slider", {
-		Label = "#GasThrusterTool_Nitrogen",
+		Label = "#AdvGasThrusterTool_Nitrogen",
 		Type = "Float",
 		Min = "0",
 		Max = "2000",
@@ -365,7 +365,7 @@ function TOOL.BuildCPanel(panel)
 	})
 	
 	panel:AddControl("Slider", {
-		Label = "#GasThrusterTool_Hydrogen",
+		Label = "#AdvGasThrusterTool_Hydrogen",
 		Type = "Float",
 		Min = "0",
 		Max = "2000",
@@ -373,7 +373,7 @@ function TOOL.BuildCPanel(panel)
 	})
 	
 	panel:AddControl("Slider", {
-		Label = "#GasThrusterTool_Steam",
+		Label = "#AdvGasThrusterTool_Steam",
 		Type = "Float",
 		Min = "0",
 		Max = "2000",
@@ -381,7 +381,7 @@ function TOOL.BuildCPanel(panel)
 	})
 	
 	panel:AddControl("Slider", {
-		Label = "#GasThrusterTool_Ngas",
+		Label = "#AdvGasThrusterTool_Ngas",
 		Type = "Float",
 		Min = "0",
 		Max = "2000",
@@ -389,7 +389,7 @@ function TOOL.BuildCPanel(panel)
 	})
 	
 	panel:AddControl("Slider", {
-		Label = "#GasThrusterTool_Methane",
+		Label = "#AdvGasThrusterTool_Methane",
 		Type = "Float",
 		Min = "0",
 		Max = "2000",
@@ -397,7 +397,7 @@ function TOOL.BuildCPanel(panel)
 	})
 	
 	panel:AddControl("Slider", {
-		Label = "#GasThrusterTool_Propane",
+		Label = "#AdvGasThrusterTool_Propane",
 		Type = "Float",
 		Min = "0",
 		Max = "2000",
@@ -405,7 +405,7 @@ function TOOL.BuildCPanel(panel)
 	})
 	
 	panel:AddControl("Slider", {
-		Label = "#GasThrusterTool_Deuterium",
+		Label = "#AdvGasThrusterTool_Deuterium",
 		Type = "Float",
 		Min = "0",
 		Max = "2000",
@@ -413,7 +413,7 @@ function TOOL.BuildCPanel(panel)
 	})
 	
 	panel:AddControl("Slider", {
-		Label = "#GasThrusterTool_Tritium",
+		Label = "#AdvGasThrusterTool_Tritium",
 		Type = "Float",
 		Min = "0",
 		Max = "2000",
@@ -421,35 +421,35 @@ function TOOL.BuildCPanel(panel)
 	})
 
 	panel:AddControl("CheckBox", {
-		Label = "#GasThrusterTool_bidir",
+		Label = "#AdvGasThrusterTool_bidir",
 		Command = "gas_advthruster_bidir"
 	})
 
 	panel:AddControl("CheckBox", {
-		Label = "#GasThrusterTool_collision",
+		Label = "#AdvGasThrusterTool_collision",
 		Command = "gas_advthruster_collision"
 	})
 
 	panel:AddControl("CheckBox", {
-		Label = "#GasThrusterTool_sound",
+		Label = "#AdvGasThrusterTool_sound",
 		Command = "gas_advthruster_sound"
 	})
 	
 	panel:AddControl("CheckBox", {
-		Label = "#GasThrusterTool_massless",
+		Label = "#AdvGasThrusterTool_massless",
 		Command = "gas_advthruster_massless"
 	})
 	
 	panel:AddControl("Numpad", {
-		Label = "#GasThrusterTool_key_fw",
-		Label2 = "#GasThrusterTool_key_bw",
+		Label = "#AdvGasThrusterTool_key_fw",
+		Label2 = "#AdvGasThrusterTool_key_bw",
 		Command = "gas_advthruster_keygroup", 
 		Command2 = "gas_advthruster_keygroup_back", 
 		ButtonSize = "22"
 	})
 	
 	panel:AddControl("CheckBox", {
-		Label = "#GasThrusterTool_toggle",
+		Label = "#AdvGasThrusterTool_toggle",
 		Command = "gas_advthruster_toggle"
 	})
 end
