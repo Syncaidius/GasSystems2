@@ -12,16 +12,16 @@ if ( CLIENT ) then
     language.Add( "AdvGasThrusterTool_Model", "Model:" )
     language.Add( "AdvGasThrusterTool_Effects", "Effects:" )
 		language.Add( "AdvGasThrusterTool_Types", "Thruster Type:")
-		language.Add( "AdvGasThrusterTool_Energy", "Energy Consumption (per/sec):")
-		language.Add( "AdvGasThrusterTool_Oxygen", "Oxygen Consumption (per/sec):")
-		language.Add( "AdvGasThrusterTool_Nitrogen", "Nitrogen Consumption (per/sec):")
-		language.Add( "AdvGasThrusterTool_Hydrogen", "Hydrogen Consumption (per/sec):")
-		language.Add( "AdvGasThrusterTool_Steam", "Steam Consumption (per/sec):")
-		language.Add( "AdvGasThrusterTool_Ngas", "Natural Gas Consumption (per/sec):")
-		language.Add( "AdvGasThrusterTool_Methane", "Methane Consumption (per/sec):")
-		language.Add( "AdvGasThrusterTool_Propane", "Propane Consumption (per/sec):")
-		language.Add( "AdvGasThrusterTool_Deuterium", "Deuterium Consumption (per/sec):")
-		language.Add( "AdvGasThrusterTool_Tritium", "Tritium Consumption (per/sec):")
+		language.Add( "AdvGasThrusterTool_Energy", "Energy Consumption (p/sec):")
+		language.Add( "AdvGasThrusterTool_Oxygen", "Oxygen Consumption (p/sec):")
+		language.Add( "AdvGasThrusterTool_Nitrogen", "Nitrogen Consumption (p/sec):")
+		language.Add( "AdvGasThrusterTool_Hydrogen", "Hydrogen Consumption (p/sec):")
+		language.Add( "AdvGasThrusterTool_Steam", "Steam Consumption (p/sec):")
+		language.Add( "AdvGasThrusterTool_Ngas", "Natural Gas Consumption (p/sec):")
+		language.Add( "AdvGasThrusterTool_Methane", "Methane Consumption (p/sec):")
+		language.Add( "AdvGasThrusterTool_Propane", "Propane Consumption (p/sec):")
+		language.Add( "AdvGasThrusterTool_Deuterium", "Deuterium Consumption (p/sec):")
+		language.Add( "AdvGasThrusterTool_Tritium", "Tritium Consumption (p/sec):")
     language.Add( "AdvGasThrusterTool_bidir", "Bi-directional:" )
     language.Add( "AdvGasThrusterTool_collision", "Collision:" )
     language.Add( "AdvGasThrusterTool_sound", "Enable sound:" )
@@ -103,7 +103,7 @@ function TOOL:LeftClick( trace )
 	// If we shot a gas_thruster change its force
 	if ( trace.Entity:IsValid() && trace.Entity:GetClass() == "gas_advthruster" && trace.Entity.pl == ply ) then
 		trace.Entity:SetEffect( effect )
-		trace.Entity:Setup(effect, bidir, sound, massless, resource, key, key_bk, ply, toggle, energy, oxygen, nitrogen, hydrogen, steam, ngas, methane, propane, deuterium, tritium)
+		trace.Entity:Setup(effect, bidir, sound, massless, toggle, energy, oxygen, nitrogen, hydrogen, steam, ngas, methane, propane, deuterium, tritium)
 		
 		trace.Entity.bidir		= bidir
 		trace.Entity.sound		= sound
@@ -168,7 +168,7 @@ if (SERVER) then
 		gas_thruster:SetPos( Pos )
 		gas_thruster:Spawn()
 		
-		gas_thruster:Setup(effect, bidir, sound, massless, resource, key, key_bk, pl, toggle, energy, oxygen, nitrogen, hydrogen, steam, ngas, methane, propane, deuterium, tritium)
+		gas_thruster:Setup(effect, bidir, sound, massless, toggle, energy, oxygen, nitrogen, hydrogen, steam, ngas, methane, propane, deuterium, tritium)
 		gas_thruster:SetPlayer( pl )
 		
 		if ( nocollide == true ) then gas_thruster:GetPhysicsObject():EnableCollisions( false ) end
@@ -190,10 +190,16 @@ if (SERVER) then
 		
 		pl:AddCount( "gas_thrusters", gas_thruster )
 		
+		numpad.OnDown(pl, key, "gas_advthruster_on", gas_thruster, 1)
+		numpad.OnUp(pl, key, "gas_advthruster_off", gas_thruster, 1)
+
+		numpad.OnDown(pl, key_bk, "gas_advthruster_on", gas_thruster, -1)
+		numpad.OnUp(pl, key_bk, "gas_advthruster_off", gas_thruster, -1)
+		
 		return gas_thruster
 	end
 
-	duplicator.RegisterEntityClass("gas_advthruster", MakeAdvGasThruster, "Model", "Ang", "Pos","effect","bidir","sound","nocollide","Vel","aVel","frozen","massless","resource","key","key_bk","toggle","energy","oxygen","nitrogen","hydrogen","steam","ngas","methane","propane","deuterium","tritium")
+	duplicator.RegisterEntityClass("gas_advthruster", MakeAdvGasThruster, "Model", "Ang", "Pos","effect","bidir","sound","nocollide","Vel","aVel","frozen","massless","toggle","energy","oxygen","nitrogen","hydrogen","steam","ngas","methane","propane","deuterium","tritium")
 end
 
 function TOOL:UpdateGhostGasThruster( ent, player )
