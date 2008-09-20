@@ -52,7 +52,7 @@ function ENT:Initialize()
 	self:Switch( false, 0 )
 
 	self.Inputs = Wire_CreateInputs(self.Entity, { "On" })
-	self.Outputs = Wire_CreateOutputs(self.Entity, { "On", "Consumption" })
+	self.Outputs = Wire_CreateOutputs(self.Entity, { "On",})
 end
 
 function ENT:OnRemove()
@@ -91,7 +91,7 @@ function ENT:SetForce( force, mul )
 	end
 end
 
-function ENT:Setup(effect, bidir, sound, massless, resource, key, key_bk, pl, toggle, energy, oxygen, nitrogen, hydrogen, steam, ngas, methane, propane, deuterium, tritium)
+function ENT:Setup(effect, bidir, sound, massless, toggle, energy, oxygen, nitrogen, hydrogen, steam, ngas, methane, propane, deuterium, tritium)
 	self.toggle = toggle
 	CAF.GetAddon("Resource Distribution").AddResource(self,"energy",0)
 	CAF.GetAddon("Resource Distribution").AddResource(self,"oxygen",0)
@@ -154,12 +154,6 @@ function ENT:Setup(effect, bidir, sound, massless, resource, key, key_bk, pl, to
 			self.massed = true
 		end
 	end
-	
-	numpad.OnDown(pl, key, "gas_advthruster_on", self, 1)
-	numpad.OnUp(pl, key, "gas_advthruster_off", self, 1)
-
-	numpad.OnDown(pl, key_bk, "gas_advthruster_on", self, -1)
-	numpad.OnUp(pl, key_bk, "gas_advthruster_off", self, -1)
 end
 
 function ENT:TriggerInput(iname, value)
@@ -246,7 +240,16 @@ function ENT:Think()
 	self.BaseClass.Think(self)
 
 	if (self:IsOn() && self:CanRun()) then
-		RD.ConsumeResource(self, self.resource, self.consumption)
+		RD.ConsumeResource(self, "energy", self.energy)
+		RD.ConsumeResource(self, "oxygen", self.oxygen)
+		RD.ConsumeResource(self, "nitrogen", self.nitrogen)
+		RD.ConsumeResource(self, "hydrogen", self.hydrogen)
+		RD.ConsumeResource(self, "steam", self.steam)
+		RD.ConsumeResource(self, "Natural Gas", self.ngas)
+		RD.ConsumeResource(self, "Methane", self.methane)
+		RD.ConsumeResource(self, "Propane", self.propane)
+		RD.ConsumeResource(self, "Deuterium", self.deuterium)
+		RD.ConsumeResource(self, "Tritium", self.tritium)
 		self.outputon = 1
 	else
 		self:Switch( false )
@@ -254,7 +257,6 @@ function ENT:Think()
 	end
 	
 	if not (WireAddon == nil) then
-		Wire_TriggerOutput(self, "Consumption", self.consumption)
 		Wire_TriggerOutput(self, "On", self.outputon )
 	end
 	
