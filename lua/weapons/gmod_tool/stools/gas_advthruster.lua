@@ -136,7 +136,7 @@ function TOOL:LeftClick( trace )
 	local Ang = trace.HitNormal:Angle()
 	Ang.pitch = Ang.pitch + 90
 	
-	gas_thruster = MakeAdvGasThruster( ply, model, Ang, trace.HitPos, effect, bidir, sound, nocollide, nil, nil, nil, massless, resource, key, key_bk, toggle, energy, oxygen, nitrogen, hydrogen, steam, ngas, methane, propane, deuterium, tritium )
+	gas_thruster = MakeAdvGasThruster( ply, model, Ang, trace.HitPos, effect, bidir, sound, nocollide, nil, nil, nil, massless, key, key_bk, toggle, energy, oxygen, nitrogen, hydrogen, steam, ngas, methane, propane, deuterium, tritium )
 	
 	local min = gas_thruster:OBBMins()
 	gas_thruster:SetPos( trace.HitPos - trace.HitNormal * min.z )
@@ -157,7 +157,7 @@ function TOOL:LeftClick( trace )
 end
 
 if (SERVER) then
-	function MakeAdvGasThruster( pl, Model, Ang, Pos, effect, bidir, sound, nocollide, Vel, aVel, frozen, massless, resource, key, key_bk, toggle, energy, oxygen, nitrogen, hydrogen, steam, ngas, methane, propane, deuterium, tritium )
+	function MakeAdvGasThruster( pl, Model, Ang, Pos, effect, bidir, sound, nocollide, Vel, aVel, frozen, massless, key, key_bk, toggle, energy, oxygen, nitrogen, hydrogen, steam, ngas, methane, propane, deuterium, tritium )
 		if ( !pl:CheckLimit( "gas_thrusters" ) ) then return false end
 		
 		local gas_thruster = ents.Create( "gas_advthruster" )
@@ -198,8 +198,7 @@ if (SERVER) then
 		
 		return gas_thruster
 	end
-
-	duplicator.RegisterEntityClass("gas_advthruster", MakeAdvGasThruster, "Model", "Ang", "Pos","effect","bidir","sound","nocollide","Vel","aVel","frozen","massless","toggle","energy","oxygen","nitrogen","hydrogen","steam","ngas","methane","propane","deuterium","tritium")
+	duplicator.RegisterEntityClass("gas_advthruster", MakeAdvGasThruster,"Model","Ang","Pos","effect","bidir","sound","nocollide","Vel","aVel","frozen","massless","key","key_bk","toggle","energy","oxygen","nitrogen","hydrogen","steam","ngas","methane","propane","deuterium","tritium")
 end
 
 function TOOL:UpdateGhostGasThruster( ent, player )

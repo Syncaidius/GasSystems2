@@ -5,7 +5,7 @@ AddCSLuaFile( "shared.lua" )
 include('shared.lua')
 
 if not (WireMod == nil) then
-	ENT.WireDebugName = "Energy Thruster"
+	ENT.WireDebugName = "Adv. Gas Thruster"
 end
 
 local Thruster_Sound 	= Sound( "PhysicsCannister.ThrusterLoop" )
@@ -80,7 +80,7 @@ function ENT:SetForce( force, mul )
 	local ThrusterWorldForce = phys:LocalToWorldVector( self.ThrustOffset * -1 )
 
 	-- Calculate the velocity
-	ThrusterWorldForce = ThrusterWorldForce * force * mul
+	ThrusterWorldForce = ThrusterWorldForce * force * 9 * mul
 	self.ForceLinear, self.ForceAngle = phys:CalculateVelocityOffset( ThrusterWorldForce, ThrusterWorldPos );
 	self.ForceLinear = phys:WorldToLocalVector( self.ForceLinear )
 	

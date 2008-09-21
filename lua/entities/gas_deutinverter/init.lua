@@ -6,12 +6,12 @@ util.PrecacheSound( "Airboat_engine_stop" )
 include('shared.lua')
 
 if not (WireAddon == nil) then
-  ENT.WireDebugName = "Tritium Inverter"
+  ENT.WireDebugName = "Deuterium Inverter"
 end
 
 function ENT:Initialize()
 	self.Entity:SetModel("models/syncaidius/gas_inverter.mdl")
-	self:SetSkin(0)
+	self:SetSkin(1)
   self.BaseClass.Initialize(self)
 
   local phys = self.Entity:GetPhysicsObject()
@@ -21,26 +21,26 @@ function ENT:Initialize()
 	self.maxoverdrive = 4 -- maximum overdrive value allowed via wire input. Anything over this value may severely damage or destroy the device.
 	self.Active = 0
 	
-  self:SetMaxHealth(230)
+  self:SetMaxHealth(220)
   self:SetHealth(self:GetMaxHealth())
 	
 	self.energy = 0
-	self.tritium = 0
-	self.o2 = 0
+	self.deuterium = 0
+	self.nitrogen = 0
 	
     -- resource attributes
-    self.o2prod = 125 --O2 production
+    self.nitroprod = 140 --N production
     self.econ = 15 -- Energy consumption
-		self.tritcon = 15 -- Tritium Consumption
+		self.deutcon = 15 -- Deuterium Consumption
     
 	CAF.GetAddon("Resource Distribution").AddResource(self,"energy",0)
-	CAF.GetAddon("Resource Distribution").AddResource(self,"Tritium",0)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"Deuterium",0)
 	if not (WireAddon == nil) then self.Inputs = Wire_CreateInputs(self.Entity, { "On", "Overdrive"}) end
-	if not (WireAddon == nil) then self.Outputs = Wire_CreateOutputs(self.Entity, { "On", "Overdrive", "O2 Output"}) end
+	if not (WireAddon == nil) then self.Outputs = Wire_CreateOutputs(self.Entity, { "On", "Overdrive", "Nitrogen Output"}) end
 	
 	if (phys:IsValid()) then
 		phys:Wake()
-		phys:SetMass(140)
+		phys:SetMass(120)
 	end
 end
 
@@ -149,8 +149,8 @@ function ENT:ExtractGas()
 	local RD = CAF.GetAddon("Resource Distribution")
 	if ( self.overdrive == 1 ) then
         self.energy = math.ceil((self.econ + math.random(1,2)) * self.overdrivefactor)
-        self.tritium = math.ceil(self.tritcon + math.random(1,2) * self.overdrivefactor)
-				self.o2 = math.ceil(self.o2prod + math.random(2,4) * self.overdrivefactor)
+        self.deuterium = math.ceil(self.deutcon + math.random(1,2) * self.overdrivefactor)
+				self.nitrogen = math.ceil(self.nitroprod + math.random(2,4) * self.overdrivefactor)
         
         if self.overdrivefactor > 1 then
             if CAF and CAF.GetAddon("Life Support") then
@@ -167,9 +167,9 @@ function ENT:ExtractGas()
         end
         
     else
-        self.tritium = self.tritcon + math.random(1,2)
+        self.deuterium = self.deutcon + math.random(1,2)
         self.energy = self.econ + math.random(1,2)
-				self.o2 = self.o2prod + math.random(2,4)
+				self.nitrogen = self.nitroprod + math.random(2,4)
     end
 		local waterlevel = 0
 		if CAF then
@@ -178,28 +178,28 @@ function ENT:ExtractGas()
 			waterlevel = self:WaterLevel()
 		end
 		if (waterlevel==1) then --x2 production if underwater
-			self.o2 = self.o2*1.5
+			self.nitrogen = self.nitrogen*1.5
 		end
     
 	if ( self:CanRun() ) then
-        RD.ConsumeResource(self,"energy", self.energy)
-				RD.ConsumeResource(self,"Tritium",self.tritium)
-        
-				if GAMEMODE.IsSpacebuildDerived then
-					local left = RD.SupplyResource(self, "oxygen", self.environment:Convert(0, -1, self.o2))
-					self.environment:Convert(-1, 0, left)
-				else
-					RD.SupplyResource(self.Entity,"oxygen",self.o2)
-				end
+		RD.ConsumeResource(self,"energy", self.energy)
+		RD.ConsumeResource(self,"Deuterium",self.deuterium)
+		
+		if GAMEMODE.IsSpacebuildDerived then
+			local left = RD.SupplyResource(self, "nitrogen", self.environment:Convert(2, -1, self.nitrogen))
+			self.environment:Convert(-1, 2, left)
+		else
+			RD.SupplyResource(self.Entity,"nitrogen",self.nitrogen)
+		end
 		if self.environment then
-			self.environment:Convert(0,-1, self.energy)
+			self.environment:Convert(2,-1, self.energy)
 		end
 	else
 		self:TurnOff()
 	end
 	
 	if not (WireAddon == nil) then
-			Wire_TriggerOutput(self.Entity,"O2 Output", self.o2)
+			Wire_TriggerOutput(self.Entity,"Nitrogen Output", self.nitrogen)
 			Wire_TriggerOutput(self.Entity, "On", self.active)
   end
 		
@@ -208,22 +208,22 @@ end
 
 function ENT:CanRun()
 	local RD = CAF.GetAddon("Resource Distribution")
-    local energy = RD.GetResourceAmount(self,"energy")
-		local tritium = RD.GetResourceAmount(self,"Tritium")
-    if (energy >= self.energy) and (tritium >= self.tritium) then
-        return true
-    else
-        return false
-    end
+	local energy = RD.GetResourceAmount(self,"energy")
+	local deuterium = RD.GetResourceAmount(self,"Deuterium")
+	if (energy >= self.energy) and (deuterium >= self.deuterium) then
+		return true
+	else
+		return false
+	end
 end
 
 function ENT:Think()
-    self.BaseClass.Think(self)
-    
+	self.BaseClass.Think(self)
+
 	if ( self.Active == 1 ) then
 		self:ExtractGas()
 	end
-    
+
 	self.Entity:NextThink( CurTime() + 1 )
 	return true
 end
