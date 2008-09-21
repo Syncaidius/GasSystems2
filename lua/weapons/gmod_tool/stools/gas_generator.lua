@@ -86,6 +86,7 @@ local gas_gen_models = {
 	{"Propane Collector", "models/syncaidius/gas_collector.mdl", "gas_collector_prop"},
 	{"Deuterium Collector", "models/syncaidius/gas_collector.mdl", "gas_collector_deut"},
 	{"Tritium Collector", "models/syncaidius/gas_collector.mdl", "gas_collector_trit"},
-	{"Tritium Inverter", "models/props_c17/light_decklight01_off.mdl", "gas_tritinverter"},
+	{"Tritium Inverter", "models/syncaidius/gas_inverter.mdl", "gas_tritinverter"},
+	{"Deuterium Inverter", "models/syncaidius/gas_inverter.mdl", "gas_deutinverter"},
 }
 RD2_ToolRegister( TOOL, gas_gen_models, Makegas_generator,"gas_generator",24)

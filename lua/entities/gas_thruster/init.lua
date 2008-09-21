@@ -24,8 +24,6 @@ function ENT:Initialize()
 	self.Effect = "fire"
 	self.resource = "energy"
 	self.consumption = 0
-	self.energydiv = 200
-	self.thrustmult = 5
 	self.active = 0
 	self.massed = true
 	self.force = 0
@@ -77,7 +75,7 @@ function ENT:SetForce( force, mul )
 	local ThrusterWorldForce = phys:LocalToWorldVector( self.ThrustOffset * -1 )
 
 	-- Calculate the velocity
-	ThrusterWorldForce = ThrusterWorldForce * force * mul * self.multiplier
+	ThrusterWorldForce = ThrusterWorldForce * force * mul * self.multiplier * 9
 	self.ForceLinear, self.ForceAngle = phys:CalculateVelocityOffset( ThrusterWorldForce, ThrusterWorldPos );
 	self.ForceLinear = phys:WorldToLocalVector( self.ForceLinear )
 	
