@@ -5,16 +5,18 @@ CreateConVar( "cl_drawhoverballs", "1" )
 
 include('shared.lua')
 
+list.Set( "LSEntOverlayText" , "gas_hoverball", {HasOOO = true, resnames = {"energy"}} )
+
 /*---------------------------------------------------------
    Name: Initialize
 ---------------------------------------------------------*/
 function ENT:Initialize()
 
-    self.ShouldDraw = 1
-    self.NextSmokeEffect = 0
-    
 	self.Refraction = Material( "sprites/heatwave" )
 	self.Glow		= Material( "sprites/light_glow02_add" )
+	self.ShouldDraw = 1
+	
+	self.NextSmokeEffect = 0
 
 end
 

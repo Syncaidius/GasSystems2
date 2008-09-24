@@ -6,11 +6,11 @@ util.PrecacheSound( "ambient/machines/thumper_startup1.wav" )
 include('shared.lua')
 
 if not (WireAddon == nil) then
-    ENT.WireDebugName = "S Methane Reactor"
+    ENT.WireDebugName = "L Methane Reactor"
 end
 
 function ENT:Initialize()
-	self.Entity:SetModel( "models/syncaidius/gas_sreactor.mdl" )
+	self.Entity:SetModel( "models/syncaidius/gas_lreactor.mdl" )
 	self:SetSkin(0)
 	self.BaseClass.Initialize(self)
 
@@ -23,13 +23,13 @@ function ENT:Initialize()
 	self.disuse = 0 --use disabled via wire input
 	self.energy = 0
 	self.nitrous = 0
-    self.Methane = 0
+  self.Methane = 0
 	
-	self:SetMaxHealth(250)
-    self:SetHealth(self:GetMaxHealth())
-    -- resource attributes
-    self.energyprod = 180 --Energy production
-    self.methanecon = 25 -- Methane consumption
+	self:SetMaxHealth(650)
+	self:SetHealth(self:GetMaxHealth())
+	-- resource attributes
+	self.energyprod = 870 --Energy production
+	self.methanecon = 85 -- Methane consumption
     
 	CAF.GetAddon("Resource Distribution").AddResource(self,"Methane",0)
 	if not (WireAddon == nil) then self.Inputs = Wire_CreateInputs(self.Entity, { "On", "Overdrive", "Disable Use" }) end
@@ -37,7 +37,7 @@ function ENT:Initialize()
 	
 	if (phys:IsValid()) then
 		phys:Wake()
-		phys:SetMass(300)
+		phys:SetMass(440)
 	end
 end
 
@@ -50,26 +50,26 @@ function ENT:TriggerInput(iname, value)
 	if (iname == "On") then
 		if (value ~= 0) then
 			if ( self.Active == 0 ) then
-                self:TurnOn()
-                if (self.overdrive == 1) then
-                    self:OverdriveOn()
-                end
+				self:TurnOn()
+				if (self.overdrive == 1) then
+						self:OverdriveOn()
+				end
 			end
 		else
 			if ( self.Active == 1 ) then
-                self:TurnOff()
+				self:TurnOff()
 			end
 		end
 	elseif (iname == "Overdrive") then
-        if (self.Active == 1) then
-            if (value > 0) then
-                self:OverdriveOn()
-                self.overdrivefactor = value
-            else
-                self:OverdriveOff()
-            end
-            if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "Overdrive", self.overdrive) end
-        end
+		if (self.Active == 1) then
+			if (value > 0) then
+					self:OverdriveOn()
+					self.overdrivefactor = value
+			else
+					self:OverdriveOff()
+			end
+			if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "Overdrive", self.overdrive) end
+		end
 	elseif (iname == "Disable Use") then
 		if (value >= 1) then
 			self.disuse = 1
@@ -78,7 +78,6 @@ function ENT:TriggerInput(iname, value)
 		end
 	end
 end
-
 
 function ENT:OnRemove()
     self.BaseClass.OnRemove(self)
@@ -219,7 +218,7 @@ function ENT:CanRun()
 end
 
 function ENT:Think()
-    self.BaseClass.Think(self)
+  self.BaseClass.Think(self)
     
 	if ( self.Active == 1 ) then
 		self:GenerateEnergy()
@@ -234,18 +233,18 @@ function ENT:AcceptInput(name,activator,caller)
 		if ( self.Active == 0 ) then
 			self:TurnOn()
 		elseif (self.Active == 1 && self.overdrive==0) then
-		    self:OverdriveOn()
+			self:OverdriveOn()
 			self.overdrivefactor = 2
 		elseif (self.overdrive > 0) then
-            self:TurnOff()
+			self:TurnOff()
 		end
 	end
 end
 
 function ENT:PreEntityCopy()
-    self.BaseClass.PreEntityCopy(self)
+  self.BaseClass.PreEntityCopy(self)
 end
 
 function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
-    self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
+  self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
 end

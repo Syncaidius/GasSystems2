@@ -3,24 +3,23 @@ AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "shared.lua" )
 include('shared.lua')
 
-if not (WireAddon == nil) then
-    ENT.WireDebugName = "Energy Hoverball"
-end
+ENT.WireDebugName = "Hoverball"
 
 /*---------------------------------------------------------
    Name: Initialize
 ---------------------------------------------------------*/
 function ENT:Initialize()
-	self.BaseClass.Initialize(self)
+	
 	self.Entity:SetModel( "models/dav0r/hoverball.mdl" )
-    self.Entity:DrawShadow(false)
 	
 	// Don't use the model's physics object, create a perfect sphere
 	
 	self.Entity:PhysicsInitSphere( 8, "metal_bouncy" )
 	
+	CAF.GetAddon("Resource Distribution").AddResource(self,"energy",0)
+	
 	local phys = self.Entity:GetPhysicsObject()
-	RD_AddResource(self.Entity, "energy", 0)
+	
 	if ( phys:IsValid() ) then 
 		phys:SetMass( 100 )
 		phys:EnableGravity( false )
@@ -30,65 +29,43 @@ function ENT:Initialize()
 	// Start the motion controller (so PhysicsSimulate gets called)
 	self.Entity:StartMotionController()
 	
-	self.maxhealth = 700
-	self.health = self.maxhealth
-	self.damaged = 0
 	self.Fraction = 0
-	self.energycon = 0
-	self.strength = 1
-	self.resistance = 0
-	self.speed = 1
 	
 	self.ZVelocity = 0
 	self:SetTargetZ( self.Entity:GetPos().z )
 	self:SetSpeed( 1 )
 	self:EnableHover()
 
-	self.Inputs = Wire_CreateInputs(self.Entity, { "ZVelocity", "HoverMode", "SetZTarget", "Speed", "Strength", "Resistance"})
-	self.Outputs = Wire_CreateOutputs(self.Entity, { "Zpos", "Xpos", "Ypos", "Speed", "Strength", "Resistance", "EnergyConsumption" })
+	self.Inputs = Wire_CreateInputs(self.Entity, { "A: ZVelocity", "B: HoverMode", "C: SetZTarget" })
+	self.Outputs = Wire_CreateOutputs(self.Entity, { "A: Zpos", "B: Xpos", "C: Ypos" })
+	
 end
 
 
 function ENT:TriggerInput(iname, value)
-	if (iname == "ZVelocity") then
+	if (iname == "A: ZVelocity") then
 		self:SetZVelocity( value )
-	elseif (iname == "HoverMode") then
+	elseif (iname == "B: HoverMode") then
 		if (value >= 1 && !self:GetHoverMode()) then
 			self:EnableHover()
 		elseif (self:GetHoverMode()) then
 			self:DisableHover()
 		end
-	elseif (iname == "SetZTarget") then
+	elseif (iname == "C: SetZTarget") then
 		self:SetTargetZ(value)
-	elseif (iname == "Speed") then
-		self:SetSpeed( value )
-		self.speed = value
-	elseif (iname == "Strength") then
-		if ( value < 1 ) then 
-			value = 0.1
-		end
-		self:SetStrength(value)
-		self.strength = value
-	elseif (iname == "Resistance") then
-		if ( value < 0 ) then
-			value = 0
-		end
-		self:SetAirResistance(value)
-		self.resistance = value
 	end
 end
 
 
 function ENT:EnableHover()
 	self:SetHoverMode( true )
-	self:SetStrength( self.strength ) //reset weight so it will work
+	self:SetStrength( self.strength or 1 ) //reset weight so it will work
 	self:SetTargetZ ( self.Entity:GetPos().z ) //set height to current
 	local phys = self.Entity:GetPhysicsObject()
 	if ( phys:IsValid() ) then
 		phys:EnableGravity( false )
 		phys:Wake()
 	end
-	self:SetOOO(1)
 end
 
 function ENT:DisableHover()
@@ -98,7 +75,6 @@ function ENT:DisableHover()
 	if ( phys:IsValid() ) then
 		phys:EnableGravity( true ) //falls slowly otherwise
 	end
-	self:SetOOO(0)
 end
 
 
@@ -115,46 +91,18 @@ function ENT:OnTakeDamage( dmginfo )
 	//self.Entity:TakePhysicsDamage( dmginfo )
 end
 
-function ENT:Damage()
-	if (self.damaged == 0) then
-		self.damaged = 1
-	end
-end
-
-function ENT:Repair()
-	self.health = self.maxhealth
-	self.damaged = 0
-end
-
 /*---------------------------------------------------------
    Name: Think
 ---------------------------------------------------------*/
 function ENT:Think()
-    self.BaseClass.Think(self)
-	self.Entity:NextThink( CurTime() + 1 )
-    self.Entity:SetNetworkedInt( "TargetZ", self:GetTargetZ() )
-    
-    self.energycon = math.abs(math.floor( self.speed + self.strength + (self.ZVelocity/2) ))
-    
-    if (self:CanRun() && self:GetHoverMode() ) then
-        RD_ConsumeResource(self.Entity, "energy", self.energycon)
-    else
-        self:DisableHover()
-	self.energycon = 0
-    end
-	Wire_TriggerOutput(self.Entity, "Speed", self.speed)
-	Wire_TriggerOutput(self.Entity, "Strength", self.strength)
-	Wire_TriggerOutput(self.Entity, "Resistance", self.resistance)
-    Wire_TriggerOutput(self.Entity, "EnergyConsumption", self.energycon)
-	return true
-end
 
- function ENT:CanRun()
- 
-	local energy = RD_GetResourceAmount(self.Entity, "energy")	
-	return (energy >= self.energycon)
+	self.Entity:NextThink( CurTime() + 0.25 )
+
+	self.Entity:SetNetworkedInt( "TargetZ", self:GetTargetZ() )
 	
- end
+	return true
+	
+end
 
 /*---------------------------------------------------------
    Name: Simulate
@@ -163,9 +111,9 @@ function ENT:PhysicsSimulate( phys, deltatime )
 	
 	local Pos = phys:GetPos()
 	
-	Wire_TriggerOutput(self.Entity, "Zpos", Pos.z)
-	Wire_TriggerOutput(self.Entity, "Xpos", Pos.x)
-	Wire_TriggerOutput(self.Entity, "Ypos", Pos.y)
+	Wire_TriggerOutput(self.Entity, "A: Zpos", Pos.z)
+	Wire_TriggerOutput(self.Entity, "B: Xpos", Pos.x)
+	Wire_TriggerOutput(self.Entity, "C: Ypos", Pos.y)
 	
 	
 	if (self:GetHoverMode()) then
@@ -198,9 +146,6 @@ function ENT:PhysicsSimulate( phys, deltatime )
 		local zVel = physVel.z
 		
 		Exponent = Exponent - (zVel * deltatime * 600 * ( AirResistance + 1 ) )
-		// The higher you make this 300 the less it will flop about
-		// I'm thinking it should actually be relative to any objects we're connected to
-		// Since it seems to flop more and more the heavier the object
 		
 		Exponent = math.Clamp( Exponent, -5000, 5000 )
 		
@@ -258,10 +203,3 @@ function ENT:SetStrength( strength )
 	end
 end
 
-function ENT:PreEntityCopy()
-    self.BaseClass.PreEntityCopy(self)
-end
-
-function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
-    self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
-end
