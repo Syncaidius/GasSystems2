@@ -51,6 +51,7 @@ function ENT:Repair()
 	self.damaged = 0
 end
 
+function ENT:Destruct()
 	local RD = CAF.GetAddon("Resource Distribution")
 	
 	if server_settings.Bool("GASSYS_TankExplosions") then
@@ -132,6 +133,7 @@ end
 	else
 		CAF.GetAddon("Life Support").Destruct( self.Entity )
 	end
+end
 
 function ENT:Output()
 	return 1

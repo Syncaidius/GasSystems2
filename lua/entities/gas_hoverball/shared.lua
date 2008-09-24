@@ -1,9 +1,9 @@
+
+
 ENT.Type = "anim"
 ENT.Base = "base_rd_entity"
 
-list.Set( "LSEntOverlayText" , "energy_hoverball", {HasOOO = true, num = 1, strings = {"Energy Hoverball\n","\nEnergy: "},resnames = {"energy"}} )
-
-ENT.PrintName		= "Energy HoverBall"
+ENT.PrintName		= "Hover Ball"
 ENT.Author			= ""
 ENT.Contact			= ""
 ENT.Purpose			= ""
@@ -19,6 +19,9 @@ end
 function ENT:SetTargetZ( z )
 	return self.Entity:SetNetworkedInt( 0, z )
 end
+
+
+
 
 function ENT:GetSpeed()
 

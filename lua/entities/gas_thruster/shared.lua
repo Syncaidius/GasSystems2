@@ -12,7 +12,7 @@ ENT.Instructions	= ""
 ENT.Spawnable			= false
 ENT.AdminSpawnable		= false
 
-list.Set( "LSEntOverlayText" , "gas_thruster", {HasOOO = true, resnames = {"energy"}} )
+list.Set( "LSEntOverlayText" , "gas_thruster", {HasOOO = false, resnames = {"energy"}} )
 
 function ENT:SetEffect( name )
 	self.Entity:SetNetworkedString( "Effect", name )

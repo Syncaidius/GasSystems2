@@ -10,31 +10,33 @@ if not (WireAddon == nil) then
 end
 
 function ENT:Initialize()
-	self.Entity:SetModel( "models//props_combine/headcrabcannister01a.mdl" )
-    self.BaseClass.Initialize(self)
-    self.Entity:SetColor(127,0, 0, 255)
+	self.Entity:SetModel( "models/syncaidius/gas_sreactor.mdl" )
+	self:SetSkin(1)
+	self.BaseClass.Initialize(self)
 
-    local phys = self.Entity:GetPhysicsObject()
+	local phys = self.Entity:GetPhysicsObject()
 	self.damaged = 0
 	self.overdrive = 0
 	self.overdrivefactor = 0
 	self.maxoverdrive = 4 -- maximum overdrive value allowed via wire input. Anything over this value may severely damage or destroy the device.
 	self.Active = 0
-    self:SetMaxHealth(250)
-    self:SetHealth(self:GetMaxHealth())
+	self:SetMaxHealth(250)
+	self:SetHealth(self:GetMaxHealth())
 	self.disuse = 0 --use disabled via wire input
 	self.energy = 0
 	self.nitrous = 0
-    self.Propane = 0
-	
-    -- resource attributes
-    self.energyprod = 190 --Energy production
-    self.Propanecon = 30 -- Propane consumption
-    
+	self.Propane = 0
+
+	-- resource attributes
+	self.energyprod = 190 --Energy production
+	self.Propanecon = 30 -- Propane consumption
+
 	CAF.GetAddon("Resource Distribution").AddResource(self,"Propane",0)
-	if not (WireAddon == nil) then self.Inputs = Wire_CreateInputs(self.Entity, { "On", "Overdrive", "Disable Use" }) end
-	if not (WireAddon == nil) then self.Outputs = Wire_CreateOutputs(self.Entity, { "On", "Overdrive", "Propane Consumption", "Energy Production"}) end
-	
+	if not (WireAddon == nil) then 
+		self.Inputs = Wire_CreateInputs(self.Entity, { "On", "Overdrive", "Disable Use" }) 
+		self.Outputs = Wire_CreateOutputs(self.Entity, { "On", "Overdrive", "Propane Consumption", "Energy Production"})
+	end
+
 	if (phys:IsValid()) then
 		phys:Wake()
 		phys:SetMass(300)
@@ -50,10 +52,10 @@ function ENT:TriggerInput(iname, value)
 	if (iname == "On") then
 		if (value ~= 0) then
 			if ( self.Active == 0 ) then
-                self:TurnOn()
-                if (self.overdrive == 1) then
-                    self:OverdriveOn()
-                end
+				self:TurnOn()
+				if (self.overdrive == 1) then
+						self:OverdriveOn()
+				end
 			end
 		else
 			if ( self.Active == 1 ) then
@@ -61,15 +63,15 @@ function ENT:TriggerInput(iname, value)
 			end
 		end
 	elseif (iname == "Overdrive") then
-        if (self.Active == 1) then
-            if (value > 0) then
-                self:OverdriveOn()
-                self.overdrivefactor = value
-            else
-                self:OverdriveOff()
-            end
-            if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "Overdrive", self.overdrive) end
-        end
+		if (self.Active == 1) then
+				if (value > 0) then
+						self:OverdriveOn()
+						self.overdrivefactor = value
+				else
+						self:OverdriveOff()
+				end
+				if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "Overdrive", self.overdrive) end
+		end
 	elseif (iname == "Disable Use") then
 		if (value >= 1) then
 			self.disuse = 1
@@ -81,9 +83,9 @@ end
 
 
 function ENT:OnRemove()
-    self.BaseClass.OnRemove(self)
-    self.Entity:StopSound( "k_lab.ambient_powergenerators" )
-    self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
+	self.BaseClass.OnRemove(self)
+	self.Entity:StopSound( "k_lab.ambient_powergenerators" )
+	self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
 end
 
 function ENT:Damage()
@@ -96,7 +98,6 @@ function ENT:Damage()
 end
 
 function ENT:Repair()
-	self.Entity:SetColor(127,0, 0, 255)
 	self:SetHealth(self:GetMaxHealth())
 	self.damaged = 0
 end
