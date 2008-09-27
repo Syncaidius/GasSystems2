@@ -6,12 +6,12 @@ util.PrecacheSound( "Airboat_engine_stop" )
 include('shared.lua')
 
 if not (WireAddon == nil) then
-  ENT.WireDebugName = "Tritium Inverter"
+  ENT.WireDebugName = "Methane Inverter"
 end
 
 function ENT:Initialize()
 	self.Entity:SetModel("models/syncaidius/gas_inverter.mdl")
-	self:SetSkin(0)
+	self:SetSkin(2)
   self.BaseClass.Initialize(self)
 
   local phys = self.Entity:GetPhysicsObject()
@@ -25,22 +25,22 @@ function ENT:Initialize()
   self:SetHealth(self:GetMaxHealth())
 	
 	self.energy = 0
-	self.tritium = 0
-	self.o2 = 0
+	self.methane = 0
+	self.water = 0
 	
     -- resource attributes
-    self.o2prod = 125 --O2 production
+    self.waterprod = 270 --O2 production
     self.econ = 15 -- Energy consumption
-		self.tritcon = 15 -- Tritium Consumption
+		self.methcon = 15 -- Methane Consumption
     
 	CAF.GetAddon("Resource Distribution").AddResource(self,"energy",0)
-	CAF.GetAddon("Resource Distribution").AddResource(self,"Tritium",0)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"Methane",0)
 	if not (WireAddon == nil) then self.Inputs = Wire_CreateInputs(self.Entity, { "On", "Overdrive"}) end
 	if not (WireAddon == nil) then self.Outputs = Wire_CreateOutputs(self.Entity, { "On", "Overdrive", "O2 Output"}) end
 	
 	if (phys:IsValid()) then
 		phys:Wake()
-		phys:SetMass(140)
+		phys:SetMass(130)
 	end
 end
 
@@ -149,8 +149,8 @@ function ENT:ExtractGas()
 	local RD = CAF.GetAddon("Resource Distribution")
 	if ( self.overdrive == 1 ) then
         self.energy = math.ceil((self.econ + math.random(1,2)) * self.overdrivefactor)
-        self.tritium = math.ceil(self.tritcon + math.random(1,2) * self.overdrivefactor)
-				self.o2 = math.ceil(self.o2prod + math.random(2,4) * self.overdrivefactor)
+        self.methane = math.ceil(self.methcon + math.random(1,2) * self.overdrivefactor)
+				self.water = math.ceil(self.waterprod + math.random(2,4) * self.overdrivefactor)
         
         if self.overdrivefactor > 1 then
             if CAF and CAF.GetAddon("Life Support") then
@@ -167,9 +167,9 @@ function ENT:ExtractGas()
         end
         
     else
-        self.tritium = self.tritcon + math.random(1,2)
+        self.methane = self.methcon + math.random(1,2)
         self.energy = self.econ + math.random(1,2)
-				self.o2 = self.o2prod + math.random(2,4)
+				self.water = self.waterprod + math.random(2,4)
     end
 		local waterlevel = 0
 		if CAF then
@@ -178,20 +178,24 @@ function ENT:ExtractGas()
 			waterlevel = self:WaterLevel()
 		end
 		if (waterlevel==1) then --x2 production if underwater
-			self.o2 = self.o2*1.5
+			self.water = self.water*1.5
 		end
     
 	if ( self:CanRun() ) then
 		RD.ConsumeResource(self,"energy", self.energy)
-		RD.ConsumeResource(self,"Tritium",self.tritium)
+		RD.ConsumeResource(self,"Methane",self.methane)
 		
-		RD.SupplyResource(self.Entity,"oxygen",self.o2)
+		if GAMEMODE.IsSpacebuildDerived then
+			RD.SupplyResource(self, "water", self.water)
+		else
+			RD.SupplyResource(self.Entity,"water",self.water)
+		end
 	else
 		self:TurnOff()
 	end
 	
 	if not (WireAddon == nil) then
-			Wire_TriggerOutput(self.Entity,"O2 Output", self.o2)
+			Wire_TriggerOutput(self.Entity,"O2 Output", self.water)
 			Wire_TriggerOutput(self.Entity, "On", self.active)
   end
 end
@@ -199,8 +203,8 @@ end
 function ENT:CanRun()
 	local RD = CAF.GetAddon("Resource Distribution")
     local energy = RD.GetResourceAmount(self,"energy")
-		local tritium = RD.GetResourceAmount(self,"Tritium")
-    if (energy >= self.energy) and (tritium >= self.tritium) then
+		local methane = RD.GetResourceAmount(self,"Methane")
+    if (energy >= self.energy) and (methane >= self.methane) then
         return true
     else
         return false

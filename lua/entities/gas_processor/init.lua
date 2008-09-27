@@ -202,7 +202,6 @@ function ENT:ConvertGas()
 		RD.SupplyResource(self.Entity,"Propane",self.propane)
 
 		if self.environment then
-			self.environment:Convert(0,1, self.energy) -- O2 to CO2
 			self.environment:Convert(1,-1, self.ngas) --CO2 to E-air
 		end
 		if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 1) end
