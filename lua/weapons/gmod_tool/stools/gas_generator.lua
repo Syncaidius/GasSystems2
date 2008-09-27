@@ -70,6 +70,7 @@ if( SERVER ) then
 	duplicator.RegisterEntityClass("Deuterium Collector", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
 	duplicator.RegisterEntityClass("Large Methane Reactor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
 	duplicator.RegisterEntityClass("Micro Methane Reactor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Methane Rehydrator", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
 end
 if (GAMEMODE.Name == "SpaceBuild" || SpaceBuild) then MsgAll("You need the new Spacebuild (3) to use gas systems, you are using Spacebuild1!\n") end
 if (GAMEMODE.Name == "SpaceBuild2" || SpaceBuild2) then MsgAll("You need the new Spacebuild(3) to use gas systems, you are using Spacebuild2!\n") end
@@ -88,5 +89,6 @@ local gas_gen_models = {
 	{"Tritium Collector", "models/syncaidius/gas_collector.mdl", "gas_collector_trit"},
 	{"Tritium Inverter", "models/syncaidius/gas_inverter.mdl", "gas_tritinverter"},
 	{"Deuterium Inverter", "models/syncaidius/gas_inverter.mdl", "gas_deutinverter"},
+	{"Methane Rehydrator", "models/syncaidius/gas_inverter.mdl", "gas_rehydrator"},
 }
 RD2_ToolRegister( TOOL, gas_gen_models, Makegas_generator,"gas_generator",24)
