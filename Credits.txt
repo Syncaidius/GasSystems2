@@ -6,3 +6,4 @@ Any other people who have helped with this addon will be listed here:
 
 Pegasus(KW/duckordie) - small processed gas tank model
 Killers2 - Letting me test it on his SB server before release.
+Snakesvx - For helping me with some of the LS3 code in gas systems.
