@@ -163,12 +163,12 @@ end
 function ENT:GenerateEnergy()
 	local RD = CAF.GetAddon("Resource Distribution")
 	if ( self.overdrive == 1 ) then
-        self.energy = math.ceil((self.energyprod + math.random(5,15)) * self.overdrivefactor)
-        self.nitrous = math.ceil(self.nitrouscon * self.overdrivefactor)
-        self.Propane = math.ceil(self.Propanecon * self.overdrivefactor)
-        
-        if self.overdrivefactor > 1 then
-            if CAF and CAF.GetAddon("Life Support") then
+		self.energy = math.ceil((self.energyprod + math.random(5,15)) * self.overdrivefactor)
+		self.nitrous = math.ceil(self.nitrouscon * self.overdrivefactor)
+		self.Propane = math.ceil(self.Propanecon * self.overdrivefactor)
+			
+		if self.overdrivefactor > 1 then
+			if CAF and CAF.GetAddon("Life Support") then
 				CAF.GetAddon("Life Support").DamageLS(self, math.random(10,10)*self.overdrivefactor)
 			else
 				self:SetHealth( self:Health() - math.random(10,10)*self.overdrivefactor)
@@ -179,19 +179,18 @@ function ENT:GenerateEnergy()
 			if self.overdrivefactor > self.maxoverdrive then
 				self:Destruct()
 			end
-        end
-        
-    else
-        self.energy = (self.energyprod + math.random(5,15))
-        self.Propane = self.Propanecon
-    end
+		end
+	else
+			self.energy = (self.energyprod + math.random(5,15))
+			self.Propane = self.Propanecon
+	end
     
 	if ( self:CanRun() ) then
-        RD.ConsumeResource(self, "Propane", self.Propane)
-        
-        RD.SupplyResource(self.Entity, "energy",self.energy)
+		RD.ConsumeResource(self, "Propane", self.Propane)
+		
+		RD.SupplyResource(self.Entity, "energy",self.energy)
 
-        if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 1) end
+		if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 1) end
 	else
 		self.energy = 10
 		RD.SupplyResource(self.Entity, "energy",self.energy)
@@ -204,9 +203,9 @@ function ENT:GenerateEnergy()
 	end
 	
 	if not (WireAddon == nil) then
-        Wire_TriggerOutput(self.Entity, "Energy Production", self.energy)
-        Wire_TriggerOutput(self.Entity, "Propane Consumption", self.Propane)
-    end
+		Wire_TriggerOutput(self.Entity, "Energy Production", self.energy)
+		Wire_TriggerOutput(self.Entity, "Propane Consumption", self.Propane)
+  end
 		
 	return
 end

@@ -204,11 +204,9 @@ function ENT:GenerateEnergy()
 	end
 	
 	if not (WireAddon == nil) then
-        Wire_TriggerOutput(self.Entity, "Energy Production", self.energy)
-        Wire_TriggerOutput(self.Entity, "Propane Consumption", self.Propane)
-    end
-		
-	return
+		Wire_TriggerOutput(self.Entity, "Energy Production", self.energy)
+		Wire_TriggerOutput(self.Entity, "Propane Consumption", self.Propane)
+  end
 end
 
 function ENT:CanRun()

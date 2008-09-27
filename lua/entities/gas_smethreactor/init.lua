@@ -201,25 +201,23 @@ function ENT:GenerateEnergy()
 	end
 	
 	if not (WireAddon == nil) then
-        Wire_TriggerOutput(self.Entity, "Energy Production", self.energy)
-        Wire_TriggerOutput(self.Entity, "Methane Consumption", self.Methane)
-    end
-		
-	return
+		Wire_TriggerOutput(self.Entity, "Energy Production", self.energy)
+		Wire_TriggerOutput(self.Entity, "Methane Consumption", self.Methane)
+  end
 end
 
 function ENT:CanRun()
 	local RD = CAF.GetAddon("Resource Distribution")
-    local Methane = RD.GetResourceAmount(self, "Methane")
-    if (Methane >= self.Methane) then
-        return true
-    else
-        return false
-    end
+	local Methane = RD.GetResourceAmount(self, "Methane")
+	if (Methane >= self.Methane) then
+		return true
+	else
+		return false
+	end
 end
 
 function ENT:Think()
-    self.BaseClass.Think(self)
+  self.BaseClass.Think(self)
     
 	if ( self.Active == 1 ) then
 		self:GenerateEnergy()
@@ -234,10 +232,10 @@ function ENT:AcceptInput(name,activator,caller)
 		if ( self.Active == 0 ) then
 			self:TurnOn()
 		elseif (self.Active == 1 && self.overdrive==0) then
-		    self:OverdriveOn()
+		  self:OverdriveOn()
 			self.overdrivefactor = 2
 		elseif (self.overdrive > 0) then
-            self:TurnOff()
+      self:TurnOff()
 		end
 	end
 end
