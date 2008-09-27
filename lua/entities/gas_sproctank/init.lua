@@ -8,17 +8,17 @@ if not (WireAddon == nil) then
 end
 
 function ENT:Initialize()
-	self.Entity:SetModel( "models/pegasus/protank_small.mdl" )
-    self.BaseClass.Initialize(self)
+	self.Entity:SetModel( "models/syncaidius/sprocstore.mdl" )
+  self.BaseClass.Initialize(self)
 
-    local phys = self.Entity:GetPhysicsObject()
+  local phys = self.Entity:GetPhysicsObject()
 	if (phys:IsValid()) then
 		phys:Wake()
 		phys:SetMass(200)
 	end
 	
 	self.damaged = 0
- self:SetMaxHealth(350)
+	self:SetMaxHealth(350)
   self:SetHealth(self:GetMaxHealth())
 
 	CAF.GetAddon("Resource Distribution").AddResource(self,"Methane",5000)
@@ -56,7 +56,7 @@ function ENT:Destruct()
 		local res3 = RD.GetResourceAmount(self,"Deuterium")
 		local res4 = RD.GetResourceAmount(self,"Tritium")
 		
-		local resource = (resource+resource2+resource3+resource4)/2 --divide by 2 to stop it being a tiny tank/uber explosion.
+		local resource = (res1+res2+res3+res4)/2 --divide by 2 to stop it being a tiny tank/uber explosion.
 
 		if (resource==0) then 
 			resource=1 
@@ -143,17 +143,17 @@ end
 function ENT:UpdateWireOutputs()
     if not (WireAddon == nil) then
 		local RD = CAF.GetAddon("Resource Distribution")
-        Wire_TriggerOutput(self.Entity, "Methane", RD.GetResourceAmount( self, "Methane" ))
-        Wire_TriggerOutput(self.Entity, "Propane", RD.GetResourceAmount( self, "Propane" ))
+    Wire_TriggerOutput(self.Entity, "Methane", RD.GetResourceAmount( self, "Methane" ))
+    Wire_TriggerOutput(self.Entity, "Propane", RD.GetResourceAmount( self, "Propane" ))
 		Wire_TriggerOutput(self.Entity, "Deuterium",RD.GetResourceAmount(self,"Deuterium"))
 		Wire_TriggerOutput(self.Entity, "Tritium",RD.GetResourceAmount(self,"Tritium"))
 	end
 end
 
 function ENT:Think()
-    self.BaseClass.Think(self)
+  self.BaseClass.Think(self)
     
-    self:UpdateWireOutputs()
+  self:UpdateWireOutputs()
     
 	self.Entity:NextThink( CurTime() + 1 )
 	return true
@@ -174,9 +174,9 @@ function ENT:AcceptInput(name,activator,caller)
 end
 
 function ENT:PreEntityCopy()
-    self.BaseClass.PreEntityCopy(self)
+  self.BaseClass.PreEntityCopy(self)
 end
 
 function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
-    self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
+  self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
 end

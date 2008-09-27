@@ -4,28 +4,30 @@ AddCSLuaFile( "shared.lua" )
 include('shared.lua')
 
 if not (WireAddon == nil) then
-    ENT.WireDebugName = "S Tritium Tank"
+    ENT.WireDebugName = "L Processed Gas Tank"
 end
 
 function ENT:Initialize()
-	self.Entity:SetModel( "models/syncaidius/gas_tank_small.mdl" )
-    self.BaseClass.Initialize(self)
-	self:SetSkin(3)
+	self.Entity:SetModel( "models/syncaidius/lprocstore.mdl" )
+  self.BaseClass.Initialize(self)
 
-    local phys = self.Entity:GetPhysicsObject()
+  local phys = self.Entity:GetPhysicsObject()
 	if (phys:IsValid()) then
 		phys:Wake()
-		phys:SetMass(100)
+		phys:SetMass(320)
 	end
 	
 	self.damaged = 0
-	self:SetMaxHealth(300)
+	self:SetMaxHealth(980)
   self:SetHealth(self:GetMaxHealth())
 
-	CAF.GetAddon("Resource Distribution").AddResource(self,"Tritium",5000)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"Methane",24000)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"Propane",24000)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"Deuterium",25000)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"Tritium",25000)
 	
 	if not (WireAddon == nil) then
-		self.Outputs = Wire_CreateOutputs(self.Entity, {"Tritium", "Tritium Tank Capacity", "Tritium Net Capacity"}) 
+		self.Outputs = Wire_CreateOutputs(self.Entity, {"Methane","Propane","Deuterium","Tritium"}) 
 	end
 end
 
@@ -40,7 +42,6 @@ function ENT:Damage()
 end
 
 function ENT:Repair()
-	self.Entity:SetColor(255,255,255, 255)
 	self:SetHealth(self:GetMaxHealth())
 	self.damaged = 0
 end
@@ -49,13 +50,18 @@ function ENT:Destruct()
 	local RD = CAF.GetAddon("Resource Distribution")
 	
 	if server_settings.Bool("GASSYS_TankExplosions") then
-		local resource = RD.GetResourceAmount(self,"Tritium")
+		local res1 = RD.GetResourceAmount(self,"Methane")
+		local res2 = RD.GetResourceAmount(self,"Propane")
+		local res3 = RD.GetResourceAmount(self,"Deuterium")
+		local res4 = RD.GetResourceAmount(self,"Tritium")
+		
+		local resource = (res1+res2+res3+res4)/2 --divide by 2 to stop it being a tiny tank/uber explosion.
 
 		if (resource==0) then 
 			resource=1 
 		end
-		if (resource>5000) then
-			resource=5000
+		if (resource>49000) then
+			resource=49000
 		end
 		
 		local magnit=math.floor(resource/50)
@@ -136,16 +142,17 @@ end
 function ENT:UpdateWireOutputs()
     if not (WireAddon == nil) then
 		local RD = CAF.GetAddon("Resource Distribution")
-    Wire_TriggerOutput(self.Entity, "Tritium Gas", RD.GetResourceAmount( self, "Tritium" ))
-    Wire_TriggerOutput(self.Entity, "Tritium Tank Capacity", RD.GetUnitCapacity( self, "Tritium" ))
-		Wire_TriggerOutput(self.Entity, "Tritium Net Capacity", RD.GetNetworkCapacity( self, "Tritium" ))
+    Wire_TriggerOutput(self.Entity, "Methane", RD.GetResourceAmount( self, "Methane" ))
+    Wire_TriggerOutput(self.Entity, "Propane", RD.GetResourceAmount( self, "Propane" ))
+		Wire_TriggerOutput(self.Entity, "Deuterium",RD.GetResourceAmount(self,"Deuterium"))
+		Wire_TriggerOutput(self.Entity, "Tritium",RD.GetResourceAmount(self,"Tritium"))
 	end
 end
 
 function ENT:Think()
-    self.BaseClass.Think(self)
+  self.BaseClass.Think(self)
     
-    self:UpdateWireOutputs()
+  self:UpdateWireOutputs()
     
 	self.Entity:NextThink( CurTime() + 1 )
 	return true
@@ -154,15 +161,21 @@ end
 function ENT:AcceptInput(name,activator,caller)
 	if name == "Use" and caller:IsPlayer() and caller:KeyDownLast(IN_USE) == false then
 		local RD = CAF.GetAddon("Resource Distribution")
-		local gascur = RD.GetResourceAmount( self, "Tritium" )
-		caller:ChatPrint("There is "..tostring(gascur).." Tritium stored in this resource network.")
+		local propane = RD.GetResourceAmount( self, "Propane" )
+		local methane = RD.GetResourceAmount(self,"Methane")
+		local deut = RD.GetResourceAmount(self,"Deuterium")
+		local trit = RD.GetResourceAmount(self,"Tritium")
+		caller:ChatPrint("There is "..tostring(propane).." Propane stored in this resource network.")
+		caller:ChatPrint("There is "..tostring(methane).." Propane stored in this resource network.")
+		caller:ChatPrint("There is "..tostring(deut).." Deuterium stored in this resource network.")
+		caller:ChatPrint("There is "..tostring(trit).." Tritium stored in this resource network.")
 	end
 end
 
 function ENT:PreEntityCopy()
-    self.BaseClass.PreEntityCopy(self)
+  self.BaseClass.PreEntityCopy(self)
 end
 
 function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
-    self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
+  self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
 end

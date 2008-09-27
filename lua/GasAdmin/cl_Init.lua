@@ -21,8 +21,6 @@ function GasAdmin.AdminPanel(Panel)
 	Panel:AddControl("Slider", {Label = "Max Gas Storages", Command = "sbox_maxgas_storage", Type = "Integer", Min = "0", Max = "999"})
 	Panel:AddControl("Slider", {Label = "Max Powered Thrusters", Command = "sbox_maxgas_thrusters", Type = "Integer", Min = "0", Max = "999"})
 	Panel:AddControl("CheckBox", {Label = "Gas Tank Explosions", Command = "GASSYS_TankExplosions"})
-	
-	Panel:AddControl("Button", {Text = "Apply Settings", Command = "GASSYS_applysettings"})
 end
 
 function GasAdmin.PopulateToolMenu()

@@ -202,8 +202,6 @@ function ENT:ExtractGas()
 			Wire_TriggerOutput(self.Entity,"Nitrogen Output", self.nitrogen)
 			Wire_TriggerOutput(self.Entity, "On", self.active)
   end
-		
-	return
 end
 
 function ENT:CanRun()
