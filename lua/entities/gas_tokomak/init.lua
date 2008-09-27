@@ -182,12 +182,12 @@ function ENT:GenerateEnergy()
     end
     
 	if ( self:CanRun() ) then
-        RD.ConsumeResource(self, "Deuterium", self.Deuterium)
-        RD.ConsumeResource(self, "Tritium", self.Tritium)
-		
-        RD.SupplyResource(self.Entity, "energy",self.energy)
+		RD.ConsumeResource(self, "Deuterium", self.Deuterium)
+		RD.ConsumeResource(self, "Tritium", self.Tritium)
 
-        if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 1) end
+		RD.SupplyResource(self.Entity, "energy",self.energy)
+
+		if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 1) end
 	else
 		local div = math.random(15,20)
 		self.energy = math.ceil(self.energyprod/div)
@@ -196,15 +196,10 @@ function ENT:GenerateEnergy()
 		CAF.GetAddon("Life Support").DamageLS(self, math.random(10,20))
 		if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 0) end
 	end
-	if self.environment then
-		self.environment:Convert(1,-1, self.energy)
-	end
 	
 	if not (WireAddon == nil) then
-        Wire_TriggerOutput(self.Entity, "Energy Production", self.energy)
-    end
-		
-	return
+		Wire_TriggerOutput(self.Entity, "Energy Production", self.energy)
+  end
 end
 
 function ENT:CanRun()
@@ -234,10 +229,10 @@ function ENT:AcceptInput(name,activator,caller)
 		if ( self.Active == 0 ) then
 			self:TurnOn()
 		elseif (self.Active == 1 && self.overdrive==0) then
-		    self:OverdriveOn()
+		  self:OverdriveOn()
 			self.overdrivefactor = 2
 		elseif (self.overdrive > 0) then
-            self:TurnOff()
+      self:TurnOff()
 		end
 	end
 end

@@ -196,15 +196,10 @@ function ENT:GenerateEnergy()
 		CAF.GetAddon("Life Support").DamageLS(self, math.random(10,20))
 		if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 0) end
 	end
-	if self.environment then
-		self.environment:Convert(1,-1, self.energy)
-	end
 	
 	if not (WireAddon == nil) then
-        Wire_TriggerOutput(self.Entity, "Energy Production", self.energy)
-    end
-		
-	return
+    Wire_TriggerOutput(self.Entity, "Energy Production", self.energy)
+  end
 end
 
 function ENT:CanRun()
