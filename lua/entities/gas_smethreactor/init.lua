@@ -27,7 +27,7 @@ function ENT:Initialize()
 	self:SetMaxHealth(250)
     self:SetHealth(self:GetMaxHealth())
     -- resource attributes
-    self.energyprod = 180 --Energy production
+    self.energyprod = 200 --Energy production
     self.methanecon = 25 -- Methane consumption
     
 	CAF.GetAddon("Resource Distribution").AddResource(self,"Methane",0)

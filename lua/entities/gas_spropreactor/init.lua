@@ -27,7 +27,7 @@ function ENT:Initialize()
 	self.Propane = 0
 
 	-- resource attributes
-	self.energyprod = 190 --Energy production
+	self.energyprod = 215 --Energy production
 	self.Propanecon = 30 -- Propane consumption
 
 	CAF.GetAddon("Resource Distribution").AddResource(self,"Propane",0)
