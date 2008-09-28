@@ -107,7 +107,6 @@ function ENT:CollectGas()
     
 	if ( self:CanRun() ) then
 		RD.ConsumeResource(self, "energy", self.energy)
-			
 		RD.SupplyResource(self.Entity,"Tritium",self.gas)
 	else
 		self:TurnOff()

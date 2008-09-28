@@ -136,7 +136,7 @@ end
 function ENT:UpdateWireOutputs()
     if not (WireAddon == nil) then
 		local RD = CAF.GetAddon("Resource Distribution")
-        Wire_TriggerOutput(self.Entity, "Deuterium Gas", RD.GetResourceAmount( self, "Deuterium" ))
+        Wire_TriggerOutput(self.Entity, "Deuterium", RD.GetResourceAmount( self, "Deuterium" ))
         Wire_TriggerOutput(self.Entity, "Deuterium Tank Capacity", RD.GetUnitCapacity( self, "Deuterium" ))
 		Wire_TriggerOutput(self.Entity, "Deuterium Net Capacity", RD.GetNetworkCapacity( self, "Deuterium" ))
 	end
