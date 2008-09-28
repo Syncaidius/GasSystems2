@@ -22,7 +22,6 @@ function ENT:Initialize()
 	self.Active = 0
 	self.disuse = 0 --use disabled via wire input
 	self.energy = 0
-	self.nitrous = 0
   self.Methane = 0
 	
 	self:SetMaxHealth(650)

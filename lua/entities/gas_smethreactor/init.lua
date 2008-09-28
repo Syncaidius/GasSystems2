@@ -22,8 +22,7 @@ function ENT:Initialize()
 	self.Active = 0
 	self.disuse = 0 --use disabled via wire input
 	self.energy = 0
-	self.nitrous = 0
-    self.Methane = 0
+  self.Methane = 0
 	
 	self:SetMaxHealth(250)
     self:SetHealth(self:GetMaxHealth())
@@ -81,9 +80,9 @@ end
 
 
 function ENT:OnRemove()
-    self.BaseClass.OnRemove(self)
-    self.Entity:StopSound( "k_lab.ambient_powergenerators" )
-    self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
+	self.BaseClass.OnRemove(self)
+	self.Entity:StopSound( "k_lab.ambient_powergenerators" )
+	self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
 end
 
 function ENT:Damage()
@@ -101,13 +100,13 @@ function ENT:Repair()
 end
 
 function ENT:TurnOn()
-    self.Active = 1
-    self:SetOOO(1)
-    if not (WireAddon == nil) then 
-        Wire_TriggerOutput(self.Entity, "On", 1)
-    end
-    self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
-    self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
+	self.Active = 1
+	self:SetOOO(1)
+	if not (WireAddon == nil) then 
+		Wire_TriggerOutput(self.Entity, "On", 1)
+	end
+	self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
+	self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
 end
 
 function ENT:TakeDamage(amount, attacker, inflictor)
@@ -118,34 +117,34 @@ function ENT:TakeDamage(amount, attacker, inflictor)
 end
 
 function ENT:TurnOff()
-    self.Active = 0
+	self.Active = 0
 	self.overdrive = 0
-    self:SetOOO(0)
-    if not (WireAddon == nil) then
-        Wire_TriggerOutput(self.Entity, "On", 0)
-    end
-    self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
+	self:SetOOO(0)
+	if not (WireAddon == nil) then
+		Wire_TriggerOutput(self.Entity, "On", 0)
+	end
+	self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
 	self.Entity:StopSound( "k_lab.ambient_powergenerators" )
 end
 
 function ENT:OverdriveOn()
-    self.overdrive = 1
-    self:SetOOO(2)
-    
-    self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
+	self.overdrive = 1
+	self:SetOOO(2)
+
+	self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
 	self.Entity:StopSound( "k_lab.ambient_powergenerators" )
-    self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
-    self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
+	self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
+	self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
 end
 
 function ENT:OverdriveOff()
-    self.overdrive = 0
-    self:SetOOO(1)
-    
-    self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
+	self.overdrive = 0
+	self:SetOOO(1)
+
+	self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
 	self.Entity:StopSound( "k_lab.ambient_powergenerators" )
-    self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
-    self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
+	self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
+	self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
 end
 
 function ENT:Destruct()
@@ -161,11 +160,11 @@ end
 function ENT:GenerateEnergy()
 	local RD = CAF.GetAddon("Resource Distribution")
 	if ( self.overdrive == 1 ) then
-        self.energy = math.ceil((self.energyprod + math.random(5,15)) * self.overdrivefactor)
-        self.Methane = math.ceil(self.methanecon * self.overdrivefactor)
-        
-        if self.overdrivefactor > 1 then
-            if CAF and CAF.GetAddon("Life Support") then
+		self.energy = math.ceil((self.energyprod + math.random(5,15)) * self.overdrivefactor)
+		self.Methane = math.ceil(self.methanecon * self.overdrivefactor)
+		
+		if self.overdrivefactor > 1 then
+			if CAF and CAF.GetAddon("Life Support") then
 				CAF.GetAddon("Life Support").DamageLS(self, math.random(10,10)*self.overdrivefactor)
 			else
 				self:SetHealth( self:Health() - math.random(10,10)*self.overdrivefactor)
@@ -176,19 +175,18 @@ function ENT:GenerateEnergy()
 			if self.overdrivefactor > self.maxoverdrive then
 				self:Destruct()
 			end
-        end
-        
-    else
-        self.energy = (self.energyprod + math.random(5,15))
-        self.Methane = self.methanecon
-    end
+		end
+	else
+			self.energy = (self.energyprod + math.random(5,15))
+			self.Methane = self.methanecon
+	end
     
 	if ( self:CanRun() ) then
-        RD.ConsumeResource(self, "Methane", self.Methane)
-        
-        RD.SupplyResource(self.Entity, "energy",self.energy)
+		RD.ConsumeResource(self, "Methane", self.Methane)
 
-        if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 1) end
+		RD.SupplyResource(self.Entity, "energy",self.energy)
+
+		if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 1) end
 	else
 		self.energy = 10
 		RD.SupplyResource(self.Entity, "energy",self.energy)
@@ -241,9 +239,9 @@ function ENT:AcceptInput(name,activator,caller)
 end
 
 function ENT:PreEntityCopy()
-    self.BaseClass.PreEntityCopy(self)
+  self.BaseClass.PreEntityCopy(self)
 end
 
 function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
-    self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
+  self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
 end

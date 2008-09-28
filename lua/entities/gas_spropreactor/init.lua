@@ -24,7 +24,6 @@ function ENT:Initialize()
 	self:SetHealth(self:GetMaxHealth())
 	self.disuse = 0 --use disabled via wire input
 	self.energy = 0
-	self.nitrous = 0
 	self.Propane = 0
 
 	-- resource attributes
@@ -164,7 +163,6 @@ function ENT:GenerateEnergy()
 	local RD = CAF.GetAddon("Resource Distribution")
 	if ( self.overdrive == 1 ) then
 		self.energy = math.ceil((self.energyprod + math.random(5,15)) * self.overdrivefactor)
-		self.nitrous = math.ceil(self.nitrouscon * self.overdrivefactor)
 		self.Propane = math.ceil(self.Propanecon * self.overdrivefactor)
 			
 		if self.overdrivefactor > 1 then
