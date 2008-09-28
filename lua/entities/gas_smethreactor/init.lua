@@ -177,13 +177,12 @@ function ENT:GenerateEnergy()
 			end
 		end
 	else
-			self.energy = (self.energyprod + math.random(5,15))
-			self.Methane = self.methanecon
+		self.energy = (self.energyprod + math.random(5,15))
+		self.Methane = self.methanecon
 	end
     
 	if ( self:CanRun() ) then
 		RD.ConsumeResource(self, "Methane", self.Methane)
-
 		RD.SupplyResource(self.Entity, "energy",self.energy)
 
 		if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 1) end

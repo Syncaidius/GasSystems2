@@ -177,7 +177,7 @@ function ENT:ExtractGas()
 		else
 			waterlevel = self:WaterLevel()
 		end
-		if (waterlevel==1) then --x2 production if underwater
+		if (waterlevel) then --x2 production if underwater
 			self.o2 = self.o2*1.5
 		end
     
