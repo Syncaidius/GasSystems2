@@ -107,7 +107,6 @@ function ENT:CollectGas()
     
 	if ( self:CanRun() ) then
 		RD.ConsumeResource(self, "energy", self.energy)
-			
 		RD.SupplyResource(self.Entity,"Methane",self.gas)
 	else
 		self:TurnOff()
@@ -117,8 +116,6 @@ function ENT:CollectGas()
     Wire_TriggerOutput(self.Entity, "Output", self.gas)
 		Wire_TriggerOutput(self.Entity, "On", self.active)
   end
-		
-	return
 end
 
 function ENT:CanRun()

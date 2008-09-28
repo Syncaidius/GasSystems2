@@ -143,7 +143,7 @@ end
 function ENT:UpdateWireOutputs()
     if not (WireAddon == nil) then
 		local RD = CAF.GetAddon("Resource Distribution")
-        Wire_TriggerOutput(self.Entity, "Propane Gas", RD.GetResourceAmount( self, "Propane" ))
+        Wire_TriggerOutput(self.Entity, "Propane", RD.GetResourceAmount( self, "Propane" ))
         Wire_TriggerOutput(self.Entity, "Propane Tank Capacity", RD.GetUnitCapacity( self, "Propane" ))
 		Wire_TriggerOutput(self.Entity, "Propane Net Capacity", RD.GetNetworkCapacity( self, "Propane" ))
 	end

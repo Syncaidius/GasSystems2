@@ -27,10 +27,10 @@ function ENT:Initialize()
 	self.Tritium = 0
 	
 	self:SetMaxHealth(350)
-    self:SetHealth(self:GetMaxHealth())
-    -- resource attributes
-    self.energyprod = 520 --Energy production
-    self.deutcon = 25 -- Deuterium consumption
+  self:SetHealth(self:GetMaxHealth())
+  -- resource attributes
+  self.energyprod = 520 --Energy production
+  self.deutcon = 25 -- Deuterium consumption
 	self.tritcon = 20 -- tritium consumt
     
 	CAF.GetAddon("Resource Distribution").AddResource(self,"Deuterium",0)
