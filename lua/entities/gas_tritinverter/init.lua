@@ -192,7 +192,7 @@ function ENT:ExtractGas()
 	
 	if not (WireAddon == nil) then
 			Wire_TriggerOutput(self.Entity,"O2 Output", self.o2)
-			Wire_TriggerOutput(self.Entity, "On", self.active)
+			Wire_TriggerOutput(self.Entity, "On", self.Active)
   end
 end
 

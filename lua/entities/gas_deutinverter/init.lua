@@ -104,9 +104,6 @@ end
 function ENT:TurnOn()
 	self.Active = 1
 	self:SetOOO(1)
-	if not (WireAddon == nil) then 
-		Wire_TriggerOutput(self.Entity, "On", 1)
-	end
 	self.Entity:EmitSound( "Airboat_engine_idle" )
 end
 
@@ -114,9 +111,6 @@ function ENT:TurnOff()
 	self.Active = 0
 	self.overdrive = 0
 	self:SetOOO(0)
-	if not (WireAddon == nil) then
-		Wire_TriggerOutput(self.Entity, "On", 0)
-	end
 	self.Entity:StopSound( "Airboat_engine_idle" )
 	self.Entity:EmitSound( "Airboat_engine_stop" )
 end
@@ -200,7 +194,7 @@ function ENT:ExtractGas()
 	
 	if not (WireAddon == nil) then
 			Wire_TriggerOutput(self.Entity,"Nitrogen Output", self.nitrogen)
-			Wire_TriggerOutput(self.Entity, "On", self.active)
+			Wire_TriggerOutput(self.Entity, "On", self.Active)
   end
 end
 
@@ -231,10 +225,10 @@ function ENT:AcceptInput(name,activator,caller)
 		if ( self.Active == 0 ) then
 			self:TurnOn()
 		elseif (self.Active == 1 && self.overdrive==0) then
-		    self:OverdriveOn()
-				self.overdrivefactor = 2
+		  self:OverdriveOn()
+			self.overdrivefactor = 2
 		elseif (self.overdrive > 0) then
-        self:TurnOff()
+      self:TurnOff()
 		end
 	end
 end
