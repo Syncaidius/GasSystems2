@@ -53,21 +53,21 @@ function ENT:TriggerInput(iname, value)
 			if ( self.Active == 0 ) then
 				self:TurnOn()
 				if (self.overdrive == 1) then
-						self:OverdriveOn()
+					self:OverdriveOn()
 				end
 			end
 		else
 			if ( self.Active == 1 ) then
-                self:TurnOff()
+				self:TurnOff()
 			end
 		end
 	elseif (iname == "Overdrive") then
 		if (self.Active == 1) then
 				if (value > 0) then
-						self:OverdriveOn()
-						self.overdrivefactor = value
+					self:OverdriveOn()
+					self.overdrivefactor = value
 				else
-						self:OverdriveOff()
+					self:OverdriveOff()
 				end
 				if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "Overdrive", self.overdrive) end
 		end
@@ -102,13 +102,13 @@ function ENT:Repair()
 end
 
 function ENT:TurnOn()
-    self.Active = 1
-    self:SetOOO(1)
-    if not (WireAddon == nil) then 
-        Wire_TriggerOutput(self.Entity, "On", 1)
-    end
-    self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
-    self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
+	self.Active = 1
+	self:SetOOO(1)
+	if not (WireAddon == nil) then 
+			Wire_TriggerOutput(self.Entity, "On", 1)
+	end
+	self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
+	self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
 end
 
 function ENT:TakeDamage(amount, attacker, inflictor)
@@ -119,34 +119,31 @@ function ENT:TakeDamage(amount, attacker, inflictor)
 end
 
 function ENT:TurnOff()
-    self.Active = 0
+	self.Active = 0
 	self.overdrive = 0
-    self:SetOOO(0)
-    if not (WireAddon == nil) then
-        Wire_TriggerOutput(self.Entity, "On", 0)
-    end
-    self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
+	self:SetOOO(0)
+	self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
 	self.Entity:StopSound( "k_lab.ambient_powergenerators" )
 end
 
 function ENT:OverdriveOn()
-    self.overdrive = 1
-    self:SetOOO(2)
-    
-    self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
+	self.overdrive = 1
+	self:SetOOO(2)
+
+	self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
 	self.Entity:StopSound( "k_lab.ambient_powergenerators" )
-    self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
-    self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
+	self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
+	self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
 end
 
 function ENT:OverdriveOff()
-    self.overdrive = 0
-    self:SetOOO(1)
-    
-    self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
+	self.overdrive = 0
+	self:SetOOO(1)
+
+	self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
 	self.Entity:StopSound( "k_lab.ambient_powergenerators" )
-    self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
-    self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
+	self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
+	self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
 end
 
 function ENT:Destruct()
@@ -185,24 +182,21 @@ function ENT:GenerateEnergy()
     
 	if ( self:CanRun() ) then
 		RD.ConsumeResource(self, "Propane", self.Propane)
-		
 		RD.SupplyResource(self.Entity, "energy",self.energy)
-
-		if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 1) end
+		if self.environment then
+			self.environment:Convert(1,-1, self.energy)
+		end
 	else
 		self.energy = 10
 		RD.SupplyResource(self.Entity, "energy",self.energy)
 		self.Entity:EmitSound( "common/warning.wav" )
 		CAF.GetAddon("Life Support").DamageLS(self, math.random(10,20))
-		if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 0) end
-	end
-	if self.environment then
-		self.environment:Convert(1,-1, self.energy)
 	end
 	
 	if not (WireAddon == nil) then
 		Wire_TriggerOutput(self.Entity, "Energy Production", self.energy)
 		Wire_TriggerOutput(self.Entity, "Propane Consumption", self.Propane)
+		Wire_TriggerOutput(self.Entity, self.Active)
   end
 		
 	return
@@ -210,17 +204,16 @@ end
 
 function ENT:CanRun()
 	local RD = CAF.GetAddon("Resource Distribution")
-    local Propane = RD.GetResourceAmount(self, "Propane")
-    if (Propane >= self.Propane) then
-        return true
-    else
-        return false
-    end
+	local Propane = RD.GetResourceAmount(self, "Propane")
+	if (Propane >= self.Propane) then
+		return true
+	else
+		return false
+	end
 end
 
 function ENT:Think()
-    self.BaseClass.Think(self)
-    
+  self.BaseClass.Think(self)
 	if ( self.Active == 1 ) then
 		self:GenerateEnergy()
 	end

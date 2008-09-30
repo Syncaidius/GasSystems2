@@ -25,10 +25,10 @@ function ENT:Initialize()
   self.Methane = 0
 	
 	self:SetMaxHealth(250)
-    self:SetHealth(self:GetMaxHealth())
-    -- resource attributes
-    self.energyprod = 200 --Energy production
-    self.methanecon = 25 -- Methane consumption
+	self:SetHealth(self:GetMaxHealth())
+	-- resource attributes
+	self.energyprod = 200 --Energy production
+	self.methanecon = 25 -- Methane consumption
     
 	CAF.GetAddon("Resource Distribution").AddResource(self,"Methane",0)
 	if not (WireAddon == nil) then self.Inputs = Wire_CreateInputs(self.Entity, { "On", "Overdrive", "Disable Use" }) end
@@ -49,10 +49,10 @@ function ENT:TriggerInput(iname, value)
 	if (iname == "On") then
 		if (value ~= 0) then
 			if ( self.Active == 0 ) then
-                self:TurnOn()
-                if (self.overdrive == 1) then
-                    self:OverdriveOn()
-                end
+				self:TurnOn()
+				if (self.overdrive == 1) then
+						self:OverdriveOn()
+				end
 			end
 		else
 			if ( self.Active == 1 ) then
@@ -60,15 +60,15 @@ function ENT:TriggerInput(iname, value)
 			end
 		end
 	elseif (iname == "Overdrive") then
-        if (self.Active == 1) then
-            if (value > 0) then
-                self:OverdriveOn()
-                self.overdrivefactor = value
-            else
-                self:OverdriveOff()
-            end
-            if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "Overdrive", self.overdrive) end
-        end
+		if (self.Active == 1) then
+			if (value > 0) then
+					self:OverdriveOn()
+					self.overdrivefactor = value
+			else
+					self:OverdriveOff()
+			end
+			if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "Overdrive", self.overdrive) end
+		end
 	elseif (iname == "Disable Use") then
 		if (value >= 1) then
 			self.disuse = 1
@@ -120,9 +120,6 @@ function ENT:TurnOff()
 	self.Active = 0
 	self.overdrive = 0
 	self:SetOOO(0)
-	if not (WireAddon == nil) then
-		Wire_TriggerOutput(self.Entity, "On", 0)
-	end
 	self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
 	self.Entity:StopSound( "k_lab.ambient_powergenerators" )
 end
@@ -184,14 +181,14 @@ function ENT:GenerateEnergy()
 	if ( self:CanRun() ) then
 		RD.ConsumeResource(self, "Methane", self.Methane)
 		RD.SupplyResource(self.Entity, "energy",self.energy)
-
-		if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 1) end
+		if self.environment then
+			self.environment:Convert(1,-1, self.energy)
+		end
 	else
 		self.energy = 10
 		RD.SupplyResource(self.Entity, "energy",self.energy)
 		self.Entity:EmitSound( "common/warning.wav" )
 		CAF.GetAddon("Life Support").DamageLS(self, math.random(10,20))
-		if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 0) end
 	end
 	if self.environment then
 		self.environment:Convert(1,-1, self.energy)
@@ -200,6 +197,7 @@ function ENT:GenerateEnergy()
 	if not (WireAddon == nil) then
 		Wire_TriggerOutput(self.Entity, "Energy Production", self.energy)
 		Wire_TriggerOutput(self.Entity, "Methane Consumption", self.Methane)
+		Wire_TriggerOutput(self.Entity, "On", self.Active)
   end
 end
 
@@ -215,7 +213,6 @@ end
 
 function ENT:Think()
   self.BaseClass.Think(self)
-    
 	if ( self.Active == 1 ) then
 		self:GenerateEnergy()
 	end
