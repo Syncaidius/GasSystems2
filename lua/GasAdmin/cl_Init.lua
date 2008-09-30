@@ -1,7 +1,6 @@
 --Gas Systems Admin
 --By Syncaidius
-
-GasAdmin.AdminCPanel = nil
+include("shared.lua")
 
 function GasAdmin.AdminPanel(Panel)
 	Panel:ClearControls()
@@ -9,10 +8,6 @@ function GasAdmin.AdminPanel(Panel)
 	if(!LocalPlayer():IsAdmin()) then
 		Panel:AddControl("Label", {Text = "You are not an admin"})
 		return
-	end
-	
-	if(!GasAdmin.AdminCPanel) then
-		GasAdmin.AdminCPanel = Panel
 	end
 	
 	Panel:AddControl("Label", {Text = "Admin Panel - Gas Admin Panel by Syncaidius"})
