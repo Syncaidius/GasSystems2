@@ -27,7 +27,7 @@ function ENT:Initialize()
 	CAF.GetAddon("Resource Distribution").AddResource(self,"Tritium",25000)
 	
 	if not (WireAddon == nil) then
-		self.Outputs = Wire_CreateOutputs(self.Entity, {"Methane","Propane","Deuterium","Tritium"}) 
+		self.Outputs = Wire_CreateOutputs(self.Entity, {"Methane","Propane","Deuterium","Tritium","Max Methane","Max Propane","Max Deuterium","Max Tritium"})
 	end
 end
 
@@ -146,6 +146,10 @@ function ENT:UpdateWireOutputs()
     Wire_TriggerOutput(self.Entity, "Propane", RD.GetResourceAmount( self, "Propane" ))
 		Wire_TriggerOutput(self.Entity, "Deuterium",RD.GetResourceAmount(self,"Deuterium"))
 		Wire_TriggerOutput(self.Entity, "Tritium",RD.GetResourceAmount(self,"Tritium"))
+		Wire_TriggerOutput(self.Entity, "Max Methane", RD.GetUnitCapacity( self, "Methane" ))
+		Wire_TriggerOutput(self.Entity, "Max Propane", RD.GetUnitCapacity( self, "Propane" ))
+		Wire_TriggerOutput(self.Entity, "Max Deuterium", RD.GetUnitCapacity( self, "Deuterium" ))
+		Wire_TriggerOutput(self.Entity, "Max Tritium", RD.GetUnitCapacity( self, "Tritium" ))
 	end
 end
 

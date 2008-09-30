@@ -180,13 +180,9 @@ function ENT:ExtractGas()
 		RD.ConsumeResource(self,"Deuterium",self.deuterium)
 		
 		if GAMEMODE.IsSpacebuildDerived then
-			local left = RD.SupplyResource(self, "nitrogen", self.environment:Convert(2, -1, self.nitrogen))
-			self.environment:Convert(-1, 2, left)
+			local left = RD.SupplyResource(self, "nitrogen", self.nitrogen)
 		else
 			RD.SupplyResource(self.Entity,"nitrogen",self.nitrogen)
-		end
-		if self.environment then
-			self.environment:Convert(2,-1, self.energy)
 		end
 	else
 		self:TurnOff()
