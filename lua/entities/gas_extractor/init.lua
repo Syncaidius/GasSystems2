@@ -156,35 +156,31 @@ end
 function ENT:ExtractGas()
 	local RD = CAF.GetAddon("Resource Distribution")
 	if ( self.overdrive == 1 ) then
-        self.energy = math.ceil((self.econ + math.random(1,2)) * self.overdrivefactor)
-        self.ngas = math.ceil(self.ngasprod * self.overdrivefactor)
+    self.energy = math.ceil((self.econ + math.random(1,2)) * self.overdrivefactor)
+    self.ngas = math.ceil(self.ngasprod * self.overdrivefactor)
         
-      if self.overdrivefactor > 1 then
-				if CAF and CAF.GetAddon("Life Support") then
-					CAF.GetAddon("Life Support").DamageLS(self, math.random(5,5)*self.overdrivefactor)
-				else
-					self:SetHealth( self:Health( ) - math.random(5,5)*self.overdrivefactor)
-					if self:Health() <= 0 then
-						self:Remove()
-					end
+		if self.overdrivefactor > 1 then
+			if CAF and CAF.GetAddon("Life Support") then
+				CAF.GetAddon("Life Support").DamageLS(self, math.random(5,5)*self.overdrivefactor)
+			else
+				self:SetHealth( self:Health( ) - math.random(5,5)*self.overdrivefactor)
+				if self:Health() <= 0 then
+					self:Remove()
 				end
-				if self.overdrivefactor > self.maxoverdrive then
-					self:Destruct()
-				end
-      end 
-    else
-        self.ngas = (self.ngasprod + math.random(5,15))
-        self.energy = self.econ
-    end
+			end
+			if self.overdrivefactor > self.maxoverdrive then
+				self:Destruct()
+			end
+		end 
+	else
+			self.ngas = (self.ngasprod + math.random(5,15))
+			self.energy = self.econ
+	end
     
 	if ( self:CanRun() ) then
-        RD.ConsumeResource(self, "energy", self.energy)
-        
-        RD.SupplyResource(self.Entity,"Natural Gas",self.ngas)
-		if self.environment then
-			self.environment:Convert(1,-1, self.energy)
-		end
-        if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 1) end
+		RD.ConsumeResource(self, "energy", self.energy)
+		RD.SupplyResource(self.Entity,"Natural Gas",self.ngas)
+    if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 1) end
 	else
 		self:TurnOff()
 	end

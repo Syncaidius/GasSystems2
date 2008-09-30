@@ -152,24 +152,23 @@ function ENT:ExtractGas()
         self.tritium = math.ceil(self.tritcon + math.random(1,2) * self.overdrivefactor)
 				self.o2 = math.ceil(self.o2prod + math.random(2,4) * self.overdrivefactor)
         
-        if self.overdrivefactor > 1 then
-            if CAF and CAF.GetAddon("Life Support") then
-				CAF.GetAddon("Life Support").DamageLS(self, math.random(5,5)*self.overdrivefactor)
-			else
-				self:SetHealth( self:Health( ) - math.random(5,5)*self.overdrivefactor)
-				if self:Health() <= 0 then
-					self:Remove()
+      if self.overdrivefactor > 1 then
+        if CAF and CAF.GetAddon("Life Support") then
+					CAF.GetAddon("Life Support").DamageLS(self, math.random(5,5)*self.overdrivefactor)
+				else
+					self:SetHealth( self:Health( ) - math.random(5,5)*self.overdrivefactor)
+					if self:Health() <= 0 then
+						self:Remove()
+					end
 				end
-			end
-			if self.overdrivefactor > self.maxoverdrive then
-				self:Destruct()
-			end
-        end
-        
+				if self.overdrivefactor > self.maxoverdrive then
+					self:Destruct()
+				end
+      end
     else
-        self.tritium = self.tritcon + math.random(1,2)
-        self.energy = self.econ + math.random(1,2)
-				self.o2 = self.o2prod + math.random(2,4)
+			self.tritium = self.tritcon + math.random(1,2)
+			self.energy = self.econ + math.random(1,2)
+			self.o2 = self.o2prod + math.random(2,4)
     end
 		local waterlevel = 0
 		if CAF then

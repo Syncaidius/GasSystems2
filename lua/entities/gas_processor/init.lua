@@ -37,7 +37,7 @@ function ENT:Initialize()
 	self.deutprod = 30 -- Deuterium Production
 	self.tritprod = 25 -- Tritium Production
 	self.methprod = 25 -- methane production
-	self.propprod = 20 -- propane production
+	self.propprod = 30 -- propane production
     
 	CAF.GetAddon("Resource Distribution").AddResource(self,"energy",0)
 	CAF.GetAddon("Resource Distribution").AddResource(self,"Natural Gas",0)
