@@ -23,14 +23,14 @@ function ENT:Initialize()
 	self.disuse = 0 --use disabled via wire input
 	
 	self.energy = 0
-    self.Deuterium = 0
+   self.Deuterium = 0
 	self.Tritium = 0
 	
 	self:SetMaxHealth(550)
-    self:SetHealth(self:GetMaxHealth())
-    -- resource attributes
-    self.energyprod = 2500 --Energy production
-    self.deutcon = 55 -- Deuterium consumption
+	self:SetHealth(self:GetMaxHealth())
+	-- resource attributes
+	self.energyprod = 2500 --Energy production
+	self.deutcon = 55 -- Deuterium consumption
 	self.tritcon = 50 -- tritium consumt
     
 	CAF.GetAddon("Resource Distribution").AddResource(self,"Deuterium",0)
@@ -53,26 +53,26 @@ function ENT:TriggerInput(iname, value)
 	if (iname == "On") then
 		if (value ~= 0) then
 			if ( self.Active == 0 ) then
-                self:TurnOn()
-                if (self.overdrive == 1) then
-                    self:OverdriveOn()
-                end
+				self:TurnOn()
+				if (self.overdrive == 1) then
+					self:OverdriveOn()
+				end
 			end
 		else
 			if ( self.Active == 1 ) then
-                self:TurnOff()
+        self:TurnOff()
 			end
 		end
 	elseif (iname == "Overdrive") then
-        if (self.Active == 1) then
-            if (value > 0) then
-                self:OverdriveOn()
-                self.overdrivefactor = value
-            else
-                self:OverdriveOff()
-            end
-            if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "Overdrive", self.overdrive) end
-        end
+		if (self.Active == 1) then
+				if (value > 0) then
+						self:OverdriveOn()
+						self.overdrivefactor = value
+				else
+						self:OverdriveOff()
+				end
+				if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "Overdrive", self.overdrive) end
+		end
 	elseif (iname == "Disable Use") then
 		if (value >= 1) then
 			self.disuse = 1
@@ -84,9 +84,9 @@ end
 
 
 function ENT:OnRemove()
-    self.BaseClass.OnRemove(self)
-    self.Entity:StopSound( "k_lab.ambient_powergenerators" )
-    self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
+	self.BaseClass.OnRemove(self)
+	self.Entity:StopSound( "k_lab.ambient_powergenerators" )
+	self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
 end
 
 function ENT:Damage()
@@ -104,44 +104,38 @@ function ENT:Repair()
 end
 
 function ENT:TurnOn()
-    self.Active = 1
-    self:SetOOO(1)
-    if not (WireAddon == nil) then 
-        Wire_TriggerOutput(self.Entity, "On", 1)
-    end
-    self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
-    self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
+	self.Active = 1
+	self:SetOOO(1)
+	self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
+	self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
 end
 
 function ENT:TurnOff()
-    self.Active = 0
+	self.Active = 0
 	self.overdrive = 0
-    self:SetOOO(0)
-    if not (WireAddon == nil) then
-        Wire_TriggerOutput(self.Entity, "On", 0)
-    end
-    self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
+	self:SetOOO(0)
+	self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
 	self.Entity:StopSound( "k_lab.ambient_powergenerators" )
 end
 
 function ENT:OverdriveOn()
-    self.overdrive = 1
-    self:SetOOO(2)
-    
-    self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
+	self.overdrive = 1
+	self:SetOOO(2)
+
+	self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
 	self.Entity:StopSound( "k_lab.ambient_powergenerators" )
-    self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
-    self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
+	self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
+	self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
 end
 
 function ENT:OverdriveOff()
-    self.overdrive = 0
-    self:SetOOO(1)
-    
-    self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
+	self.overdrive = 0
+	self:SetOOO(1)
+
+	self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
 	self.Entity:StopSound( "k_lab.ambient_powergenerators" )
-    self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
-    self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
+	self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
+	self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
 end
 
 function ENT:Destruct()
@@ -157,12 +151,12 @@ end
 function ENT:GenerateEnergy()
 	local RD = CAF.GetAddon("Resource Distribution")
 	if ( self.overdrive == 1 ) then
-        self.energy = math.ceil((self.energyprod + math.random(5,15)) * self.overdrivefactor)
-        self.Deuterium = math.ceil(self.deutcon * self.overdrivefactor)
-        self.Tritium = math.ceil(self.tritcon * self.overdrivefactor)
-		
-        if self.overdrivefactor > 1 then
-            if CAF and CAF.GetAddon("Life Support") then
+		 self.energy = math.ceil((self.energyprod + math.random(5,15)) * self.overdrivefactor)
+		 self.Deuterium = math.ceil(self.deutcon * self.overdrivefactor)
+		 self.Tritium = math.ceil(self.tritcon * self.overdrivefactor)
+	
+		 if self.overdrivefactor > 1 then
+				if CAF and CAF.GetAddon("Life Support") then
 				CAF.GetAddon("Life Support").DamageLS(self, math.random(10,20)*self.overdrivefactor)
 			else
 				self:SetHealth( self:Health() - math.random(10,20)*self.overdrivefactor)
@@ -173,21 +167,21 @@ function ENT:GenerateEnergy()
 			if self.overdrivefactor > self.maxoverdrive then
 				self:Destruct()
 			end
-        end
-        
-    else
-        self.energy = (self.energyprod + math.random(5,15))
-        self.Deuterium = self.deutcon
+		end
+	else
+		self.energy = (self.energyprod + math.random(5,15))
+		self.Deuterium = self.deutcon
 		self.Tritium = self.tritcon
-    end
+	end
     
 	if ( self:CanRun() ) then
 		RD.ConsumeResource(self, "Deuterium", self.Deuterium)
 		RD.ConsumeResource(self, "Tritium", self.Tritium)
-
+		
 		RD.SupplyResource(self.Entity, "energy",self.energy)
-
-		if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 1) end
+		if self.environment then
+			self.environment:Convert(1,-1, self.energy)
+		end
 	else
 		local div = math.random(15,20)
 		self.energy = math.ceil(self.energyprod/div)
@@ -199,23 +193,23 @@ function ENT:GenerateEnergy()
 	
 	if not (WireAddon == nil) then
 		Wire_TriggerOutput(self.Entity, "Energy Production", self.energy)
+		Wire_TriggerOutput(self.Entity, "On", self.Active)
   end
 end
 
 function ENT:CanRun()
 	local RD = CAF.GetAddon("Resource Distribution")
-    local Deuterium = RD.GetResourceAmount(self, "Deuterium")
+   local Deuterium = RD.GetResourceAmount(self, "Deuterium")
 	local Tritium = RD.GetResourceAmount(self, "Tritium")
-    if Deuterium >= self.Deuterium and Tritium >= self.Tritium then
-        return true
-    else
-        return false
-    end
+	if Deuterium >= self.Deuterium and Tritium >= self.Tritium then
+			return true
+	else
+			return false
+	end
 end
 
 function ENT:Think()
-    self.BaseClass.Think(self)
-    
+  self.BaseClass.Think(self)
 	if ( self.Active == 1 ) then
 		self:GenerateEnergy()
 	end

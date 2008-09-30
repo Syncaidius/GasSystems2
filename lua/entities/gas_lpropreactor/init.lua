@@ -119,24 +119,21 @@ function ENT:TakeDamage(amount, attacker, inflictor)
 end
 
 function ENT:TurnOff()
-    self.Active = 0
+	self.Active = 0
 	self.overdrive = 0
-    self:SetOOO(0)
-    if not (WireAddon == nil) then
-        Wire_TriggerOutput(self.Entity, "On", 0)
-    end
-    self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
+	self:SetOOO(0)
+	self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
 	self.Entity:StopSound( "k_lab.ambient_powergenerators" )
 end
 
 function ENT:OverdriveOn()
-    self.overdrive = 1
-    self:SetOOO(2)
-    
-    self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
+	self.overdrive = 1
+	self:SetOOO(2)
+
+	self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
 	self.Entity:StopSound( "k_lab.ambient_powergenerators" )
-    self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
-    self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
+	self.Entity:EmitSound( "ambient/machines/thumper_startup1.wav" )
+	self.Entity:EmitSound( "k_lab.ambient_powergenerators" )
 end
 
 function ENT:OverdriveOff()
@@ -162,11 +159,11 @@ end
 function ENT:GenerateEnergy()
 	local RD = CAF.GetAddon("Resource Distribution")
 	if ( self.overdrive == 1 ) then
-        self.energy = math.ceil((self.energyprod + math.random(5,15)) * self.overdrivefactor)
-        self.Propane = math.ceil(self.Propanecon * self.overdrivefactor)
-        
-        if self.overdrivefactor > 1 then
-            if CAF and CAF.GetAddon("Life Support") then
+		self.energy = math.ceil((self.energyprod + math.random(5,15)) * self.overdrivefactor)
+		self.Propane = math.ceil(self.Propanecon * self.overdrivefactor)
+			
+		if self.overdrivefactor > 1 then
+			if CAF and CAF.GetAddon("Life Support") then
 				CAF.GetAddon("Life Support").DamageLS(self, math.random(10,10)*self.overdrivefactor)
 			else
 				self:SetHealth( self:Health() - math.random(10,10)*self.overdrivefactor)
@@ -177,19 +174,18 @@ function ENT:GenerateEnergy()
 			if self.overdrivefactor > self.maxoverdrive then
 				self:Destruct()
 			end
-        end
-        
-    else
-        self.energy = (self.energyprod + math.random(5,15))
-        self.Propane = self.Propanecon
-    end
+		end
+	else
+		self.energy = (self.energyprod + math.random(5,15))
+		self.Propane = self.Propanecon
+	end
     
-	if ( self:CanRun() ) then
-        RD.ConsumeResource(self, "Propane", self.Propane)
-        
-        RD.SupplyResource(self.Entity, "energy",self.energy)
-
-        if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 1) end
+	if (self:CanRun()) then
+    RD.ConsumeResource(self, "Propane", self.Propane)
+    RD.SupplyResource(self.Entity, "energy",self.energy)
+		if self.environment then
+			self.environment:Convert(1,-1, self.energy)
+		end
 	else
 		self.energy = 10
 		RD.SupplyResource(self.Entity, "energy",self.energy)
@@ -197,33 +193,30 @@ function ENT:GenerateEnergy()
 		CAF.GetAddon("Life Support").DamageLS(self, math.random(10,20))
 		if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "On", 0) end
 	end
-	if self.environment then
-		self.environment:Convert(1,-1, self.energy)
-	end
 	
 	if not (WireAddon == nil) then
 		Wire_TriggerOutput(self.Entity, "Energy Production", self.energy)
 		Wire_TriggerOutput(self.Entity, "Propane Consumption", self.Propane)
+		Wire_TriggerOutput(self.Entity, "On", self.Active)
   end
 end
 
 function ENT:CanRun()
 	local RD = CAF.GetAddon("Resource Distribution")
-    local Propane = RD.GetResourceAmount(self, "Propane")
-    if (Propane >= self.Propane) then
-        return true
-    else
-        return false
-    end
+	local Propane = RD.GetResourceAmount(self, "Propane")
+	if (Propane >= self.Propane) then
+		return true
+	else
+		return false
+	end
 end
 
 function ENT:Think()
-    self.BaseClass.Think(self)
-    
+	self.BaseClass.Think(self)
 	if ( self.Active == 1 ) then
 		self:GenerateEnergy()
 	end
-    
+
 	self.Entity:NextThink( CurTime() + 1 )
 	return true
 end
@@ -233,18 +226,18 @@ function ENT:AcceptInput(name,activator,caller)
 		if ( self.Active == 0 ) then
 			self:TurnOn()
 		elseif (self.Active == 1 && self.overdrive==0) then
-		    self:OverdriveOn()
+		  self:OverdriveOn()
 			self.overdrivefactor = 2
 		elseif (self.overdrive > 0) then
-            self:TurnOff()
+      self:TurnOff()
 		end
 	end
 end
 
 function ENT:PreEntityCopy()
-    self.BaseClass.PreEntityCopy(self)
+  self.BaseClass.PreEntityCopy(self)
 end
 
 function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
-    self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
+  self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
 end
