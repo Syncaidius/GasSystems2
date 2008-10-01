@@ -57,24 +57,18 @@ if( SERVER ) then
 		return ent
 	end
 	
-	duplicator.RegisterEntityClass("gas_hstore", Makegas_storage, "Ang", "Pos", "stortype", "model", "frozen")
-	duplicator.RegisterEntityClass("gas_lstore", Makegas_storage, "Ang", "Pos", "stortype", "model", "frozen")
-	duplicator.RegisterEntityClass("gas_sstore", Makegas_storage, "Ang", "Pos", "stortype", "model", "frozen")
-	duplicator.RegisterEntityClass("gas_lproctank", Makegas_storage, "Ang", "Pos", "stortype", "model", "frozen")
-	duplicator.RegisterEntityClass("gas_mproctank", Makegas_storage, "Ang", "Pos", "stortype", "model", "frozen")
-	duplicator.RegisterEntityClass("gas_sproctank", Makegas_storage, "Ang", "Pos", "stortype", "model", "frozen")
-	duplicator.RegisterEntityClass("gas_hmethstore", Makegas_storage, "Ang", "Pos", "stortype", "model", "frozen")
-	duplicator.RegisterEntityClass("gas_lmethstore", Makegas_storage, "Ang", "Pos", "stortype", "model", "frozen")
-	duplicator.RegisterEntityClass("gas_smethstore", Makegas_storage, "Ang", "Pos", "stortype", "model", "frozen")
-	duplicator.RegisterEntityClass("gas_hpropstore", Makegas_storage, "Ang", "Pos", "stortype", "model", "frozen")
-	duplicator.RegisterEntityClass("gas_lpropstore", Makegas_storage, "Ang", "Pos", "stortype", "model", "frozen")
-	duplicator.RegisterEntityClass("gas_spropstore", Makegas_storage, "Ang", "Pos", "stortype", "model", "frozen")
-	duplicator.RegisterEntityClass("gas_hdetstore", Makegas_storage, "Ang", "Pos", "stortype", "model", "frozen")
-	duplicator.RegisterEntityClass("gas_ldetstore", Makegas_storage, "Ang", "Pos", "stortype", "model", "frozen")
-	duplicator.RegisterEntityClass("gas_sdetstore", Makegas_storage, "Ang", "Pos", "stortype", "model", "frozen")
-	duplicator.RegisterEntityClass("gas_htritstore", Makegas_storage, "Ang", "Pos", "stortype", "model", "frozen")
-	duplicator.RegisterEntityClass("gas_ltritstore", Makegas_storage, "Ang", "Pos", "stortype", "model", "frozen")
-	duplicator.RegisterEntityClass("gas_stritstore", Makegas_storage, "Ang", "Pos", "stortype", "model", "frozen")
+	duplicator.RegisterEntityClass("Large Natural Gas Tank", Makegas_storage, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Small Natural Gas Tank", Makegas_storage, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Large Processed Gas Tank", Makegas_storage, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Small Processed Gas Tank", Makegas_storage, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Large Nitrous Oxide Tank", Makegas_storage, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Small Nitrous Oxide Tank", Makegas_storage, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Large Methane Storage", Makegas_storage, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Small Methane Tank", Makegas_storage, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Large Propane Tank", Makegas_storage, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Small Propane Tank", Makegas_storage, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Large Nitrogen Tank", Makegas_storage, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("Small Nitrogen Tank", Makegas_storage, "Ang", "Pos", "Class", "model", "frozen") --fix
 end
 
 if (GAMEMODE.Name == "SpaceBuild" || SpaceBuild) then MsgAll("You need the new Spacebuild (3) to use gas systems, you are using Spacebuild1!\n") end
