@@ -35,7 +35,7 @@ end
 	Get the Version of this Custom Addon Class
 */
 function RD.GetVersion()
-	return 0.1, "Alpha"
+	return 1.1, "Release"
 end
 
 /**
