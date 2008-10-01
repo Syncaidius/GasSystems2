@@ -57,20 +57,22 @@ if( SERVER ) then
 		return ent
 	end
 	
-	duplicator.RegisterEntityClass("Natural Gas Extractor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Natural Gas Processor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Large Tokomak Reactor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Small Tokomak Reactor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Tritium Inverter", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Large Propane Reactor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Micro Propane Reactor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Methane Collector", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Propane Collector", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Tritium Collector", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Deuterium Collector", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Large Methane Reactor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Micro Methane Reactor", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
-	duplicator.RegisterEntityClass("Methane Rehydrator", Makegas_generator, "Ang", "Pos", "Class", "model", "frozen")
+	duplicator.RegisterEntityClass("gas_extractor", Makegas_generator, "Ang", "Pos", "gentype", "model", "frozen")
+	duplicator.RegisterEntityClass("gas_processor", Makegas_generator, "Ang", "Pos", "gentype", "model", "frozen")
+	duplicator.RegisterEntityClass("gas_tokomak", Makegas_generator, "Ang", "Pos", "gentype", "model", "frozen")
+	duplicator.RegisterEntityClass("gas_stokomak", Makegas_generator, "Ang", "Pos", "gentype", "model", "frozen")
+	duplicator.RegisterEntityClass("gas_tritinverter", Makegas_generator, "Ang", "Pos", "gentype", "model", "frozen")
+	duplicator.RegisterEntityClass("gas_lpropreactor", Makegas_generator, "Ang", "Pos", "gentype", "model", "frozen")
+	duplicator.RegisterEntityClass("gas_spropreactor", Makegas_generator, "Ang", "Pos", "gentype", "model", "frozen")
+	duplicator.RegisterEntityClass("gas_collector_meth", Makegas_generator, "Ang", "Pos", "gentype", "model", "frozen")
+	duplicator.RegisterEntityClass("gas_collector_prop", Makegas_generator, "Ang", "Pos", "gentype", "model", "frozen")
+	duplicator.RegisterEntityClass("gas_collector_trit", Makegas_generator, "Ang", "Pos", "gentype", "model", "frozen")
+	duplicator.RegisterEntityClass("gas_collector_deut", Makegas_generator, "Ang", "Pos", "gentype", "model", "frozen")
+	duplicator.RegisterEntityClass("gas_lmethreactor", Makegas_generator, "Ang", "Pos", "gentype", "model", "frozen")
+	duplicator.RegisterEntityClass("gas_smethreactor", Makegas_generator, "Ang", "Pos", "gentype", "model", "frozen")
+	duplicator.RegisterEntityClass("gas_rehydrator", Makegas_generator, "Ang", "Pos", "gentype", "model", "frozen")
+	duplicator.RegisterEntityClass("gas_deutinverter", Makegas_generator, "Ang", "Pos", "gentype", "model", "frozen")
+
 end
 if (GAMEMODE.Name == "SpaceBuild" || SpaceBuild) then MsgAll("You need the new Spacebuild (3) to use gas systems, you are using Spacebuild1!\n") end
 if (GAMEMODE.Name == "SpaceBuild2" || SpaceBuild2) then MsgAll("You need the new Spacebuild(3) to use gas systems, you are using Spacebuild2!\n") end
