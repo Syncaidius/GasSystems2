@@ -17,7 +17,7 @@ function ENT:Initialize()
 	self.damaged = 0
 	self.Active = 0
 	
-  self:SetMaxHealth(80)
+  self:SetMaxHealth(160)
   self:SetHealth(self:GetMaxHealth())
 	self.disuse = 0 --use disabled via wire input
 	
