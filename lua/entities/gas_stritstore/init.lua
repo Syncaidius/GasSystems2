@@ -143,9 +143,8 @@ function ENT:UpdateWireOutputs()
 end
 
 function ENT:Think()
-    self.BaseClass.Think(self)
-    
-    self:UpdateWireOutputs()
+  self.BaseClass.Think(self)
+  self:UpdateWireOutputs()
     
 	self.Entity:NextThink( CurTime() + 1 )
 	return true
@@ -160,9 +159,9 @@ function ENT:AcceptInput(name,activator,caller)
 end
 
 function ENT:PreEntityCopy()
-    self.BaseClass.PreEntityCopy(self)
+  self.BaseClass.PreEntityCopy(self)
 end
 
 function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
-    self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
+  self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
 end

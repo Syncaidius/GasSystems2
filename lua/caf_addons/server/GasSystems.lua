@@ -49,7 +49,7 @@ end
 	Get the Custom String Status from this Addon Class
 */
 function RD.GetCustomStatus()
-	return "Not Implemented Yet"
+	return "Implemented"
 end
 
 function RD.AddResourcesToSend()
