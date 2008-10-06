@@ -8,7 +8,7 @@ local status = false
 */
 function RD.__Construct()
 	status = true
-	return true , "No Implementation yet"
+	return true , "Not Implementation yet"
 end
 
 /**
@@ -58,7 +58,7 @@ end
 	Get the Custom String Status from this Addon Class
 */
 function RD.GetCustomStatus()
-	return "Not Implemented Yet"
+	return "Implemented"
 end
 
 CAF.RegisterAddon("Gas Systems 2", RD, "2")

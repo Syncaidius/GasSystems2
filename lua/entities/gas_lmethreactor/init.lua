@@ -196,7 +196,6 @@ function ENT:GenerateEnergy()
 	if not (WireAddon == nil) then
 		Wire_TriggerOutput(self.Entity, "Energy Production", self.energy)
 		Wire_TriggerOutput(self.Entity, "Methane Consumption", self.Methane)
-		Wire_TriggerOutput(self.Entity, "On", self.Active)
   end
 end
 
@@ -215,6 +214,9 @@ function ENT:Think()
 	if ( self.Active == 1 ) then
 		self:GenerateEnergy()
 	end
+	if not (WireAddon == nil) then
+		Wire_TriggerOutput(self.Entity, "On", self.Active)
+  end
     
 	self.Entity:NextThink( CurTime() + 1 )
 	return true

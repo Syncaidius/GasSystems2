@@ -12,25 +12,25 @@ end
 function ENT:Initialize()
 	self.Entity:SetModel("models/syncaidius/gas_extractor.mdl")
 	self:SetSkin(0)
-    self.BaseClass.Initialize(self)
+  self.BaseClass.Initialize(self)
 
-    local phys = self.Entity:GetPhysicsObject()
+  local phys = self.Entity:GetPhysicsObject()
 	self.damaged = 0
 	self.overdrive = 0
 	self.overdrivefactor = 0
 	self.maxoverdrive = 4 -- maximum overdrive value allowed via wire input. Anything over this value may severely damage or destroy the device.
 	self.Active = 0
 	
-    self:SetMaxHealth(250)
-    self:SetHealth(self:GetMaxHealth())
+  self:SetMaxHealth(250)
+  self:SetHealth(self:GetMaxHealth())
 	self.disuse = 0 --use disabled via wire input
 	
 	self.energy = 0
 	self.ngas = 0
 	
-    -- resource attributes
-    self.ngasprod = 74 --N-Gas production
-    self.econ = 18 -- Energy consumption
+	-- resource attributes
+	self.ngasprod = 74 --N-Gas production
+	self.econ = 18 -- Energy consumption
     
 	CAF.GetAddon("Resource Distribution").AddResource(self,"energy",0)
 	if not (WireAddon == nil) then self.Inputs = Wire_CreateInputs(self.Entity, { "On", "Overdrive", "Disable Use" }) end
@@ -51,29 +51,29 @@ function ENT:TriggerInput(iname, value)
 	if (iname == "On") then
 		if (value > 0) then
 			if ( self.Active == 0 ) then
-                self:TurnOn()
-                if (self.overdrive == 1) then
-                    self:OverdriveOn()
-                end
+				self:TurnOn()
+				if (self.overdrive == 1) then
+					self:OverdriveOn()
+				end
 			end
 		else
 			if ( self.Active == 1 ) then
-                self:TurnOff()
+         self:TurnOff()
 				if self.overdrive==1 then
 					self:OverdriveOff()
 				end
 			end
 		end
 	elseif (iname == "Overdrive") then
-        if (self.Active == 1) then
-            if (value > 0) then
-                self:OverdriveOn()
-                self.overdrivefactor = value
-            else
-                self:OverdriveOff()
-            end
-            if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "Overdrive", self.overdrive) end
-        end
+		if (self.Active == 1) then
+			if (value > 0) then
+				self:OverdriveOn()
+				self.overdrivefactor = value
+			else
+				self:OverdriveOff()
+			end
+			if not (WireAddon == nil) then Wire_TriggerOutput(self.Entity, "Overdrive", self.overdrive) end
+		end
 	elseif (iname == "Disable Use") then
 		if (value >= 1) then
 			self.disuse = 1
@@ -85,10 +85,10 @@ end
 
 
 function ENT:OnRemove()
-    self.BaseClass.OnRemove(self)
-    self.Entity:StopSound( "Airboat_engine_idle" )
-    self.Entity:StopSound( "common/warning.wav" )
-    self.Entity:StopSound( "Airboat_engine_stop" )
+	self.BaseClass.OnRemove(self)
+	self.Entity:StopSound( "Airboat_engine_idle" )
+	self.Entity:StopSound( "common/warning.wav" )
+	self.Entity:StopSound( "Airboat_engine_stop" )
 end
 
 function ENT:Damage()
@@ -106,25 +106,25 @@ function ENT:Repair()
 end
 
 function ENT:TurnOn()
-    self.Active = 1
-    self:SetOOO(1)
+	self.Active = 1
+	self:SetOOO(1)
 	self:SetSkin(1)
-    if not (WireAddon == nil) then 
-        Wire_TriggerOutput(self.Entity, "On", 1)
-    end
-    self.Entity:EmitSound( "Airboat_engine_idle" )
+	if not (WireAddon == nil) then 
+		Wire_TriggerOutput(self.Entity, "On", 1)
+	end
+	self.Entity:EmitSound( "Airboat_engine_idle" )
 end
 
 function ENT:TurnOff()
-    self.Active = 0
+	self.Active = 0
 	self.overdrive = 0
-    self:SetOOO(0)
+	self:SetOOO(0)
 	self:SetSkin(0)
-    if not (WireAddon == nil) then
-        Wire_TriggerOutput(self.Entity, "On", 0)
-    end
-    self.Entity:StopSound( "Airboat_engine_idle" )
-    self.Entity:EmitSound( "Airboat_engine_stop" )
+	if not (WireAddon == nil) then
+		Wire_TriggerOutput(self.Entity, "On", 0)
+	end
+	self.Entity:StopSound( "Airboat_engine_idle" )
+	self.Entity:EmitSound( "Airboat_engine_stop" )
 end
 
 function ENT:OverdriveOn()
@@ -186,9 +186,9 @@ function ENT:ExtractGas()
 	end
 	
 	if not (WireAddon == nil) then
-        Wire_TriggerOutput(self.Entity, "NGas Production", self.ngas)
-        Wire_TriggerOutput(self.Entity, "Energy Consumption", self.energy)
-    end
+      Wire_TriggerOutput(self.Entity, "NGas Production", self.ngas)
+      Wire_TriggerOutput(self.Entity, "Energy Consumption", self.energy)
+  end
 		
 	return
 end
@@ -219,10 +219,10 @@ function ENT:AcceptInput(name,activator,caller)
 		if ( self.Active == 0 ) then
 			self:TurnOn()
 		elseif (self.Active == 1 && self.overdrive==0) then
-		    self:OverdriveOn()
+		  self:OverdriveOn()
 			self.overdrivefactor = 2
 		elseif (self.overdrive > 0) then
-            self:TurnOff()
+      self:TurnOff()
 		end
 	end
 end
