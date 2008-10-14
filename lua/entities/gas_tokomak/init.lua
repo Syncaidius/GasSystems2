@@ -12,9 +12,9 @@ end
 function ENT:Initialize()
 	self.Entity:SetModel( "models/syncaidius/tokomak.mdl" )
 	self:SetSkin(0)
-    self.BaseClass.Initialize(self)
+  self.BaseClass.Initialize(self)
 
-    local phys = self.Entity:GetPhysicsObject()
+  local phys = self.Entity:GetPhysicsObject()
 	self.damaged = 0
 	self.overdrive = 0
 	self.overdrivefactor = 0
@@ -23,15 +23,15 @@ function ENT:Initialize()
 	self.disuse = 0 --use disabled via wire input
 	
 	self.energy = 0
-   self.Deuterium = 0
+  self.Deuterium = 0
 	self.Tritium = 0
 	
 	self:SetMaxHealth(550)
 	self:SetHealth(self:GetMaxHealth())
 	-- resource attributes
 	self.energyprod = 2500 --Energy production
-	self.deutcon = 55 -- Deuterium consumption
-	self.tritcon = 50 -- tritium consumt
+	self.deutcon = 49 -- Deuterium consumption
+	self.tritcon = 46 -- tritium consumt
     
 	CAF.GetAddon("Resource Distribution").AddResource(self,"Deuterium",0)
 	CAF.GetAddon("Resource Distribution").AddResource(self,"Tritium",0)
