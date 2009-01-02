@@ -95,15 +95,7 @@ function ENT:Destruct()
 		Ambient:Fire("PlaySound", "", 0)
 		Ambient:Fire("kill", "", 4)
 		
-		self.shakeeffect = ents.Create("env_shake") -- Shake from the explosion
-		self.shakeeffect:SetKeyValue("amplitude", 16)
-		self.shakeeffect:SetKeyValue("spawnflags", 4 + 8 + 16)
-		self.shakeeffect:SetKeyValue("frequency", 200.0)
-		self.shakeeffect:SetKeyValue("duration", 2)
-		self.shakeeffect:SetKeyValue("radius", 2000)
-		self.shakeeffect:SetPos(self.Entity:GetPos())
-		self.shakeeffect:Fire("StartShake","",0)
-		self.shakeeffect:Fire("Kill","",4)
+		util.ScreenShake(self.Entity:GetPos(),15,200,2,radius)
 		
 		self.splasheffect = ents.Create("env_splash")
 		self.splasheffect:SetKeyValue("scale", 500)
