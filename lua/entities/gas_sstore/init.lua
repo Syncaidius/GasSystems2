@@ -10,17 +10,17 @@ end
 function ENT:Initialize()
 	self.Entity:SetModel( "models/syncaidius/gas_tank_small.mdl" )
 	self:SetSkin(4)
-    self.BaseClass.Initialize(self)
+  self.BaseClass.Initialize(self)
 
-    local phys = self.Entity:GetPhysicsObject()
+  local phys = self.Entity:GetPhysicsObject()
 	if (phys:IsValid()) then
 		phys:Wake()
 		phys:SetMass(300)
 	end
 	
 	self.damaged = 0
-    self:SetMaxHealth(200)
-    self:SetHealth(self:GetMaxHealth())
+  self:SetMaxHealth(200)
+  self:SetHealth(self:GetMaxHealth())
 
 	CAF.GetAddon("Resource Distribution").AddResource(self,"Natural Gas",6500)
 	
@@ -30,7 +30,7 @@ function ENT:Initialize()
 end
 
 function ENT:OnRemove()
-    self.BaseClass.OnRemove(self)
+  self.BaseClass.OnRemove(self)
 end
 
 function ENT:Damage()
@@ -76,9 +76,9 @@ function ENT:Destruct()
 		self.Exploded = true
 		
 		local effectdata = EffectData()
-			effectdata:SetOrigin( self.Entity:GetPos() )
-			effectdata:SetMagnitude(3)
-			effectdata:SetScale(0.6)
+		effectdata:SetOrigin( self.Entity:GetPos() )
+		effectdata:SetMagnitude(3)
+		effectdata:SetScale(0.6)
 		util.Effect( "tank_explode", effectdata )	 -- self made effect
 		
 		util.PrecacheSound("ambient/explosions/explode_8.wav")
@@ -95,15 +95,7 @@ function ENT:Destruct()
 		Ambient:Fire("PlaySound", "", 0)
 		Ambient:Fire("kill", "", 4)
 		
-		self.shakeeffect = ents.Create("env_shake") -- Shake from the explosion
-		self.shakeeffect:SetKeyValue("amplitude", 16)
-		self.shakeeffect:SetKeyValue("spawnflags", 4 + 8 + 16)
-		self.shakeeffect:SetKeyValue("frequency", 200.0)
-		self.shakeeffect:SetKeyValue("duration", 2)
-		self.shakeeffect:SetKeyValue("radius", 2000)
-		self.shakeeffect:SetPos(self.Entity:GetPos())
-		self.shakeeffect:Fire("StartShake","",0)
-		self.shakeeffect:Fire("Kill","",4)
+		util.ScreenShake(self.Entity:GetPos(),15,200,2,radius) 
 		
 		self.splasheffect = ents.Create("env_splash")
 		self.splasheffect:SetKeyValue("scale", 500)
@@ -134,18 +126,17 @@ function ENT:Output()
 end
 
 function ENT:UpdateWireOutputs()
-    if not (WireAddon == nil) then
+  if not (WireAddon == nil) then
 		local RD = CAF.GetAddon("Resource Distribution")
-        Wire_TriggerOutput(self.Entity, "Natural Gas", RD.GetResourceAmount( self, "Natural Gas" ))
-        Wire_TriggerOutput(self.Entity, "NGas Tank Capacity", RD.GetUnitCapacity( self, "Natural Gas" ))
+    Wire_TriggerOutput(self.Entity, "Natural Gas", RD.GetResourceAmount( self, "Natural Gas" ))
+    Wire_TriggerOutput(self.Entity, "NGas Tank Capacity", RD.GetUnitCapacity( self, "Natural Gas" ))
 		Wire_TriggerOutput(self.Entity, "NGas Net Capacity", RD.GetNetworkCapacity( self, "Natural Gas" ))
 	end
 end
 
 function ENT:Think()
-    self.BaseClass.Think(self)
-    
-    self:UpdateWireOutputs()
+  self.BaseClass.Think(self)
+  self:UpdateWireOutputs()
     
 	self.Entity:NextThink( CurTime() + 1 )
 	return true
@@ -160,9 +151,9 @@ function ENT:AcceptInput(name,activator,caller)
 end
 
 function ENT:PreEntityCopy()
-    self.BaseClass.PreEntityCopy(self)
+  self.BaseClass.PreEntityCopy(self)
 end
 
 function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
-    self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
+  self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
 end
