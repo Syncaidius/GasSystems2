@@ -1,5 +1,5 @@
 ENT.Type 		= "anim"
-ENT.Base 		= "base_rd_entity"
+ENT.Base 		= "base_rd3_entity"
 
 list.Set( "LSEntOverlayText" , "gas_tritinverter", {HasOOO = true, num = 2, resnames = {"energy","Tritium"}} )
 
