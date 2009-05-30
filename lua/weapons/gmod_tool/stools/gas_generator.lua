@@ -89,6 +89,6 @@ local gas_gen_models = {
 	{"Tritium Collector", "models/syncaidius/gas_collector.mdl", "gas_collector_trit"},
 	{"Tritium Inverter", "models/syncaidius/gas_inverter.mdl", "gas_tritinverter"},
 	{"Deuterium Inverter", "models/syncaidius/gas_inverter.mdl", "gas_deutinverter"},
-	{"Methane Rehydrator", "models/syncaidius/gas_inverter.mdl", "gas_rehydrator"},
+	{"Methane Rehydrator", "models/syncaidius/gas_inverter.mdl", "gas_rehydrator"}
 }
 RD2_ToolRegister( TOOL, gas_gen_models, Makegas_generator,"gas_generator",24)

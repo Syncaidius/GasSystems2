@@ -1,7 +1,7 @@
 
 
 ENT.Type 			= "anim"
-ENT.Base 			= "base_rd_entity"
+ENT.Base 			= "base_rd3_entity"
 
 ENT.PrintName		= "Adv. Powered Thruster"
 ENT.Author			= ""
