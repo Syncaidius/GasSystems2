@@ -93,4 +93,4 @@ local gas_stor_models = {
 		{ "#Medium Tritium Tank", "models/syncaidius/gas_tank_large.mdl", "gas_ltritstore" },
 		{ "#Small Tritium Tank", "models/syncaidius/gas_tank_small.mdl", "gas_stritstore" }
 }
-RD2_ToolRegister( TOOL, gas_stor_models, Makegas_storage,"gas_storage",24)
+CAF_ToolRegister( TOOL, gas_stor_models, Makegas_storage,"gas_storage",24)
