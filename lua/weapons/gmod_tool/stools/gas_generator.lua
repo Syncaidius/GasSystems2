@@ -91,4 +91,4 @@ local gas_gen_models = {
 	{"Deuterium Inverter", "models/syncaidius/gas_inverter.mdl", "gas_deutinverter"},
 	{"Methane Rehydrator", "models/syncaidius/gas_inverter.mdl", "gas_rehydrator"}
 }
-RD2_ToolRegister( TOOL, gas_gen_models, Makegas_generator,"gas_generator",24)
+CAF_ToolRegister( TOOL, gas_gen_models, Makegas_generator,"gas_generator",24)
