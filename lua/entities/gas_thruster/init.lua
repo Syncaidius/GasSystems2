@@ -4,10 +4,6 @@ AddCSLuaFile( "shared.lua" )
 
 include('shared.lua')
 
-if not (WireMod == nil) then
-	ENT.WireDebugName = "Energy Thruster"
-end
-
 local Thruster_Sound 	= Sound( "PhysicsCannister.ThrusterLoop" )
 
 function ENT:Initialize()
@@ -45,8 +41,11 @@ function ENT:Initialize()
 	
 	self:Switch( false )
 
-	self.Inputs = Wire_CreateInputs(self.Entity, { "On" })
-	self.Outputs = Wire_CreateOutputs(self.Entity, { "On", "Consumption" })
+	if WireLib then
+		self.WireDebugName = self.PrintName
+		self.Inputs = WireLib.CreateInputs(self, { "On" })
+		self.Outputs = WireLib.CreateOutputs(self, { "On", "Consumption" })
+	end
 end
 
 function ENT:OnRemove()
@@ -192,8 +191,7 @@ function ENT:Switch( on, mul )
 end
 
 function ENT:CanRun()
-	local RD = CAF.GetAddon("Resource Distribution")
-	local resource = RD.GetResourceAmount(self, self.resource)	
+	local resource = self:GetResourceAmount(self.resource)	
 	if (resource >= self.consumption) then
 		return true
 	else
@@ -202,20 +200,19 @@ function ENT:CanRun()
 end
 
 function ENT:Think()
-	local RD = CAF.GetAddon("Resource Distribution")
 	self.BaseClass.Think(self)
 
 	if (self:IsOn() && self:CanRun()) then
-		RD.ConsumeResource(self, self.resource, self.consumption)
+		self:ConsumeResource(self.resource, self.consumption)
 		self.outputon = 1
 	else
 		self:Switch( false )
 		self.outputon = 0
 	end
 	
-	if not (WireAddon == nil) then
-		Wire_TriggerOutput(self, "Consumption", self.consumption)
-		Wire_TriggerOutput(self, "On", self.outputon )
+	if WireLib then
+		WireLib.TriggerOutput(self, "Consumption", self.consumption)
+		WireLib.TriggerOutput(self, "On", self.outputon )
 	end
 	
 	self:ShowOutput()

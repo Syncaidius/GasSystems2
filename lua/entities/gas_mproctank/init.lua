@@ -3,9 +3,6 @@ AddCSLuaFile( "shared.lua" )
 
 include('shared.lua')
 
-if not (WireAddon == nil) then
-    ENT.WireDebugName = "M Processed Gas Tank"
-end
 
 function ENT:Initialize()
 	self.Entity:SetModel( "models/syncaidius/mprocstore.mdl" )
@@ -19,15 +16,17 @@ function ENT:Initialize()
 	
 	self.damaged = 0
 	self:SetMaxHealth(680)
-  self:SetHealth(self:GetMaxHealth())
+	self:SetHealth(self:GetMaxHealth())
 
-	CAF.GetAddon("Resource Distribution").AddResource(self,"Methane",11000)
-	CAF.GetAddon("Resource Distribution").AddResource(self,"Propane",11000)
-	CAF.GetAddon("Resource Distribution").AddResource(self,"Deuterium",12000)
-	CAF.GetAddon("Resource Distribution").AddResource(self,"Tritium",12000)
+	local RD = CAF.GetAddon("Resource Distribution")
+	RD.AddResource(self,"Methane",11000)
+	RD.AddResource(self,"Propane",11000)
+	RD.AddResource(self,"Deuterium",12000)
+	RD.AddResource(self,"Tritium",12000)
 	
-	if not (WireAddon == nil) then
-		self.Outputs = Wire_CreateOutputs(self.Entity, {"Methane","Propane","Deuterium","Tritium","Max Methane","Max Propane","Max Deuterium","Max Tritium"}) 
+	if WireLib then
+		self.WireDebugName = self.PrintName
+		self.Outputs = WireLib.CreateOutputs(self, {"Methane","Propane","Deuterium","Tritium","Max Methane","Max Propane","Max Deuterium","Max Tritium"}) 
 	end
 end
 
@@ -133,16 +132,15 @@ function ENT:Output()
 end
 
 function ENT:UpdateWireOutputs()
-    if not (WireAddon == nil) then
-		local RD = CAF.GetAddon("Resource Distribution")
-    Wire_TriggerOutput(self.Entity, "Methane", RD.GetResourceAmount( self, "Methane" ))
-    Wire_TriggerOutput(self.Entity, "Propane", RD.GetResourceAmount( self, "Propane" ))
-		Wire_TriggerOutput(self.Entity, "Deuterium",RD.GetResourceAmount(self,"Deuterium"))
-		Wire_TriggerOutput(self.Entity, "Tritium",RD.GetResourceAmount(self,"Tritium"))
-		Wire_TriggerOutput(self.Entity, "Max Methane", RD.GetUnitCapacity( self, "Methane" ))
-		Wire_TriggerOutput(self.Entity, "Max Propane", RD.GetUnitCapacity( self, "Propane" ))
-		Wire_TriggerOutput(self.Entity, "Max Deuterium", RD.GetUnitCapacity( self, "Deuterium" ))
-		Wire_TriggerOutput(self.Entity, "Max Tritium", RD.GetUnitCapacity( self, "Tritium" ))
+    if WireLib then
+		WireLib.TriggerOutput(self.Entity, "Methane", self:GetResourceAmount( "Methane" ))
+		WireLib.TriggerOutput(self.Entity, "Propane", self:GetResourceAmount( "Propane" ))
+		WireLib.TriggerOutput(self.Entity, "Deuterium", self:GetResourceAmount( "Deuterium"))
+		WireLib.TriggerOutput(self.Entity, "Tritium", self:GetResourceAmount( "Tritium"))
+		WireLib.TriggerOutput(self.Entity, "Max Methane", self:GetNetworkCapacity( "Methane" ))
+		WireLib.TriggerOutput(self.Entity, "Max Propane", self:GetNetworkCapacity( "Propane" ))
+		WireLib.TriggerOutput(self.Entity, "Max Deuterium", self:GetNetworkCapacity( "Deuterium" ))
+		WireLib.TriggerOutput(self.Entity, "Max Tritium", self:GetNetworkCapacity( "Tritium" ))
 	end
 end
 
@@ -157,13 +155,12 @@ end
 
 function ENT:AcceptInput(name,activator,caller)
 	if name == "Use" and caller:IsPlayer() and caller:KeyDownLast(IN_USE) == false then
-		local RD = CAF.GetAddon("Resource Distribution")
-		local propane = RD.GetResourceAmount( self, "Propane" )
-		local methane = RD.GetResourceAmount(self,"Methane")
-		local deut = RD.GetResourceAmount(self,"Deuterium")
-		local trit = RD.GetResourceAmount(self,"Tritium")
+		local propane = self:GetResourceAmount( "Propane" )
+		local methane = self:GetResourceAmount("Methane")
+		local deut = self:GetResourceAmount("Deuterium")
+		local trit = self:GetResourceAmount("Tritium")
 		caller:ChatPrint("There is "..tostring(propane).." Propane stored in this resource network.")
-		caller:ChatPrint("There is "..tostring(methane).." Propane stored in this resource network.")
+		caller:ChatPrint("There is "..tostring(methane).." Methane stored in this resource network.")
 		caller:ChatPrint("There is "..tostring(deut).." Deuterium stored in this resource network.")
 		caller:ChatPrint("There is "..tostring(trit).." Tritium stored in this resource network.")
 	end
