@@ -93,16 +93,17 @@ end
 
 function ENT:Setup(effect, bidir, sound, massless, toggle, energy, oxygen, nitrogen, hydrogen, steam, ngas, methane, propane, deuterium, tritium)
 	self.toggle = toggle
-	CAF.GetAddon("Resource Distribution").AddResource(self,"energy",0)
-	CAF.GetAddon("Resource Distribution").AddResource(self,"oxygen",0)
-	CAF.GetAddon("Resource Distribution").AddResource(self,"nitrogen",0)
-	CAF.GetAddon("Resource Distribution").AddResource(self,"hydrogen",0)
-	CAF.GetAddon("Resource Distribution").AddResource(self,"steam",0)
-	CAF.GetAddon("Resource Distribution").AddResource(self,"Natural Gas",0)
-	CAF.GetAddon("Resource Distribution").AddResource(self,"Methane",0)
-	CAF.GetAddon("Resource Distribution").AddResource(self,"Propane",0)
-	CAF.GetAddon("Resource Distribution").AddResource(self,"Deuterium",0)
-	CAF.GetAddon("Resource Distribution").AddResource(self,"Tritium",0)
+	local RD = CAF.GetAddon("Resource Distribution")
+	RD.AddResource(self,"energy",0)
+	RD.AddResource(self,"oxygen",0)
+	RD.AddResource(self,"nitrogen",0)
+	RD.AddResource(self,"hydrogen",0)
+	RD.AddResource(self,"steam",0)
+	RD.AddResource(self,"Natural Gas",0)
+	RD.AddResource(self,"Methane",0)
+	RD.AddResource(self,"Propane",0)
+	RD.AddResource(self,"Deuterium",0)
+	RD.AddResource(self,"Tritium",0)
 	
 	self.Effect = effect
 	self.BiDir = bidir

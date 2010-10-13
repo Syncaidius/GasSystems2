@@ -3,10 +3,6 @@ AddCSLuaFile( "shared.lua" )
 
 include('shared.lua')
 
-if not (WireAddon == nil) then
-    ENT.WireDebugName = "Med Methane Tank"
-end
-
 function ENT:Initialize()
 	self.Entity:SetModel( "models/syncaidius/gas_tank_large.mdl" )
     self.BaseClass.Initialize(self)
@@ -23,8 +19,9 @@ function ENT:Initialize()
 
 	CAF.GetAddon("Resource Distribution").AddResource(self,"Methane",12000)
 	
-	if not (WireAddon == nil) then
-		self.Outputs = Wire_CreateOutputs(self.Entity, {"Methane", "Methane Tank Capacity", "Methane Net Capacity"}) 
+	if WireLib then
+		self.WireDebugName = self.PrintName
+		self.Outputs = WireLib.CreateOutputs(self, {"Methane", "Methane Net Capacity"}) 
 	end
 end
 
@@ -52,10 +49,8 @@ function ENT:Repair()
 end
 
 function ENT:Destruct()
-	local RD = CAF.GetAddon("Resource Distribution")
-	
 	if server_settings.Bool("GASSYS_TankExplosions") then
-		local resource = RD.GetResourceAmount(self,"Methane")
+		local resource = self:GetResourceAmount("Methane")
 
 		if (resource==0) then 
 			resource=1 
@@ -132,11 +127,9 @@ function ENT:Output()
 end
 
 function ENT:UpdateWireOutputs()
-    if not (WireAddon == nil) then
-		local RD = CAF.GetAddon("Resource Distribution")
-        Wire_TriggerOutput(self.Entity, "Methane", RD.GetResourceAmount( self, "Methane" ))
-        Wire_TriggerOutput(self.Entity, "Methane Tank Capacity", RD.GetUnitCapacity( self, "Methane" ))
-		Wire_TriggerOutput(self.Entity, "Methane Net Capacity", RD.GetNetworkCapacity( self, "Methane" ))
+    if WireLib then
+        WireLib.TriggerOutput(self, "Methane", self:GetResourceAmount("Methane" ))
+		WireLib.TriggerOutput(self, "Methane Net Capacity", self:GetNetworkCapacity("Methane"))
 	end
 end
 
@@ -151,8 +144,7 @@ end
 
 function ENT:AcceptInput(name,activator,caller)
 	if name == "Use" and caller:IsPlayer() and caller:KeyDownLast(IN_USE) == false then
-		local RD = CAF.GetAddon("Resource Distribution")
-		local gascur = RD.GetResourceAmount( self, "Methane" )
+		local gascur = self:GetResourceAmount( "Methane" )
 		caller:ChatPrint("There is "..tostring(gascur).." Methane stored in this resource network.")
 	end
 end

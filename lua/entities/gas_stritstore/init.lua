@@ -3,29 +3,26 @@ AddCSLuaFile( "shared.lua" )
 
 include('shared.lua')
 
-if not (WireAddon == nil) then
-    ENT.WireDebugName = "S Tritium Tank"
-end
-
 function ENT:Initialize()
 	self.Entity:SetModel( "models/syncaidius/gas_tank_small.mdl" )
-    self.BaseClass.Initialize(self)
 	self:SetSkin(3)
+    self.BaseClass.Initialize(self)
 
     local phys = self.Entity:GetPhysicsObject()
 	if (phys:IsValid()) then
 		phys:Wake()
-		phys:SetMass(100)
+		phys:SetMass(450)
 	end
 	
 	self.damaged = 0
-	self:SetMaxHealth(300)
-  self:SetHealth(self:GetMaxHealth())
+    self:SetMaxHealth(410)
+    self:SetHealth(self:GetMaxHealth())
 
 	CAF.GetAddon("Resource Distribution").AddResource(self,"Tritium",5000)
 	
-	if not (WireAddon == nil) then
-		self.Outputs = Wire_CreateOutputs(self.Entity, {"Tritium", "Tritium Tank Capacity", "Tritium Net Capacity"}) 
+	if WireLib then
+		self.WireDebugName = self.PrintName
+		self.Outputs = WireLib.CreateOutputs(self, {"Tritium", "Tritium Net Capacity"}) 
 	end
 end
 
@@ -49,13 +46,13 @@ function ENT:Destruct()
 	local RD = CAF.GetAddon("Resource Distribution")
 	
 	if server_settings.Bool("GASSYS_TankExplosions") then
-		local resource = RD.GetResourceAmount(self,"Tritium")
+		local resource = self:GetResourceAmount("Tritium")
 
 		if (resource==0) then 
 			resource=1 
 		end
-		if (resource>5000) then
-			resource=5000
+		if (resource>4500) then
+			resource=4500
 		end
 		
 		local magnit=math.floor(resource/50)
@@ -76,9 +73,9 @@ function ENT:Destruct()
 		self.Exploded = true
 		
 		local effectdata = EffectData()
-			effectdata:SetOrigin( self.Entity:GetPos() )
-			effectdata:SetMagnitude(3)
-			effectdata:SetScale(0.6)
+		effectdata:SetOrigin( self.Entity:GetPos() )
+		effectdata:SetMagnitude(3)
+		effectdata:SetScale(0.6)
 		util.Effect( "tank_explode", effectdata )	 -- self made effect
 		
 		util.PrecacheSound("ambient/explosions/explode_8.wav")
@@ -95,15 +92,7 @@ function ENT:Destruct()
 		Ambient:Fire("PlaySound", "", 0)
 		Ambient:Fire("kill", "", 4)
 		
-		self.shakeeffect = ents.Create("env_shake") -- Shake from the explosion
-		self.shakeeffect:SetKeyValue("amplitude", 16)
-		self.shakeeffect:SetKeyValue("spawnflags", 4 + 8 + 16)
-		self.shakeeffect:SetKeyValue("frequency", 200.0)
-		self.shakeeffect:SetKeyValue("duration", 2)
-		self.shakeeffect:SetKeyValue("radius", 2000)
-		self.shakeeffect:SetPos(self.Entity:GetPos())
-		self.shakeeffect:Fire("StartShake","",0)
-		self.shakeeffect:Fire("Kill","",4)
+		util.ScreenShake(self.Entity:GetPos(),15,200,2,radius)
 		
 		self.splasheffect = ents.Create("env_splash")
 		self.splasheffect:SetKeyValue("scale", 500)
@@ -134,17 +123,16 @@ function ENT:Output()
 end
 
 function ENT:UpdateWireOutputs()
-    if not (WireAddon == nil) then
-		local RD = CAF.GetAddon("Resource Distribution")
-    Wire_TriggerOutput(self.Entity, "Tritium", RD.GetResourceAmount( self, "Tritium" ))
-    Wire_TriggerOutput(self.Entity, "Tritium Tank Capacity", RD.GetUnitCapacity( self, "Tritium" ))
-		Wire_TriggerOutput(self.Entity, "Tritium Net Capacity", RD.GetNetworkCapacity( self, "Tritium" ))
+    if WireLib then
+        WireLib.TriggerOutput(self, "Tritium", self:GetResourceAmount("Tritium" ))
+		WireLib.TriggerOutput(self, "Tritium Net Capacity", self:GetNetworkCapacity( "Tritium" ))
 	end
 end
 
 function ENT:Think()
-  self.BaseClass.Think(self)
-  self:UpdateWireOutputs()
+    self.BaseClass.Think(self)
+    
+    self:UpdateWireOutputs()
     
 	self.Entity:NextThink( CurTime() + 1 )
 	return true
@@ -152,16 +140,15 @@ end
 
 function ENT:AcceptInput(name,activator,caller)
 	if name == "Use" and caller:IsPlayer() and caller:KeyDownLast(IN_USE) == false then
-		local RD = CAF.GetAddon("Resource Distribution")
-		local gascur = RD.GetResourceAmount( self, "Tritium" )
+		local gascur = self:GetResourceAmount( "Tritium" )
 		caller:ChatPrint("There is "..tostring(gascur).." Tritium stored in this resource network.")
 	end
 end
 
 function ENT:PreEntityCopy()
-  self.BaseClass.PreEntityCopy(self)
+    self.BaseClass.PreEntityCopy(self)
 end
 
 function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
-  self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
+    self.BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities )
 end

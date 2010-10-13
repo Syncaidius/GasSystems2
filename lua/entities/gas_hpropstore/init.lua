@@ -3,10 +3,6 @@ AddCSLuaFile( "shared.lua" )
 
 include('shared.lua')
 
-if not (WireAddon == nil) then
-    ENT.WireDebugName = "L Propane Tank"
-end
-
 function ENT:Initialize()
 	self.Entity:SetModel( "models/syncaidius/gas_tank_huge.mdl" )
 	self:SetSkin(1)
@@ -15,17 +11,18 @@ function ENT:Initialize()
     local phys = self.Entity:GetPhysicsObject()
 	if (phys:IsValid()) then
 		phys:Wake()
-		phys:SetMass(650)
+		phys:SetMass(700)
 	end
 	
 	self.damaged = 0
-	self:SetMaxHealth(1000)
+    self:SetMaxHealth(1100)
     self:SetHealth(self:GetMaxHealth())
 
-	CAF.GetAddon("Resource Distribution").AddResource(self,"Propane",24000)
+	CAF.GetAddon("Resource Distribution").AddResource(self,"Propane",25000)
 	
-	if not (WireAddon == nil) then
-		self.Outputs = Wire_CreateOutputs(self.Entity, {"Propane", "Propane Tank Capacity", "Propane Net Capacity"}) 
+	if WireLib then
+		self.WireDebugName = self.PrintName
+		self.Outputs = WireLib.CreateOutputs(self, {"Propane", "Propane Net Capacity"}) 
 	end
 end
 
@@ -49,13 +46,13 @@ function ENT:Destruct()
 	local RD = CAF.GetAddon("Resource Distribution")
 	
 	if server_settings.Bool("GASSYS_TankExplosions") then
-		local resource = RD.GetResourceAmount(self,"Propane")
+		local resource = self:GetResourceAmount("Propane")
 
 		if (resource==0) then 
 			resource=1 
 		end
-		if (resource>24000) then
-			resource=24000
+		if (resource>25000) then
+			resource=25000
 		end
 		
 		local magnit=math.floor(resource/50)
@@ -76,9 +73,9 @@ function ENT:Destruct()
 		self.Exploded = true
 		
 		local effectdata = EffectData()
-			effectdata:SetOrigin( self.Entity:GetPos() )
-			effectdata:SetMagnitude(3)
-			effectdata:SetScale(0.6)
+		effectdata:SetOrigin( self.Entity:GetPos() )
+		effectdata:SetMagnitude(3)
+		effectdata:SetScale(0.6)
 		util.Effect( "tank_explode", effectdata )	 -- self made effect
 		
 		util.PrecacheSound("ambient/explosions/explode_8.wav")
@@ -126,11 +123,9 @@ function ENT:Output()
 end
 
 function ENT:UpdateWireOutputs()
-    if not (WireAddon == nil) then
-		local RD = CAF.GetAddon("Resource Distribution")
-        Wire_TriggerOutput(self.Entity, "Propane", RD.GetResourceAmount( self, "Propane" ))
-        Wire_TriggerOutput(self.Entity, "Propane Tank Capacity", RD.GetUnitCapacity( self, "Propane" ))
-		Wire_TriggerOutput(self.Entity, "Propane Net Capacity", RD.GetNetworkCapacity( self, "Propane" ))
+    if WireLib then
+        WireLib.TriggerOutput(self, "Propane", self:GetResourceAmount("Propane" ))
+		WireLib.TriggerOutput(self, "Propane Net Capacity", self:GetNetworkCapacity( "Propane" ))
 	end
 end
 
@@ -145,8 +140,7 @@ end
 
 function ENT:AcceptInput(name,activator,caller)
 	if name == "Use" and caller:IsPlayer() and caller:KeyDownLast(IN_USE) == false then
-		local RD = CAF.GetAddon("Resource Distribution")
-		local gascur = RD.GetResourceAmount( self, "Propane" )
+		local gascur = self:GetResourceAmount( "Propane" )
 		caller:ChatPrint("There is "..tostring(gascur).." Propane stored in this resource network.")
 	end
 end
