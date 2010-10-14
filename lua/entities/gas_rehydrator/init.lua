@@ -39,7 +39,7 @@ function ENT:Initialize()
 	if WireLib then 
 		self.WireDebugName = self.PrintName
 		self.Inputs = WireLib.CreateInputs(self, { "On", "Overdrive", "Mute", "Multiplier"})
-		self.Outputs = WireLib.CreateOutputs(self, { "On", "Overdrive", "O2 Output"}) 
+		self.Outputs = WireLib.CreateOutputs(self, { "On", "Overdrive", "Water Output"}) 
 	end
 	
 	if (phys:IsValid()) then
@@ -227,7 +227,7 @@ function ENT:ExtractGas()
 	end
 	
 	if WireLib then
-		WireLib.TriggerOutput(self,"O2 Output", self.water)
+		WireLib.TriggerOutput(self,"Water Output", self.water)
 		WireLib.TriggerOutput(self, "On", self.Active)
 	end
 end
