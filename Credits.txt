@@ -1,9 +1,10 @@
 Gas Systems Addon created by Syncaidius.
 
-Gas Systems 2 Credits Listing
+Credits
 =============================
-Any other people who have helped with this addon will be listed here:
+Thanks to:
 
 Pegasus(KW/duckordie) - small processed gas tank model
-Killers2 - Letting me test it on his SB server before release.
-Snakesvx - For helping me with some of the LS3 code in gas systems.
+Killers2 - Testing the alpha version on his SB server before release.
+Snakesvx - Helping with some of the CAF/LS3 stuff in gas systems.
+MoSs - Testing V1.2 and V1.3 on his server.

@@ -1,9 +1,9 @@
 Now that your reading, you will find everything you need to know about gas systems in this readme.
 
-Whats Changed?
-============
+Whats Changed since Gas Systems for LS2?
+========================================
  - Completely new Powered Thruster Tools.
- - Custom for every gas device/storage
+ - Custom models for every gas device/storage
  - Recoded from scratch to support SB3/LS3
  - Nitrogen/Nitrous Oxide have been removed
  - Two new gases, Deuterium and Tritium
