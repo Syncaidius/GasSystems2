@@ -10,7 +10,6 @@ function ENT:Initialize()
 	self:SetSkin(1)
 	self.BaseClass.Initialize(self)
 
-	local phys = self.Entity:GetPhysicsObject()
 	self.damaged = 0
 	self.overdrive = 0
 	self.overdrivefactor = 0
@@ -42,6 +41,7 @@ function ENT:Initialize()
 		self.Outputs = WireLib.CreateOutputs(self, { "On", "Overdrive", "Nitrogen Output"})
 	end
 	
+	local phys = self.Entity:GetPhysicsObject()
 	if (phys:IsValid()) then
 		phys:Wake()
 		phys:SetMass(120)
@@ -126,6 +126,7 @@ function ENT:Damage()
 end
 
 function ENT:Repair()
+	self.Entity:SetColor(255, 255, 255, 255)
 	self:SetHealth(self:GetMaxHealth())
 	self.damaged = 0
 end
