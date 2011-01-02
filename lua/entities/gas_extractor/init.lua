@@ -94,6 +94,9 @@ function ENT:TriggerInput(iname, value)
 	elseif (iname == "Multiplier") then
 		if(value > 0) then
 			self.multiply = value
+			if self.multiply > server_settings.Int("GASSYS_MaxMultiplier") then
+				self.multiply = server_settings.Int("GASSYS_MaxMultiplier")
+			end
 		else
 			self.multiply = 1
 		end
