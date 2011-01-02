@@ -23,6 +23,7 @@ Natural Gas Processor - makes methane, propane, deuterium and tritium from natur
 Console Commands?
 =================
 GASSYS_TankExplosions - Disables/Enables the custom explosion effect for gas tanks
+GASSYS_MaxMultiplier - Maximum multiplier value allowed. All gas multiplier inputs will be capped to this concommand value.
 sbox_maxgas_generator - Gas Generators Limit
 sbox_maxgas_storage - Gas Storages Limit
 sbox_maxgas_thrusters - Powered Thrusters Limit (same limit used by normal and advanced ones) 
