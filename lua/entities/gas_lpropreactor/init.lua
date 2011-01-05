@@ -164,7 +164,7 @@ function ENT:OverdriveOff()
 	self:SetOOO(1)
 
 	if WireLib then
-		WireLib.TriggerOutput(self, "Overdrive", 1)
+		WireLib.TriggerOutput(self, "Overdrive", 0)
 	end
 	
 	self.Entity:StopSound( "ambient/machines/thumper_startup1.wav" )
