@@ -229,10 +229,6 @@ function ENT:ConvertGas()
 		self:SupplyResource("Tritium",self.tritium)
 		self:SupplyResource("Methane",self.methane)
 		self:SupplyResource("Propane",self.propane)
-
-		if self.environment then
-			self.environment:Convert(1,-1, self.ngas) --CO2 to E-air
-		end
 	else
 		if(self.mute == 0) then
 			self.Entity:EmitSound( "common/warning.wav" )
