@@ -4,7 +4,7 @@ AddCSLuaFile( "shared.lua" )
 include('shared.lua')
 
 function ENT:Initialize()
-	self.Entity:SetModel( "models/syncaidius/gas_tank_huge.mdl" )
+	self.Entity:SetModel( "models/syncaidius/gas_tank_large.mdl" )
 	self:SetSkin(2)
     self.BaseClass.Initialize(self)
 
