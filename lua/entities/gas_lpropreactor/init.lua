@@ -211,9 +211,6 @@ function ENT:GenerateEnergy()
 	if ( self:CanRun() ) then
 		self:ConsumeResource("Propane", self.Propane)
 		self:SupplyResource("energy",self.energy)
-		if self.environment then
-			self.environment:Convert(1,-1, self.energy)
-		end
 	else
 		self.energy = 9+math.random(0,2)
 		self:SupplyResource("energy",self.energy)

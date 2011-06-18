@@ -218,9 +218,6 @@ function ENT:GenerateEnergy()
 		self:ConsumeResource("Tritium", self.Tritium)
 		
 		self:SupplyResource("energy",self.energy)
-		if self.environment then
-			self.environment:Convert(1,-1, self.energy)
-		end
 	else
 		self.energy = math.random(15,20)
 		self:SupplyResource("energy",self.energy)
