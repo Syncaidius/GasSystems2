@@ -4,7 +4,7 @@ My old SpaceBuild 3 addon for Garry's Mod
 It's crazy how fast time has gone. The last time I worked on this was in 2009, almost a decade ago!
 Unfortuantely, I lack the time to fix this mod myself and at this point I'm way out of the loop in terms of Gmod Lua and SpaceBuild/LifeSupport mods.
 
-I'm still amazed by how often I get contacted by people asking if they or someone can fix this mod, so I've imported it from Assembla in hopes that this makes it a little easier for people to find the mod's old source code.
+I'm still amazed by how often I get contacted by people asking if they or someone can fix this mod, so I've imported it from my Assembla repository in hopes that this makes it a little easier for people to find the mod's old source code.
 If you're interested in fixing it for the current version of Gmod or space mods, please fork it!
 
 Feel free to modify it however you see fit. If you keep any of the old models/texture, some credit would be nice, but not neccessary!
