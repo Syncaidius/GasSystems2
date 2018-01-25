@@ -1,4 +1,4 @@
-# GasSystems2
+# Gas Systems 2
 My old SpaceBuild 3 addon for Garry's Mod
 
 It's crazy how fast time has gone. The last time I worked on this was in 2009, almost a decade ago!
