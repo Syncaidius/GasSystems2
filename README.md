@@ -9,10 +9,10 @@ If you're interested in fixing it for the current version of Gmod or space mods,
 
 Feel free to modify it however you see fit. If you keep any of the old models/texture, some credit would be nice, but not neccessary!
 
-Lastly, if you're also interested in throwing/fixing some asteroid mining into the mix, check out my unreleased asteroid mining mod from 2009:
+Lastly, if you're also interested in throwing/fixing some asteroid mining into the mix, check out my asteroid mining mod from 2009:
 https://github.com/Syncaidius/asteroidmining
 
-I never got around to releasing it publically, so maybe someone will find some fun in fixing and polishing it up for a release of their own. :)
+I never got around to releasing it publically, but at the time it was fully-working and pretty close to release. Maybe someone will find some fun in fixing and polishing it up for a release of their own. :)
 
 # Permissions
 Just to be 100% clear on where I stand in terms of permissions, you can do whatever you want with this mod and its source files. If you want to fix and release it as-is, that's fine. If you just want to use the models/textures, that's fine too. You get the idea!
