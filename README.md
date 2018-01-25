@@ -14,4 +14,7 @@ https://github.com/Syncaidius/asteroidmining
 
 I never got around to releasing it publically, so maybe someone will find some fun in fixing and polishing it up for a release of their own. :)
 
+#Permissions
+Just to be 100% clear on where I stand, you can do whatever you want with this mod and its source files. If you want to fix and release it as-is, that's fine. If you just want to use the models/textures, that's fine too. You get the idea!
+
 Enjoy!
